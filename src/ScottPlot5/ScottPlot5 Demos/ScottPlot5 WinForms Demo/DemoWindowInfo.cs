@@ -1,46 +1,51 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
+using ScottPlot;
+using WinForms_Demo.Properties;
+using Color = System.Drawing.Color;
 
 namespace WinForms_Demo;
 
 public partial class DemoWindowInfo : UserControl
 {
     [DllImport("user32.dll")]
-    static extern bool HideCaret(IntPtr hWnd);
+    private static extern bool HideCaret(IntPtr hWnd);
 
-    readonly Type FormType;
+    private readonly Type _formType;
 
     public DemoWindowInfo(IDemoWindow demoForm, Type formType)
     {
         InitializeComponent();
-        FormType = formType;
-        richTextBox1.Click += (s, e) => HideCaret(richTextBox1.Handle);
+        _formType = formType;
+        richTextBox1.Click += (_, _) => HideCaret(richTextBox1.Handle);
         groupBox1.Text = demoForm.Title;
         richTextBox1.Text = demoForm.Description;
-        button1.Click += (s, e) => LaunchDemoWindow(demoForm.Title);
+        button1.Click += (_, _) => LaunchDemoWindow(demoForm.Title);
         label1.Cursor = Cursors.Hand;
-        label1.MouseEnter += (s, e) => { label1.ForeColor = System.Drawing.Color.Blue; };
-        label1.MouseLeave += (s, e) => { label1.ForeColor = SystemColors.ControlDark; };
-        label1.Click += (s, e) => LaunchSourceBrowser();
+        label1.MouseEnter += (_, _) => label1.ForeColor = Color.Blue;
+        label1.MouseLeave += (_, _) => label1.ForeColor = SystemColors.ControlDark;
+        label1.Click += (_, _) => LaunchSourceBrowser();
         HideCaret(richTextBox1.Handle);
         richTextBox1.Enabled = false;
     }
 
     private void LaunchSourceBrowser()
     {
-        string folder = "https://github.com/ScottPlot/ScottPlot/tree/main/src/ScottPlot5/ScottPlot5%20Demos/ScottPlot5%20WinForms%20Demo/Demos/";
-        string filename = FormType.Name + ".cs";
+        const string folder = "https://github.com/ScottPlot/ScottPlot/tree/main/src/ScottPlot5/ScottPlot5%20Demos/ScottPlot5%20WinForms%20Demo/Demos/";
+        string filename = _formType.Name + ".cs";
         string url = folder + filename;
-        ScottPlot.Platform.LaunchWebBrowser(url);
+        Platform.LaunchWebBrowser(url);
     }
 
     private void LaunchDemoWindow(string title)
     {
-        Form form = (Form)Activator.CreateInstance(FormType)!;
-        form.Icon = Properties.Resources.scottplot_icon_rounded_border;
+        Form? form = Activator.CreateInstance(_formType) as Form;
+        Debug.Assert(form is not null);
+        form.Icon = Resources.scottplot_icon_rounded_border;
         form.StartPosition = FormStartPosition.CenterScreen;
         form.Text = title;
-        ParentForm.Hide();
+        ParentForm?.Hide();
         form.ShowDialog();
-        ParentForm.Show();
+        ParentForm?.Show();
     }
 }

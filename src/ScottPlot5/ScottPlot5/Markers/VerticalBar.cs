@@ -6,7 +6,7 @@ internal class VerticalBar : IMarker
     {
         float offset = size / 2;
 
-        SKPath path = new();
+        SKPath path = new SKPath();
         path.MoveTo(center.X, center.Y + offset);
         path.LineTo(center.X, center.Y - offset);
 

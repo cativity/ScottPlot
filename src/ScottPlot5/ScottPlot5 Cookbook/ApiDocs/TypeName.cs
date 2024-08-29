@@ -3,14 +3,16 @@
 public class TypeName
 {
     public string Name { get; }
+
     public string FullName { get; }
+
     public string CleanName { get; }
+
     public string CleanNameHtml => CleanName.Replace("<", "&lt;").Replace(">", "&gt;");
 
     public TypeName(Type type)
     {
-        Type? nullableType = Nullable.GetUnderlyingType(type);
-        if (nullableType is not null)
+        if (Nullable.GetUnderlyingType(type) is Type nullableType)
         {
             FullName = nullableType.FullName ?? nullableType.Name;
             Name = FullName.Split(".").Last();
@@ -31,7 +33,7 @@ public class TypeName
         }
     }
 
-    private string GetCleanName(string name)
+    private static string GetCleanName(string name)
     {
         // TODO: show the type of <T> where possible
 
@@ -68,17 +70,16 @@ public class TypeName
             _ => name,
         };
 
-        return name
-            .Replace("System.EventHandler", "EventHandler")
-            .Replace("System.Func", "Func")
-            .Replace("System.Action", "Action")
-            .Replace("System.Collections.Generic.", "")
-            .Replace("`1", "<T>")
-            .Replace("`2", "<T1, T2>")
-            .Replace("`3", "<T1, T2, T3>")
-            .Replace("System.Nullable<T>", "T?")
-            .Replace("System.ValueTuple", "ValueTuple")
-            .Split("[[")[0]
-            .Split("+")[0];
+        return name.Replace("System.EventHandler", "EventHandler")
+                   .Replace("System.Func", "Func")
+                   .Replace("System.Action", "Action")
+                   .Replace("System.Collections.Generic.", "")
+                   .Replace("`1", "<T>")
+                   .Replace("`2", "<T1, T2>")
+                   .Replace("`3", "<T1, T2, T3>")
+                   .Replace("System.Nullable<T>", "T?")
+                   .Replace("System.ValueTuple", "ValueTuple")
+                   .Split("[[")[0]
+                   .Split("+")[0];
     }
 }

@@ -2,29 +2,37 @@
 
 public class RandomWalker2D(int? seed = null)
 {
-    private RandomDataGenerator Gen { get; } = new(seed);
+    private RandomDataGenerator Gen { get; } = new RandomDataGenerator(seed);
 
-    private double X = 0;
-    private double Y = 0;
-    private double VX = 0;
-    private double VY = 0;
+    private double _x;
+    private double _y;
+    private double _vx;
+    private double _vy;
 
     public Coordinates Next()
     {
-        VX += Gen.RandomNumber() - .5;
-        VY += Gen.RandomNumber() - .5;
+        _vx += Gen.RandomNumber() - .5;
+        _vy += Gen.RandomNumber() - .5;
 
-        double absX = Math.Abs(VX);
-        if (absX > 1) VX *= 1 - absX;
+        double absX = Math.Abs(_vx);
 
-        double absY = Math.Abs(VY);
-        if (absY > 1) VY *= 1 - absY;
+        if (absX > 1)
+        {
+            _vx *= 1 - absX;
+        }
 
-        X += VX;
-        Y += VY;
+        double absY = Math.Abs(_vy);
 
-        return new(X, Y);
+        if (absY > 1)
+        {
+            _vy *= 1 - absY;
+        }
+
+        _x += _vx;
+        _y += _vy;
+
+        return new Coordinates(_x, _y);
     }
 
-    public IEnumerable<Coordinates> Next(int count) => Enumerable.Range(0, count).Select(x => Next());
+    public IEnumerable<Coordinates> Next(int count) => Enumerable.Range(0, count).Select(_ => Next());
 }

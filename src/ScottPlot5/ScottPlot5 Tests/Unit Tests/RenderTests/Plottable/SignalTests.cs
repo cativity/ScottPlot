@@ -1,4 +1,5 @@
 ﻿using ScottPlot.DataSources;
+using ScottPlot.Plottables;
 
 namespace ScottPlotTests.RenderTests.Plottable;
 
@@ -15,7 +16,7 @@ internal class SignalTests
         Array.Copy(sin, 0, data, 0, sin.Length);
         Array.Copy(sin, 0, data, data.Length - sin.Length, sin.Length);
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(data);
         plt.HideGrid();
         plt.SaveTestImage();
@@ -29,9 +30,9 @@ internal class SignalTests
         // https://github.com/ScottPlot/ScottPlot/issues/2949
 
         double[] data = Generate.SquareWave(low: 10, high: 15);
-        Generate.AddNoiseInPlace(data, magnitude: .001);
+        Generate.AddNoiseInPlace(data, .001);
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(data);
         plt.HideGrid();
         plt.SaveTestImage();
@@ -40,8 +41,8 @@ internal class SignalTests
     [Test]
     public void Test_Signal_Offsets()
     {
-        ScottPlot.Plot plt = new();
-        var sig = plt.Add.Signal(ScottPlot.Generate.Sin());
+        Plot plt = new Plot();
+        Signal sig = plt.Add.Signal(Generate.Sin());
         sig.Data.XOffset = 100;
         sig.Data.YOffset = 10;
         plt.SaveTestImage();
@@ -50,12 +51,12 @@ internal class SignalTests
     [Test]
     public void Test_Signal_Scale()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
-        var sig = plt.Add.Signal(ScottPlot.Generate.Sin());
+        Signal sig = plt.Add.Signal(Generate.Sin());
         sig.Data.YScale = 100;
 
-        var sig2 = plt.Add.Signal(ScottPlot.Generate.Sin(51));
+        Signal sig2 = plt.Add.Signal(Generate.Sin(51));
         sig2.Data.YScale = 100;
         sig2.Data.XOffset = 10;
         sig2.Data.YOffset = 50;
@@ -66,12 +67,12 @@ internal class SignalTests
     [Test]
     public void Test_SignalXY_Scale()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
-        var sig = plt.Add.SignalXY(ScottPlot.Generate.Consecutive(51), ScottPlot.Generate.Sin(51));
+        SignalXY sig = plt.Add.SignalXY(Generate.Consecutive(51), Generate.Sin(51));
         sig.Data.YScale = 100;
 
-        var sig2 = plt.Add.SignalXY(ScottPlot.Generate.Consecutive(51), ScottPlot.Generate.Sin(51));
+        SignalXY sig2 = plt.Add.SignalXY(Generate.Consecutive(51), Generate.Sin(51));
         sig2.Data.YScale = 100;
         sig2.Data.XOffset = 10;
         sig2.Data.YOffset = 50;
@@ -82,11 +83,11 @@ internal class SignalTests
     [Test]
     public void Test_Signal_GenericType()
     {
-        UInt16[] values = { 1, 3, 2, 4 };
-        double period = 1.0;
-        ScottPlot.DataSources.SignalSourceGenericArray<UInt16> source = new(values, period);
+        ushort[] values = [1, 3, 2, 4];
+        const double period = 1.0;
+        SignalSourceGenericArray<ushort> source = new SignalSourceGenericArray<ushort>(values, period);
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(source);
         plt.SaveTestImage();
     }
@@ -94,9 +95,9 @@ internal class SignalTests
     [Test]
     public void Test_Signal_AddGenericArray()
     {
-        UInt16[] values = { 1, 3, 2, 4 };
+        ushort[] values = [1, 3, 2, 4];
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(values);
         plt.SaveTestImage();
     }
@@ -104,9 +105,9 @@ internal class SignalTests
     [Test]
     public void Test_Signal_AddGenericList()
     {
-        List<UInt16> values = new() { 1, 3, 2, 4 };
+        List<ushort> values = [1, 3, 2, 4];
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(values);
         plt.SaveTestImage();
     }
@@ -114,7 +115,7 @@ internal class SignalTests
     [Test]
     public void Test_SignalLowDensity_InvertedX()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin());
         plt.Axes.InvertX();
         plt.SaveTestImage();
@@ -123,7 +124,7 @@ internal class SignalTests
     [Test]
     public void Test_SignalHighDensity_InvertedX()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(100_000));
         plt.Axes.InvertX();
         plt.SaveTestImage();
@@ -134,7 +135,7 @@ internal class SignalTests
     {
         double[] values = [];
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(values);
         plt.Should().RenderInMemoryWithoutThrowing();
     }
@@ -144,7 +145,7 @@ internal class SignalTests
     {
         int[] values = [];
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(values);
         plt.Should().RenderInMemoryWithoutThrowing();
     }
@@ -152,9 +153,10 @@ internal class SignalTests
     [Test]
     public void Test_Signal_Empty_GenericList()
     {
+        // ReSharper disable once CollectionNeverUpdated.Local
         List<double> values = [];
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(values);
         plt.Should().RenderInMemoryWithoutThrowing();
     }
@@ -164,7 +166,7 @@ internal class SignalTests
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3926
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
         // single plot with single point
         for (int i = 1; i <= 4; i++)
@@ -185,7 +187,7 @@ internal class SignalTests
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3926
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
         // single plot with single point
         double[] ys = [0];
@@ -202,7 +204,7 @@ internal class SignalTests
     {
         // https://github.com/ScottPlot/ScottPlot/pull/3978
 
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
         // single plot with single point
         IReadOnlyList<float> ys = [1, 4, 9];

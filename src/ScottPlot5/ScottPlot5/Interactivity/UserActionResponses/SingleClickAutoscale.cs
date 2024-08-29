@@ -7,4 +7,3 @@ public class SingleClickAutoscale(MouseButton button) : SingleClickResponse(butt
         MouseAxisManipulation.AutoScale(plot, pixel, false);
     }
 }
-

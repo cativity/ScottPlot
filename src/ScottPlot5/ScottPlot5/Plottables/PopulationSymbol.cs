@@ -1,38 +1,45 @@
-﻿
-namespace ScottPlot.Plottables;
+﻿namespace ScottPlot.Plottables;
 
 public class PopulationSymbol(Population population) : IPlottable
 {
     public Population Population { get; } = population;
+
     public bool IsVisible { get; set; } = true;
+
     public IAxes Axes { get; set; } = new Axes();
+
     public IEnumerable<LegendItem> LegendItems => LegendItem.None;
 
     public double X { get; set; } = 0;
 
     public double Width { get; set; } = 0.8;
 
-    public double MarkerWidthFraction = 0.8;
+    public double MarkerWidthFraction { get; set; } = 0.8;
+
     public HorizontalAlignment MarkerAlignment { get; set; } = HorizontalAlignment.Left;
 
-    public double BarWidthFraction = .9;
+    public double BarWidthFraction { get; set; } = .9;
+
     public HorizontalAlignment BarAlignment { get; set; } = HorizontalAlignment.Right;
+
     public HorizontalAlignment BoxAlignment { get => BarAlignment; set => BarAlignment = value; }
 
-    public AxisLimits GetAxisLimits() => new(GetRect());
+    public AxisLimits GetAxisLimits() => new AxisLimits(GetRect());
 
-    public Bar Bar { get; set; } = new() { IsVisible = true };
-    public Box Box { get; set; } = new() { IsVisible = false };
-    public Marker Marker { get; set; } = new() { Size = 10, Shape = MarkerShape.OpenCircle };
+    public Bar Bar { get; set; } = new Bar { IsVisible = true };
 
-    private LabelStyle _EmptyLabel = new() { IsVisible = false };
+    public Box Box { get; set; } = new Box { IsVisible = false };
+
+    public Marker Marker { get; set; } = new Marker { Size = 10, Shape = MarkerShape.OpenCircle };
+
+    private readonly LabelStyle _emptyLabel = new LabelStyle { IsVisible = false };
 
     public Func<Box, Population, Population> BoxValueConfig { get; set; } = BoxValueConfigurator_MedianQuantileExtrema;
 
     private CoordinateRect GetRect()
     {
-        double left = X - Width / 2;
-        double right = X + Width / 2;
+        double left = X - (Width / 2);
+        double right = X + (Width / 2);
         double min = Population.Min;
         double max = Population.Max;
 
@@ -81,7 +88,7 @@ public class PopulationSymbol(Population population) : IPlottable
 
     public virtual void Render(RenderPack rp)
     {
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         RenderBar(rp, paint);
         RenderBox(rp, paint);
         RenderMarkers(rp, paint);
@@ -90,13 +97,16 @@ public class PopulationSymbol(Population population) : IPlottable
     private void RenderMarkers(RenderPack rp, SKPaint paint)
     {
         if (!Marker.IsVisible)
+        {
             return;
+        }
 
         CoordinateRect rect = GetMarkerRect();
         double[] xs = Generate.RandomSample(Population.Count, rect.Left, rect.Right);
+
         for (int i = 0; i < Population.Count; i++)
         {
-            Coordinates location = new(xs[i], Population.Values[i]);
+            Coordinates location = new Coordinates(xs[i], Population.Values[i]);
             Pixel px = Axes.GetPixel(location);
             Drawing.DrawMarker(rp.Canvas, paint, px, Marker.MarkerStyle);
         }
@@ -105,7 +115,9 @@ public class PopulationSymbol(Population population) : IPlottable
     private void RenderBar(RenderPack rp, SKPaint paint)
     {
         if (!Bar.IsVisible)
+        {
             return;
+        }
 
         CoordinateRect rect = GetBarRect();
         Bar.Position = rect.HorizontalCenter;
@@ -114,13 +126,15 @@ public class PopulationSymbol(Population population) : IPlottable
         Bar.Value = Population.Mean;
         Bar.Error = Population.StandardError;
 
-        Bar.Render(rp, Axes, paint, _EmptyLabel);
+        Bar.Render(rp, Axes, paint, _emptyLabel);
     }
 
     private void RenderBox(RenderPack rp, SKPaint paint)
     {
         if (!Box.IsVisible)
+        {
             return;
+        }
 
         CoordinateRect rect = GetBarRect();
         Box.Position = rect.HorizontalCenter;
@@ -137,6 +151,7 @@ public class PopulationSymbol(Population population) : IPlottable
         box.BoxMax = pop.Mean + pop.StandardError;
         box.WhiskerMin = pop.Mean - pop.StandardDeviation;
         box.WhiskerMax = pop.Mean + pop.StandardDeviation;
+
         return pop;
     }
 
@@ -147,6 +162,7 @@ public class PopulationSymbol(Population population) : IPlottable
         box.BoxMax = pop.GetPercentile(75);
         box.WhiskerMin = pop.Min;
         box.WhiskerMax = pop.Max;
+
         return pop;
     }
 }

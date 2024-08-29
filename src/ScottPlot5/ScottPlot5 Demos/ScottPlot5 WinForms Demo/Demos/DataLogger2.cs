@@ -1,36 +1,41 @@
-﻿namespace WinForms_Demo.Demos;
+﻿using ScottPlot.DataGenerators;
+using Timer = System.Windows.Forms.Timer;
+
+namespace WinForms_Demo.Demos;
 
 public partial class DataLogger2 : Form, IDemoWindow
 {
     public string Title => "Data Logger (Extended)";
+
     public string Description => "Extended Data Logger example that uses a circular buffer for improved performance.";
 
-    readonly System.Windows.Forms.Timer AddNewDataTimer = new() { Interval = 10, Enabled = true };
-    readonly System.Windows.Forms.Timer UpdatePlotTimer = new() { Interval = 50, Enabled = true };
+    private readonly Timer _addNewDataTimer = new Timer { Interval = 10, Enabled = true };
+    private readonly Timer _updatePlotTimer = new Timer { Interval = 50, Enabled = true };
 
-    readonly ScottPlot.DataGenerators.RandomWalker Walker1 = new(0, multiplier: 0.01);
-    readonly ScottPlot.DataGenerators.RandomWalker Walker2 = new(1, multiplier: 1000);
+    private readonly RandomWalker _walker1 = new RandomWalker(0, multiplier: 0.01);
+    private readonly RandomWalker _walker2 = new RandomWalker(1, multiplier: 1000);
 
     public DataLogger2()
     {
         InitializeComponent();
 
-        AddNewDataTimer.Tick += (s, e) =>
+        _addNewDataTimer.Tick += (_, _) =>
         {
-            int count = 5;
+            const int count = 5;
+
             for (int i = 0; i < count; i++)
             {
-                var val1 = Walker1.Next();
+                double val1 = _walker1.Next();
                 loggerPlotHorz.Logger1.Add(val1);
                 loggerPlotVert.Logger1.Add(val1);
 
-                var val2 = Walker2.Next();
+                double val2 = _walker2.Next();
                 loggerPlotHorz.Logger2.Add(val2);
                 loggerPlotVert.Logger2.Add(val2);
             }
         };
 
-        UpdatePlotTimer.Tick += (s, e) =>
+        _updatePlotTimer.Tick += (_, _) =>
         {
             loggerPlotHorz.RefreshPlot();
             loggerPlotVert.RefreshPlot();
@@ -39,8 +44,8 @@ public partial class DataLogger2 : Form, IDemoWindow
 
     private void cbRunning_CheckedChanged(object sender, EventArgs e)
     {
-        AddNewDataTimer.Enabled = cbRunning.Checked;
-        UpdatePlotTimer.Enabled = cbRunning.Checked;
+        _addNewDataTimer.Enabled = cbRunning.Checked;
+        _updatePlotTimer.Enabled = cbRunning.Checked;
         loggerPlotHorz.Tracking = !cbRunning.Checked;
         loggerPlotVert.Tracking = !cbRunning.Checked;
     }

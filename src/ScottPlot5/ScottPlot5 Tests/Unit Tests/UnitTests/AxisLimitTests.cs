@@ -1,11 +1,13 @@
-﻿namespace ScottPlotTests.UnitTests;
+﻿using ScottPlot.Plottables;
+
+namespace ScottPlotTests.UnitTests;
 
 internal class AxisLimitTests
 {
     [Test]
     public void Test_AxisLimits_StandardAxes()
     {
-        ScottPlot.Plot plot = new();
+        Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin(51));
 
         plot.RenderInMemory();
@@ -20,12 +22,12 @@ internal class AxisLimitTests
     [Test]
     public void Test_AxisLimits_SecondaryAxes()
     {
-        ScottPlot.Plot plot = new();
-        var sig = plot.Add.Signal(Generate.Sin(51));
+        Plot plot = new Plot();
+        Signal sig = plot.Add.Signal(Generate.Sin(51));
         sig.Axes.YAxis = plot.Axes.Right;
 
         plot.RenderInMemory();
-        AxisLimits limits = plot.Axes.GetLimits(plot.Axes.Bottom, plot.Axes.Right);
+        AxisLimits limits = AxisManager.GetLimits(plot.Axes.Bottom, plot.Axes.Right);
 
         limits.Left.Should().BeApproximately(0, 5);
         limits.Right.Should().BeApproximately(50, 5);
@@ -40,8 +42,8 @@ internal class AxisLimitTests
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3615
 
-        ScottPlot.Plot plot = new();
-        var sig = plot.Add.Signal(Generate.Sin(51));
+        Plot plot = new Plot();
+        _ = plot.Add.Signal(Generate.Sin(51));
 
         plot.Axes.AutoScale();
         plot.Axes.SetLimitsY(-50, 100);
@@ -58,8 +60,8 @@ internal class AxisLimitTests
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3615
 
-        ScottPlot.Plot plot = new();
-        var sig = plot.Add.Signal(Generate.Sin(51));
+        Plot plot = new Plot();
+        _ = plot.Add.Signal(Generate.Sin(51));
 
         plot.Axes.AutoScale();
         plot.Axes.SetLimitsX(-50, 100);
@@ -74,7 +76,7 @@ internal class AxisLimitTests
     [Test]
     public void Test_AxisLimits_WithZoom()
     {
-        AxisLimits limits1 = new(5, 10, 25, 50);
+        AxisLimits limits1 = new AxisLimits(5, 10, 25, 50);
         AxisLimits limits2 = limits1.WithZoom(0.5, 0.25);
         limits2.Left.Should().Be(2.5);
         limits2.Right.Should().Be(12.5);
@@ -85,7 +87,7 @@ internal class AxisLimitTests
     [Test]
     public void Test_AxisLimits_WithZoomTo()
     {
-        AxisLimits limits1 = new(-20, 20, -40, 40);
+        AxisLimits limits1 = new AxisLimits(-20, 20, -40, 40);
         AxisLimits limits2 = limits1.WithZoom(0.5, 0.5, 10, 20);
         limits2.Left.Should().Be(-50);
         limits2.Right.Should().Be(30);

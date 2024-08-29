@@ -1,30 +1,27 @@
-﻿using System.Text;
+﻿namespace ScottPlotTests.RenderTests.Plottable;
 
-namespace ScottPlotTests.RenderTests.Plottable
+internal class AnnotationTests
 {
-    internal class AnnotationTests
+    [Test]
+    public void Test_Annotation_Alignment()
     {
-        [Test]
-        public void Test_Annotation_Alignment()
+        Plot plt = new Plot();
+
+        foreach (Alignment alignment in Enum.GetValues(typeof(Alignment)))
         {
-            ScottPlot.Plot plt = new();
-
-            foreach (Alignment alignment in Enum.GetValues(typeof(Alignment)))
-            {
-                plt.Add.Annotation(alignment.ToString(), alignment);
-            }
-
-            plt.SaveTestImage();
+            plt.Add.Annotation(alignment.ToString(), alignment);
         }
 
-        [Test]
-        public void Test_Annotation_Height()
-        {
-            //https://github.com/ScottPlot/ScottPlot/issues/3749
-            ScottPlot.Plot plt = new();
-            string multiline = string.Join("\n", Enumerable.Range(0, 10).Select(x => $"Line {x + 1}"));
-            plt.Add.Annotation(multiline);
-            plt.SaveTestImage();
-        }
+        plt.SaveTestImage();
+    }
+
+    [Test]
+    public void Test_Annotation_Height()
+    {
+        //https://github.com/ScottPlot/ScottPlot/issues/3749
+        Plot plt = new Plot();
+        string multiline = string.Join("\n", Enumerable.Range(0, 10).Select(static x => $"Line {x + 1}"));
+        plt.Add.Annotation(multiline);
+        plt.SaveTestImage();
     }
 }

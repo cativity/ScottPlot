@@ -1,35 +1,25 @@
 ﻿namespace ScottPlot.DataSources;
 
-public class OHLCSource : IOHLCSource
+// ReSharper disable once InconsistentNaming
+public class OHLCSource(List<OHLC> prices) : IOHLCSource
 {
-    private readonly List<OHLC> Prices;
+    public List<OHLC> GetOHLCs() => prices;
 
-    public OHLCSource(List<OHLC> prices)
-    {
-        Prices = prices;
-    }
-
-    public List<OHLC> GetOHLCs()
-    {
-        return Prices;
-    }
-
-    public AxisLimits GetLimits()
-    {
-        return Prices.Any() ? new AxisLimits(GetLimitsX(), GetLimitsY()) : AxisLimits.NoLimits;
-    }
+    public AxisLimits GetLimits() => prices.Count != 0 ? new AxisLimits(GetLimitsX(), GetLimitsY()) : AxisLimits.NoLimits;
 
     public CoordinateRange GetLimitsX()
     {
-        var dates = Prices.Select(x => x.DateTime);
+        List<DateTime> dates = prices.ConvertAll(static x => x.DateTime);
+
         return new CoordinateRange(NumericConversion.ToNumber(dates.Min()), NumericConversion.ToNumber(dates.Max()));
     }
 
     public CoordinateRange GetLimitsY()
     {
-        var priceRanges = Prices.Select(x => x.GetPriceRange());
-        double min = priceRanges.Select(x => x.Min).Min();
-        double max = priceRanges.Select(x => x.Max).Max();
+        List<CoordinateRange> priceRanges = prices.ConvertAll(static x => x.GetPriceRange());
+        double min = priceRanges.Min(static x => x.Min);
+        double max = priceRanges.Max(static x => x.Max);
+
         return new CoordinateRange(min, max);
     }
 }

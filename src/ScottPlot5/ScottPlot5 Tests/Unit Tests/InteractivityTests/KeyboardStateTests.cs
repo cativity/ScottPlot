@@ -7,7 +7,7 @@ internal class KeyboardStateTests
     [Test]
     public void Test_KeyboardState_RemembersKey()
     {
-        KeyboardState ks = new();
+        KeyboardState ks = new KeyboardState();
         ks.PressedKeyCount.Should().Be(0);
 
         ks.Add(StandardKeys.Shift);

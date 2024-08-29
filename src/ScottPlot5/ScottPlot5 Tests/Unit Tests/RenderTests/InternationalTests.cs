@@ -7,10 +7,10 @@ internal class InternationalTests
     [Test]
     public void Test_Tick_DefaultCulture()
     {
-        ScottPlot.Plot plot = new();
+        Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin(100, 500_000));
         plot.Should().RenderInMemoryWithoutThrowing();
-        var tickLabels = plot.Axes.Left.TickGenerator.Ticks.Select(x => x.Label).Where(x => !string.IsNullOrEmpty(x));
+        List<string> tickLabels = plot.Axes.Left.TickGenerator?.Ticks.Select(static x => x.Label).Where(static x => !string.IsNullOrEmpty(x)).ToList() ?? [];
         Console.WriteLine(string.Join("\n", tickLabels));
         tickLabels.Should().Contain("-200,000");
     }
@@ -20,10 +20,10 @@ internal class InternationalTests
     {
         Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
 
-        ScottPlot.Plot plot = new();
+        Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin(100, 500_000));
         plot.Should().RenderInMemoryWithoutThrowing();
-        var tickLabels = plot.Axes.Left.TickGenerator.Ticks.Select(x => x.Label).Where(x => !string.IsNullOrEmpty(x));
+        List<string> tickLabels = plot.Axes.Left.TickGenerator?.Ticks.Select(static x => x.Label).Where(static x => !string.IsNullOrEmpty(x)).ToList() ?? [];
         Console.WriteLine(string.Join("\n", tickLabels));
         tickLabels.Should().Contain("-200 000");
     }

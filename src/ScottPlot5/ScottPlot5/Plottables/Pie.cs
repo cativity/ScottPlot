@@ -3,21 +3,16 @@
 public class Pie : PieBase
 {
     public double ExplodeFraction { get; set; } = 0;
+
     public double DonutFraction { get; set; } = 0;
 
-    public Pie(IList<PieSlice> slices)
-    {
-        Slices = slices;
-    }
+    public Pie(IList<PieSlice> slices) => Slices = slices;
 
     public override AxisLimits GetAxisLimits()
     {
-        double radius = ShowSliceLabels
-            ? SliceLabelDistance + Padding
-            : 1 + ExplodeFraction + Padding;
+        double radius = ShowSliceLabels ? SliceLabelDistance + Padding : 1 + ExplodeFraction + Padding;
 
         return new AxisLimits(-radius, radius, -radius, radius);
-
     }
 
     public override void Render(RenderPack rp)
@@ -32,36 +27,39 @@ public class Pie : PieBase
 
         // radius of the outer edge of the pie
         float outerRadius = Math.Min(minX, minY);
-        SKRect outerRect = new(-outerRadius, -outerRadius, outerRadius, outerRadius);
+        SKRect outerRect = new SKRect(-outerRadius, -outerRadius, outerRadius, outerRadius);
 
         // radius of the inner edge of the pie when donut mode is enabled
         float innerRadius = outerRadius * (float)DonutFraction;
-        SKRect innerRect = new(-innerRadius, -innerRadius, innerRadius, innerRadius);
+        SKRect innerRect = new SKRect(-innerRadius, -innerRadius, innerRadius, innerRadius);
 
         // radius of the outer edge after explosion
         float explosionOuterRadius = (float)ExplodeFraction * outerRadius;
 
-        using SKPath path = new();
-        using SKPaint paint = new() { IsAntialias = true };
+        using SKPath path = new SKPath();
+        using SKPaint paint = new SKPaint();
+        paint.IsAntialias = true;
 
-        // TODO: first slice should be North, not East.        
+        // TODO: first slice should be North, not East.
         float[] sliceOffsetDegrees = new float[Slices.Count];
+
         for (int i = 1; i < Slices.Count; i++)
         {
             sliceOffsetDegrees[i] = sliceOffsetDegrees[i - 1] + sliceSizeDegrees[i - 1];
         }
 
         float[] sliceCenterDegrees = new float[Slices.Count];
+
         for (int i = 0; i < Slices.Count; i++)
         {
-            sliceCenterDegrees[i] = sliceOffsetDegrees[i] + sliceSizeDegrees[i] / 2;
+            sliceCenterDegrees[i] = sliceOffsetDegrees[i] + (sliceSizeDegrees[i] / 2);
         }
 
         for (int i = 0; i < Slices.Count; i++)
         {
-            using SKAutoCanvasRestore _ = new(rp.Canvas);
+            using SKAutoCanvasRestore _ = new SKAutoCanvasRestore(rp.Canvas);
 
-            float rotation = sliceOffsetDegrees[i] + sliceSizeDegrees[i] / 2;
+            float rotation = sliceOffsetDegrees[i] + (sliceSizeDegrees[i] / 2);
             rp.Canvas.Translate(origin.X, origin.Y);
             rp.Canvas.RotateDegrees(rotation);
             rp.Canvas.Translate(explosionOuterRadius, 0);

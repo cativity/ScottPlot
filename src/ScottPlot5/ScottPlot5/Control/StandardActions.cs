@@ -8,12 +8,12 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            double zoomInFraction = 1.15;
+            const double zoomInFraction = 1.15;
 
             double xFrac = locked.X ? 1 : zoomInFraction;
             double yFrac = locked.Y ? 1 : zoomInFraction;
 
-            Interactivity.MouseAxisManipulation.MouseWheelZoom(control.Plot, xFrac, yFrac, pixel, control.Interaction.ChangeOpposingAxesTogether);
+            MouseAxisManipulation.MouseWheelZoom(control.Plot, xFrac, yFrac, pixel, control.Interaction.ChangeOpposingAxesTogether);
             control.Refresh();
         }
     }
@@ -22,12 +22,12 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            double zoomOutFraction = 0.85;
+            const double zoomOutFraction = 0.85;
 
             double xFrac = locked.X ? 1 : zoomOutFraction;
             double yFrac = locked.Y ? 1 : zoomOutFraction;
 
-            Interactivity.MouseAxisManipulation.MouseWheelZoom(control.Plot, xFrac, yFrac, pixel, control.Interaction.ChangeOpposingAxesTogether);
+            MouseAxisManipulation.MouseWheelZoom(control.Plot, xFrac, yFrac, pixel, control.Interaction.ChangeOpposingAxesTogether);
             control.Refresh();
         }
     }
@@ -36,9 +36,9 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            double PanFraction = 0.1;
+            const double panFraction = 0.1;
             AxisLimits limits = control.Plot.Axes.GetLimits();
-            double deltaY = limits.Rect.Height * PanFraction;
+            double deltaY = limits.Rect.Height * panFraction;
             control.Plot.Axes.SetLimits(limits.WithPan(0, deltaY));
             control.Refresh();
         }
@@ -48,9 +48,9 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            double PanFraction = 0.1;
+            const double panFraction = 0.1;
             AxisLimits limits = control.Plot.Axes.GetLimits();
-            double deltaY = limits.Rect.Height * PanFraction;
+            double deltaY = limits.Rect.Height * panFraction;
             control.Plot.Axes.SetLimits(limits.WithPan(0, -deltaY));
             control.Refresh();
         }
@@ -60,9 +60,9 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            double PanFraction = 0.1;
+            const double panFraction = 0.1;
             AxisLimits limits = control.Plot.Axes.GetLimits();
-            double deltaX = limits.Rect.Width * PanFraction;
+            double deltaX = limits.Rect.Width * panFraction;
             control.Plot.Axes.SetLimits(limits.WithPan(-deltaX, 0));
             control.Refresh();
         }
@@ -72,9 +72,9 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            double PanFraction = 0.1;
+            const double panFraction = 0.1;
             AxisLimits limits = control.Plot.Axes.GetLimits();
-            double deltaX = limits.Rect.Width * PanFraction;
+            double deltaX = limits.Rect.Width * panFraction;
             control.Plot.Axes.SetLimits(limits.WithPan(deltaX, 0));
             control.Refresh();
         }
@@ -84,14 +84,12 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            Pixel mouseNow = new(
-                x: locked.X ? drag.From.X : drag.To.X,
-                y: locked.Y ? drag.From.Y : drag.To.Y);
+            Pixel mouseNow = new Pixel(locked.X ? drag.From.X : drag.To.X, locked.Y ? drag.From.Y : drag.To.Y);
 
             Pixel mouseDown = drag.From;
 
             drag.InitialLimits.Apply(control.Plot);
-            Interactivity.MouseAxisManipulation.DragPan(control.Plot, mouseDown, mouseNow);
+            MouseAxisManipulation.DragPan(control.Plot, mouseDown, mouseNow);
             control.Refresh();
         }
     }
@@ -100,15 +98,13 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            Pixel mouseNow = new(
-                x: locked.X ? drag.From.X : drag.To.X,
-                y: locked.Y ? drag.From.Y : drag.To.Y);
+            Pixel mouseNow = new Pixel(locked.X ? drag.From.X : drag.To.X, locked.Y ? drag.From.Y : drag.To.Y);
 
             Pixel mouseDown = drag.From;
 
             // restore MouseDown limits
             drag.InitialLimits.Apply(control.Plot);
-            Interactivity.MouseAxisManipulation.DragZoom(control.Plot, mouseDown, mouseNow);
+            MouseAxisManipulation.DragZoom(control.Plot, mouseDown, mouseNow);
             control.Refresh();
         }
     }
@@ -126,9 +122,7 @@ public static class StandardActions
     {
         lock (control.Plot.Sync)
         {
-            IAxis? axisUnderMouse = control.Plot.GetAxis(control.Plot.ZoomRectangle.MouseDown);
-
-            if (axisUnderMouse is not null)
+            if (control.Plot.GetAxis(control.Plot.ZoomRectangle.MouseDown) is IAxis axisUnderMouse)
             {
                 if (control.Interaction.ChangeOpposingAxesTogether && axisUnderMouse.IsHorizontal())
                 {
@@ -163,7 +157,7 @@ public static class StandardActions
         {
             control.Plot.ZoomRectangle.VerticalSpan = locked.X;
             control.Plot.ZoomRectangle.HorizontalSpan = locked.Y;
-            Interactivity.MouseAxisManipulation.PlaceZoomRectangle(control.Plot, drag.From, drag.To);
+            MouseAxisManipulation.PlaceZoomRectangle(control.Plot, drag.From, drag.To);
             control.Plot.ZoomRectangle.IsVisible = true;
             control.Refresh();
         }

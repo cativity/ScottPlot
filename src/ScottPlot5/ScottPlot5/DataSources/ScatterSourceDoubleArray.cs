@@ -1,39 +1,26 @@
 ﻿namespace ScottPlot.DataSources;
 
 /// <summary>
-/// This data source manages X/Y points as separate X and Y collections
+///     This data source manages X/Y points as separate X and Y collections
 /// </summary>
 public class ScatterSourceDoubleArray(double[] xs, double[] ys) : IScatterSource
 {
-    private readonly double[] Xs = xs;
-    private readonly double[] Ys = ys;
+    public int MinRenderIndex { get; set; }
 
-    public int MinRenderIndex { get; set; } = 0;
     public int MaxRenderIndex { get; set; } = int.MaxValue;
-    private int RenderIndexCount => Math.Min(Ys.Length - 1, MaxRenderIndex) - MinRenderIndex + 1;
+
+    private int RenderIndexCount => Math.Min(ys.Length - 1, MaxRenderIndex) - MinRenderIndex + 1;
 
     public IReadOnlyList<Coordinates> GetScatterPoints()
     {
-        return Enumerable
-            .Range(MinRenderIndex, RenderIndexCount)
-            .Select(i => new Coordinates(Xs[i], Ys[i]))
-            .ToList();
+        return Enumerable.Range(MinRenderIndex, RenderIndexCount).Select(i => new Coordinates(xs[i], ys[i])).ToList();
     }
 
-    public AxisLimits GetLimits()
-    {
-        return new AxisLimits(GetLimitsX(), GetLimitsY());
-    }
+    public AxisLimits GetLimits() => new AxisLimits(GetLimitsX(), GetLimitsY());
 
-    public CoordinateRange GetLimitsX()
-    {
-        return CoordinateRange.MinMaxNan(Xs.Skip(MinRenderIndex).Take(RenderIndexCount));
-    }
+    public CoordinateRange GetLimitsX() => CoordinateRange.MinMaxNan(xs.Skip(MinRenderIndex).Take(RenderIndexCount));
 
-    public CoordinateRange GetLimitsY()
-    {
-        return CoordinateRange.MinMaxNan(Ys.Skip(MinRenderIndex).Take(RenderIndexCount));
-    }
+    public CoordinateRange GetLimitsY() => CoordinateRange.MinMaxNan(ys.Skip(MinRenderIndex).Take(RenderIndexCount));
 
     public DataPoint GetNearest(Coordinates mouseLocation, RenderDetails renderInfo, float maxDistance = 15)
     {
@@ -47,22 +34,20 @@ public class ScatterSourceDoubleArray(double[] xs, double[] ys) : IScatterSource
         for (int i2 = 0; i2 < RenderIndexCount; i2++)
         {
             int i = MinRenderIndex + i2;
-            double dX = (Xs[i] - mouseLocation.X) * renderInfo.PxPerUnitX;
-            double dY = (Ys[i] - mouseLocation.Y) * renderInfo.PxPerUnitY;
-            double distanceSquared = dX * dX + dY * dY;
+            double dX = (xs[i] - mouseLocation.X) * renderInfo.PxPerUnitX;
+            double dY = (ys[i] - mouseLocation.Y) * renderInfo.PxPerUnitY;
+            double distanceSquared = (dX * dX) + (dY * dY);
 
             if (distanceSquared <= closestDistanceSquared)
             {
                 closestDistanceSquared = distanceSquared;
-                closestX = Xs[i];
-                closestY = Ys[i];
+                closestX = xs[i];
+                closestY = ys[i];
                 closestIndex = i;
             }
         }
 
-        return closestDistanceSquared <= maxDistanceSquared
-            ? new DataPoint(closestX, closestY, closestIndex)
-            : DataPoint.None;
+        return closestDistanceSquared <= maxDistanceSquared ? new DataPoint(closestX, closestY, closestIndex) : DataPoint.None;
     }
 
     public DataPoint GetNearestX(Coordinates mouseLocation, RenderDetails renderInfo, float maxDistance = 15)
@@ -76,19 +61,17 @@ public class ScatterSourceDoubleArray(double[] xs, double[] ys) : IScatterSource
         for (int i2 = 0; i2 < RenderIndexCount; i2++)
         {
             int i = MinRenderIndex + i2;
-            double dX = Math.Abs(Xs[i] - mouseLocation.X) * renderInfo.PxPerUnitX;
+            double dX = Math.Abs(xs[i] - mouseLocation.X) * renderInfo.PxPerUnitX;
 
             if (dX <= closestDistance)
             {
                 closestDistance = dX;
-                closestX = Xs[i];
-                closestY = Ys[i];
+                closestX = xs[i];
+                closestY = ys[i];
                 closestIndex = i;
             }
         }
 
-        return closestDistance <= maxDistance
-            ? new DataPoint(closestX, closestY, closestIndex)
-            : DataPoint.None;
+        return closestDistance <= maxDistance ? new DataPoint(closestX, closestY, closestIndex) : DataPoint.None;
     }
 }

@@ -9,9 +9,9 @@ partial class MainWindow : Form
     {
         InitializeComponent();
 
-        EtoPlot1.UserInputProcessor.IsEnabled = true;
+        _etoPlot1.UserInputProcessor.IsEnabled = true;
 
-        EtoPlot1.Plot.Add.Signal(Generate.Sin());
-        EtoPlot1.Plot.Add.Signal(Generate.Cos());
+        _etoPlot1.Plot.Add.Signal(Generate.Sin());
+        _etoPlot1.Plot.Add.Signal(Generate.Cos());
     }
 }

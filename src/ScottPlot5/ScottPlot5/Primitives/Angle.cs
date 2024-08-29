@@ -6,7 +6,7 @@ public struct Angle
 
     public double Radians
     {
-        get => Degrees * Math.PI / 180;
+        readonly get => Degrees * Math.PI / 180;
         set => Degrees = value * 180 / Math.PI;
     }
 
@@ -16,42 +16,22 @@ public struct Angle
         {
             double normalized = Degrees % 360;
             double degrees = normalized < 0 ? normalized + 360 : normalized;
+
             return FromDegrees(degrees);
         }
     }
 
-    public static Angle FromDegrees(double degrees)
-    {
-        return new Angle() { Degrees = degrees };
-    }
+    public static Angle FromDegrees(double degrees) => new Angle { Degrees = degrees };
 
-    public static Angle FromRadians(double radians)
-    {
-        return new Angle() { Radians = radians };
-    }
+    public static Angle FromRadians(double radians) => new Angle { Radians = radians };
 
-    public override readonly string ToString()
-    {
-        return $"Angle = {Degrees} degrees";
-    }
+    public override readonly string ToString() => $"Angle = {Degrees} degrees";
 
-    public static Angle operator +(Angle a)
-    {
-        return FromDegrees(+a.Degrees);
-    }
+    public static Angle operator +(Angle a) => FromDegrees(+a.Degrees);
 
-    public static Angle operator -(Angle a)
-    {
-        return FromDegrees(-a.Degrees);
-    }
+    public static Angle operator -(Angle a) => FromDegrees(-a.Degrees);
 
-    public static Angle operator +(Angle a, Angle b)
-    {
-        return FromDegrees(a.Degrees + b.Degrees);
-    }
+    public static Angle operator +(Angle a, Angle b) => FromDegrees(a.Degrees + b.Degrees);
 
-    public static Angle operator -(Angle a, Angle b)
-    {
-        return FromDegrees(a.Degrees - b.Degrees);
-    }
+    public static Angle operator -(Angle a, Angle b) => FromDegrees(a.Degrees - b.Degrees);
 }

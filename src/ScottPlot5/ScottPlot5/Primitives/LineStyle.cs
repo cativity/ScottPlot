@@ -1,57 +1,57 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// This configuration object (reference type) permanently lives inside objects which require styling.
-/// It is recommended to use this object as an init-only property.
+///     This configuration object (reference type) permanently lives inside objects which require styling.
+///     It is recommended to use this object as an init-only property.
 /// </summary>
 public class LineStyle
 {
     /// <summary>
-    /// Width of the line (in pixels)
+    ///     Width of the line (in pixels)
     /// </summary>
-    public float Width { get; set; } = 0;
+    public float Width { get; set; }
 
     /// <summary>
-    /// If enabled, <see cref="Width"/> is ignored and lines are rendered as a single pixel (regardless of scale factor)
+    ///     If enabled, <see cref="Width" /> is ignored and lines are rendered as a single pixel (regardless of scale factor)
     /// </summary>
-    public bool Hairline { get; set; } = false;
+    public bool Hairline { get; set; }
 
     public Color Color { get; set; } = Colors.Black;
 
     public LinePattern Pattern { get; set; } = LinePattern.Solid;
 
     public bool IsVisible { get; set; } = true;
+
     public bool AntiAlias { get; set; } = true;
 
     public bool Rounded
     {
         get => StrokeCap == SKStrokeCap.Round;
-        set { StrokeCap = SKStrokeCap.Round; StrokeJoin = SKStrokeJoin.Round; }
-    }
-    public SKStrokeCap StrokeCap { get; set; } = SKStrokeCap.Butt;
-    public SKStrokeJoin StrokeJoin { get; set; } = SKStrokeJoin.Miter;
-    public float StrokeMiter { get; set; } = 4;
-
-    public static LineStyle None => new() { Width = 0 };
-
-    public bool CanBeRendered
-    {
-        get
+        set
         {
-            if (IsVisible == false) return false;
-            if (Color.Alpha == 0) return false;
-            if (Color == Colors.Transparent) return false;
-            if (Width == 0 && Hairline == false) return false;
-            return true;
+            StrokeCap = SKStrokeCap.Round;
+            StrokeJoin = SKStrokeJoin.Round;
         }
     }
+
+    public SKStrokeCap StrokeCap { get; set; } = SKStrokeCap.Butt;
+
+    public SKStrokeJoin StrokeJoin { get; set; } = SKStrokeJoin.Miter;
+
+    public float StrokeMiter { get; set; } = 4;
+
+    public static LineStyle None => new LineStyle { Width = 0 };
+
+    public bool CanBeRendered => IsVisible && Color.Alpha != 0 && Color != Colors.Transparent && (Width != 0 || Hairline);
 
     public void Render(SKCanvas canvas, Pixel[] starts, Pixel[] ends, SKPaint paint)
     {
         if (starts.Length != ends.Length)
+        {
             throw new ArgumentException($"{nameof(starts)} and {nameof(ends)} must have equal length");
+        }
 
-        using SKPath path = new();
+        using SKPath path = new SKPath();
 
         for (int i = 0; i < starts.Length; i++)
         {
@@ -64,7 +64,7 @@ public class LineStyle
 
     public void Render(SKCanvas canvas, PixelLine[] lines, SKPaint paint)
     {
-        using SKPath path = new();
+        using SKPath path = new SKPath();
 
         for (int i = 0; i < lines.Length; i++)
         {
@@ -78,7 +78,9 @@ public class LineStyle
     public void Render(SKCanvas canvas, PixelLine line, SKPaint paint)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
         Drawing.DrawLine(canvas, paint, line, this);
     }
@@ -86,7 +88,9 @@ public class LineStyle
     public void Render(SKCanvas canvas, PixelRect rect, SKPaint paint)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
         Pixel[] pixels =
         [
@@ -103,19 +107,23 @@ public class LineStyle
     public void Render(SKCanvas canvas, SKPath path, SKPaint paint)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
         Drawing.DrawPath(canvas, paint, path, this);
     }
 
-    [Obsolete("use the overload where the paint is passed last")]
-    public void Render(SKCanvas canvas, SKPaint paint, PixelLine line)
-    {
-        if (!IsVisible)
-            return;
+    //[Obsolete("use the overload where the paint is passed last")]
+    //public void Render(SKCanvas canvas, SKPaint paint, PixelLine line)
+    //{
+    //    if (!IsVisible)
+    //    {
+    //        return;
+    //    }
 
-        Drawing.DrawLine(canvas, paint, line, this);
-    }
+    //    Drawing.DrawLine(canvas, paint, line, this);
+    //}
 
     public void ApplyToPaint(SKPaint paint)
     {

@@ -1,4 +1,5 @@
 ﻿using ScottPlot;
+using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
@@ -6,35 +7,32 @@ public partial class MouseTracker : Form, IDemoWindow
 {
     public string Title => "Mouse Tracker";
 
-    public string Description => "Demonstrates how to interact with the mouse " +
-        "and convert between screen units (pixels) and axis units (coordinates)";
-
-    readonly ScottPlot.Plottables.Crosshair CH;
+    public string Description => "Demonstrates how to interact with the mouse and convert between screen units (pixels) and axis units (coordinates)";
 
     public MouseTracker()
     {
         InitializeComponent();
 
-        CH = formsPlot1.Plot.Add.Crosshair(0, 0);
-        CH.TextColor = Colors.White;
-        CH.TextBackgroundColor = CH.HorizontalLine.Color;
+        Crosshair ch = formsPlot1.Plot.Add.Crosshair(0, 0);
+        ch.TextColor = Colors.White;
+        ch.TextBackgroundColor = ch.HorizontalLine.Color;
 
         formsPlot1.Refresh();
 
-        formsPlot1.MouseMove += (s, e) =>
+        formsPlot1.MouseMove += (_, e) =>
         {
-            Pixel mousePixel = new(e.X, e.Y);
+            Pixel mousePixel = new Pixel(e.X, e.Y);
             Coordinates mouseCoordinates = formsPlot1.Plot.GetCoordinates(mousePixel);
-            this.Text = $"X={mouseCoordinates.X:N3}, Y={mouseCoordinates.Y:N3}";
-            CH.Position = mouseCoordinates;
-            CH.VerticalLine.Text = $"{mouseCoordinates.X:N3}";
-            CH.HorizontalLine.Text = $"{mouseCoordinates.Y:N3}";
+            Text = $"X={mouseCoordinates.X:N3}, Y={mouseCoordinates.Y:N3}";
+            ch.Position = mouseCoordinates;
+            ch.VerticalLine.Text = $"{mouseCoordinates.X:N3}";
+            ch.HorizontalLine.Text = $"{mouseCoordinates.Y:N3}";
             formsPlot1.Refresh();
         };
 
-        formsPlot1.MouseDown += (s, e) =>
+        formsPlot1.MouseDown += (_, e) =>
         {
-            Pixel mousePixel = new(e.X, e.Y);
+            Pixel mousePixel = new Pixel(e.X, e.Y);
             Coordinates mouseCoordinates = formsPlot1.Plot.GetCoordinates(mousePixel);
             Text = $"X={mouseCoordinates.X:N3}, Y={mouseCoordinates.Y:N3} (mouse down)";
         };

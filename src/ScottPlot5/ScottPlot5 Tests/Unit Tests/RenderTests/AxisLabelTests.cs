@@ -5,7 +5,7 @@ internal class AxisLabelTests
     [Test]
     public void Test_AxisLabel_Rotation()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         plt.Axes.Bottom.Label.Text = "Horizontal Axis";
         plt.Axes.Bottom.Label.Rotation = 10;
         plt.Axes.Left.Label.Text = "Vertical Axis";

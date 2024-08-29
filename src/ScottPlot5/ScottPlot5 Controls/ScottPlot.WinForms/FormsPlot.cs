@@ -11,19 +11,18 @@ public class FormsPlot : FormsPlotBase
 {
     public SKControl? SKControl { get; private set; }
 
-    public override GRContext GRContext => null!;
+    public override GRContext? GRContext => null;
 
     public FormsPlot()
     {
-
 #if NETFRAMEWORK
         // do not attempt renders inside visual studio at design time
         if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
             return;
 #endif
 
-        HandleCreated += (s, e) => SetupSKControl();
-        HandleDestroyed += (s, e) => TeardownSKControl();
+        HandleCreated += (_, _) => SetupSKControl();
+        HandleDestroyed += (_, _) => TeardownSKControl();
         SetupSKControl();
         Plot.FigureBackground.Color = Color.FromColor(SystemColors.Control);
         Plot.DataBackground.Color = Colors.White;
@@ -33,7 +32,7 @@ public class FormsPlot : FormsPlotBase
     {
         TeardownSKControl();
 
-        SKControl = new() { Dock = DockStyle.Fill };
+        SKControl = new SKControl { Dock = DockStyle.Fill };
 
         SKControl.PaintSurface += SKElement_PaintSurface;
         SKControl.MouseDown += SKElement_MouseDown;
@@ -50,9 +49,11 @@ public class FormsPlot : FormsPlotBase
     private void TeardownSKControl()
     {
         if (SKControl is null)
+        {
             return;
+        }
 
-        SKControl.PaintSurface -= SKElement_PaintSurface; ;
+        SKControl.PaintSurface -= SKElement_PaintSurface;
         SKControl.MouseDown -= SKElement_MouseDown;
         SKControl.MouseUp -= SKElement_MouseUp;
         SKControl.MouseMove -= SKElement_MouseMove;
@@ -64,7 +65,9 @@ public class FormsPlot : FormsPlotBase
         Controls.Remove(SKControl);
 
         if (!SKControl.IsDisposed)
+        {
             SKControl.Dispose();
+        }
     }
 
     private void SKElement_PaintSurface(object? sender, SKPaintSurfaceEventArgs e)

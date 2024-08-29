@@ -1,33 +1,47 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// Describes a rectangle in 2D coordinate space.
+///     Describes a rectangle in 2D coordinate space.
 /// </summary>
 public struct CoordinateRect : IEquatable<CoordinateRect>
 {
     public double Left { get; set; }
+
     public double Right { get; set; }
+
     public double Bottom { get; set; }
+
     public double Top { get; set; }
 
-    public double HorizontalCenter => (Right + Left) / 2;
-    public double VerticalCenter => (Top + Bottom) / 2;
+    public readonly double HorizontalCenter => (Right + Left) / 2;
 
-    public Coordinates Center => new(HorizontalCenter, VerticalCenter);
-    public Coordinates TopLeft => new(Left, Top);
-    public Coordinates TopRight => new(Right, Top);
-    public Coordinates BottomLeft => new(Left, Bottom);
-    public Coordinates BottomRight => new(Right, Bottom);
+    public readonly double VerticalCenter => (Top + Bottom) / 2;
 
-    public CoordinateRange XRange => new(Left, Right);
-    public CoordinateRange YRange => new(Bottom, Top);
+    public readonly Coordinates Center => new Coordinates(HorizontalCenter, VerticalCenter);
 
-    public double Width => Right - Left;
-    public double Height => Top - Bottom;
-    public double Area => Width * Height;
-    public bool HasArea => (Area != 0 && !double.IsNaN(Area) && !double.IsInfinity(Area));
-    public bool IsInvertedX => Left > Right;
-    public bool IsInvertedY => Top < Bottom;
+    public readonly Coordinates TopLeft => new Coordinates(Left, Top);
+
+    public readonly Coordinates TopRight => new Coordinates(Right, Top);
+
+    public readonly Coordinates BottomLeft => new Coordinates(Left, Bottom);
+
+    public readonly Coordinates BottomRight => new Coordinates(Right, Bottom);
+
+    public readonly CoordinateRange XRange => new CoordinateRange(Left, Right);
+
+    public readonly CoordinateRange YRange => new CoordinateRange(Bottom, Top);
+
+    public readonly double Width => Right - Left;
+
+    public readonly double Height => Top - Bottom;
+
+    public readonly double Area => Width * Height;
+
+    public readonly bool HasArea => Area != 0 && !double.IsNaN(Area) && !double.IsInfinity(Area);
+
+    public readonly bool IsInvertedX => Left > Right;
+
+    public readonly bool IsInvertedY => Top < Bottom;
 
     public CoordinateRect(CoordinateRange xRange, CoordinateRange yRange)
     {
@@ -45,7 +59,8 @@ public struct CoordinateRect : IEquatable<CoordinateRect>
         Top = yRange.Max;
     }
 
-    public CoordinateRect(IAxes axes) : this(axes.XAxis.Range, axes.YAxis.Range)
+    public CoordinateRect(IAxes axes)
+        : this(axes.XAxis?.Range ?? throw new InvalidOperationException(), axes.YAxis?.Range ?? throw new InvalidOperationException())
     {
     }
 
@@ -67,29 +82,20 @@ public struct CoordinateRect : IEquatable<CoordinateRect>
 
     public CoordinateRect(Coordinates point, CoordinateSize size)
     {
-        Coordinates pt2 = new(point.X + size.Width, point.Y + size.Height);
+        Coordinates pt2 = new Coordinates(point.X + size.Width, point.Y + size.Height);
         Left = Math.Min(point.X, pt2.X);
         Right = Math.Max(point.X, pt2.X);
         Bottom = Math.Min(point.Y, pt2.Y);
         Top = Math.Max(point.Y, pt2.Y);
     }
 
-    public bool Contains(double x, double y)
-    {
-        return x >= Left && x <= Right && y >= Bottom && y <= Top;
-    }
+    public readonly bool Contains(double x, double y) => x >= Left && x <= Right && y >= Bottom && y <= Top;
 
-    public bool ContainsX(double x)
-    {
-        return x >= Left && x <= Right;
-    }
+    public readonly bool ContainsX(double x) => x >= Left && x <= Right;
 
-    public bool ContainsY(double y)
-    {
-        return y >= Bottom && y <= Top;
-    }
+    public readonly bool ContainsY(double y) => y >= Bottom && y <= Top;
 
-    public CoordinateRect Expanded(Coordinates point)
+    public readonly CoordinateRect Expanded(Coordinates point)
     {
         double exLeft = Left;
         double exRight = Right;
@@ -107,53 +113,25 @@ public struct CoordinateRect : IEquatable<CoordinateRect>
         return new CoordinateRect(exLeft, exRight, exBottom, exTop);
     }
 
-    public bool Contains(Coordinates point) => Contains(point.X, point.Y);
+    public readonly bool Contains(Coordinates point) => Contains(point.X, point.Y);
 
-    public static CoordinateRect Empty => new(double.NaN, double.NaN, double.NaN, double.NaN);
+    public static CoordinateRect Empty => new CoordinateRect(double.NaN, double.NaN, double.NaN, double.NaN);
 
-    public CoordinateRect WithTranslation(Coordinates p) => new(Left + p.X, Right + p.X, Bottom + p.Y, Top + p.Y);
+    public readonly CoordinateRect WithTranslation(Coordinates p) => new CoordinateRect(Left + p.X, Right + p.X, Bottom + p.Y, Top + p.Y);
 
-    public override string ToString()
+    public override readonly string ToString() => $"PixelRect: Left={Left} Right={Right} Bottom={Bottom} Top={Top}";
+
+    public readonly bool Equals(CoordinateRect other)
+        => Equals(Left, other.Left) && Equals(Right, other.Right) && Equals(Top, other.Top) && Equals(Bottom, other.Bottom);
+
+    public override readonly bool Equals(object? obj)
     {
-        return $"PixelRect: Left={Left} Right={Right} Bottom={Bottom} Top={Top}";
+        return obj is CoordinateRect other && Equals(other);
     }
 
-    public bool Equals(CoordinateRect other)
-    {
-        return
-            Equals(Left, other.Left) &&
-            Equals(Right, other.Right) &&
-            Equals(Top, other.Top) &&
-            Equals(Bottom, other.Bottom);
-    }
+    public static bool operator ==(CoordinateRect a, CoordinateRect b) => a.Equals(b);
 
-    public override bool Equals(object? obj)
-    {
-        if (obj is null)
-            return false;
+    public static bool operator !=(CoordinateRect a, CoordinateRect b) => !a.Equals(b);
 
-        if (obj is CoordinateRect other)
-            return Equals(other);
-
-        return false;
-    }
-
-    public static bool operator ==(CoordinateRect a, CoordinateRect b)
-    {
-        return a.Equals(b);
-    }
-
-    public static bool operator !=(CoordinateRect a, CoordinateRect b)
-    {
-        return !a.Equals(b);
-    }
-
-    public override int GetHashCode()
-    {
-        return
-            Left.GetHashCode() ^
-            Right.GetHashCode() ^
-            Bottom.GetHashCode() ^
-            Top.GetHashCode();
-    }
+    public override readonly int GetHashCode() => Left.GetHashCode() ^ Right.GetHashCode() ^ Bottom.GetHashCode() ^ Top.GetHashCode();
 }

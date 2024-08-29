@@ -1,7 +1,7 @@
-﻿using NUnit.Framework.Internal;
-using ScottPlotCookbook.Recipes;
+﻿using ScottPlotCookbook.Recipes;
 using ScottPlotCookbook.Website;
 using System.Reflection;
+using ScottPlot.Testing;
 
 namespace ScottPlotCookbook;
 
@@ -10,7 +10,7 @@ internal class RecipeTests
     [Test]
     public void Test_Query_Categories_HavePopulatedFields()
     {
-        var categories = Query.GetCategories().ToArray();
+        ICategory[] categories = Query.GetCategories().ToArray();
 
         categories.Should().NotBeNullOrEmpty();
 
@@ -25,7 +25,7 @@ internal class RecipeTests
     [Test]
     public void Test_Query_Categories_HaveUniqueNames()
     {
-        ScottPlot.Testing.DuplicateIdentifier<ICategory> ids = new("category name");
+        DuplicateIdentifier<ICategory> ids = new DuplicateIdentifier<ICategory>("category name");
 
         foreach (ICategory category in Query.GetCategories())
         {
@@ -38,7 +38,7 @@ internal class RecipeTests
     [Test]
     public void Test_Query_Categories_HaveUniqueDescriptions()
     {
-        ScottPlot.Testing.DuplicateIdentifier<ICategory> ids = new("category description");
+        DuplicateIdentifier<ICategory> ids = new DuplicateIdentifier<ICategory>("category description");
 
         foreach (ICategory category in Query.GetCategories())
         {
@@ -51,7 +51,7 @@ internal class RecipeTests
     [Test]
     public static void Test_RecipeSources_FoundAndValid()
     {
-        SourceDatabase db = new();
+        SourceDatabase db = new SourceDatabase();
 
         db.Recipes.Should().NotBeNullOrEmpty();
 
@@ -66,20 +66,19 @@ internal class RecipeTests
             recipe.CategoryClassName.Should().NotBeNullOrEmpty();
         }
 
-        db.Recipes.Select(x => x.RecipeClassName).Should().OnlyHaveUniqueItems();
-        db.Recipes.Select(x => x.Name).Should().OnlyHaveUniqueItems();
-        db.Recipes.Select(x => x.Description).Should().OnlyHaveUniqueItems();
-        db.Recipes.Select(x => x.ImageUrl).Should().OnlyHaveUniqueItems();
-        db.Recipes.Select(x => x.RecipeUrl).Should().OnlyHaveUniqueItems();
+        db.Recipes.Select(static x => x.RecipeClassName).Should().OnlyHaveUniqueItems();
+        db.Recipes.Select(static x => x.Name).Should().OnlyHaveUniqueItems();
+        db.Recipes.Select(static x => x.Description).Should().OnlyHaveUniqueItems();
+        db.Recipes.Select(static x => x.ImageUrl).Should().OnlyHaveUniqueItems();
+        db.Recipes.Select(static x => x.RecipeUrl).Should().OnlyHaveUniqueItems();
     }
 
     [Test]
     public static void Test_ChaptersList_HasAllChapters()
     {
-        var orderedChapterNames = Query.GetChapterNamesInOrder();
-        var recipeChapterNames = Query.GetCategories().Select(x => x.Chapter).Distinct();
+        string[] orderedChapterNames = Query.GetChapterNamesInOrder();
 
-        foreach (string chapter in recipeChapterNames)
+        foreach (string chapter in Query.GetCategories().Select(static x => x.Chapter).Distinct())
         {
             orderedChapterNames.Should().Contain(chapter);
         }
@@ -88,36 +87,25 @@ internal class RecipeTests
     [Test]
     public static void Test_Recipes_HaveTestAttribute()
     {
-        var recipeTypes = Assembly.GetAssembly(typeof(IRecipe))!
-            .GetTypes()
-            .Where(x => x.IsAssignableTo(typeof(RecipeBase)))
-            .Where(x => !x.IsAbstract);
+        List<Type> recipeTypes = Assembly.GetAssembly(typeof(IRecipe))?.GetTypes().Where(static x => x.IsAssignableTo(typeof(RecipeBase)) && !x.IsAbstract).ToList() ?? [];
 
-        foreach (Type recipeType in recipeTypes)
+        Assert.That(recipeTypes, Is.Not.Empty);
+
+        foreach (Type recipeType in recipeTypes.Where(recipeType => !recipeType.Methods().Single(static x => x.Name == "Execute" && !x.IsAbstract).GetCustomAttributes<TestAttribute>(false).Any()))
         {
-            bool hasTestAttribute = recipeType.Methods()
-                .Where(x => x.Name == "Execute")
-                .Where(x => !x.IsAbstract)
-                .Single()
-                .GetCustomAttributes<TestAttribute>(inherit: false)
-                .Any();
-
-            if (!hasTestAttribute)
-                Assert.Fail($"{recipeType.Name}'s Execute() method is missing the [Test] attribute");
+            Assert.Fail($"{recipeType.Name}'s Execute() method is missing the [Test] attribute");
         }
     }
 
     [Test]
     public static void Test_Recipes_ArePublic()
     {
-        var recipeTypes = Assembly.GetAssembly(typeof(IRecipe))!
-            .GetTypes()
-            .Where(x => x.IsAssignableTo(typeof(RecipeBase)))
-            .Where(x => !x.IsAbstract);
+        List<Type> recipeTypes = Assembly.GetAssembly(typeof(IRecipe))?.GetTypes().Where(static x => x.IsAssignableTo(typeof(RecipeBase)) && !x.IsAbstract).ToList() ?? [];
 
-        foreach (Type recipeType in recipeTypes)
+        Assert.That(recipeTypes, Is.Not.Empty);
+
+        foreach (TypeInfo recipeClassInfo in recipeTypes.Select(recipeType => recipeType.GetTypeInfo()))
         {
-            TypeInfo recipeClassInfo = recipeType.GetTypeInfo();
             recipeClassInfo.IsVisible.Should().BeTrue($"{recipeClassInfo.Namespace}.{recipeClassInfo.Name} should be public");
         }
     }

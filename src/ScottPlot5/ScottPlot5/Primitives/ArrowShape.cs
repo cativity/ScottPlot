@@ -1,4 +1,8 @@
-﻿namespace ScottPlot;
+﻿using ScottPlot.ArrowShapes;
+using Double = ScottPlot.ArrowShapes.Double;
+using Single = ScottPlot.ArrowShapes.Single;
+
+namespace ScottPlot;
 
 public enum ArrowShape
 {
@@ -18,14 +22,14 @@ public static class ArrowShapeExtensions
     {
         return shape switch
         {
-            ArrowShape.Single => new ArrowShapes.Single(),
-            ArrowShape.SingleLine => new ArrowShapes.SingleLine(),
-            ArrowShape.Double => new ArrowShapes.Double(),
-            ArrowShape.DoubleLine => new ArrowShapes.DoubleLine(),
-            ArrowShape.Arrowhead => new ArrowShapes.Arrowhead(),
-            ArrowShape.ArrowheadLine => new ArrowShapes.ArrowheadLine(),
-            ArrowShape.Pentagon => new ArrowShapes.Pentagon(),
-            ArrowShape.Chevron => new ArrowShapes.Chevron(),
+            ArrowShape.Single => new Single(),
+            ArrowShape.SingleLine => new SingleLine(),
+            ArrowShape.Double => new Double(),
+            ArrowShape.DoubleLine => new DoubleLine(),
+            ArrowShape.Arrowhead => new Arrowhead(),
+            ArrowShape.ArrowheadLine => new ArrowheadLine(),
+            ArrowShape.Pentagon => new Pentagon(),
+            ArrowShape.Chevron => new Chevron(),
             _ => throw new NotImplementedException(shape.ToString()),
         };
     }

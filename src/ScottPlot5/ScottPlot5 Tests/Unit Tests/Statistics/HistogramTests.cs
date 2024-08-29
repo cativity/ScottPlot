@@ -1,16 +1,18 @@
-﻿namespace ScottPlotTests.Statistics;
+﻿using ScottPlot.Statistics;
+
+namespace ScottPlotTests.Statistics;
 
 internal class HistogramTests
 {
     [Test]
     public void Test_Histogram_IgnoringOutliers()
     {
-        ScottPlot.Statistics.Histogram hist = new(min: 100, max: 200, binCount: 5, addOutliersToEdgeBins: false, addFinalBin: false);
+        Histogram hist = new Histogram(100, 200, 5, false, false);
 
         hist.Min.Should().Be(100);
         hist.Max.Should().Be(200);
-        hist.Bins.First().Should().Be(100);
-        hist.Bins.Last().Should().Be(180);
+        hist.Bins[0].Should().Be(100);
+        hist.Bins[^1].Should().Be(180);
 
         hist.Bins.Should().BeEquivalentTo(new double[] { 100, 120, 140, 160, 180 });
         hist.Counts.Should().BeEquivalentTo(new double[] { 0, 0, 0, 0, 0 });
@@ -41,7 +43,7 @@ internal class HistogramTests
     [Test]
     public void Test_Histogram_IncludingOutliers()
     {
-        ScottPlot.Statistics.Histogram hist = new(min: 100, max: 200, binCount: 5, addOutliersToEdgeBins: true, addFinalBin: false);
+        Histogram hist = new Histogram(100, 200, 5, true, false);
 
         hist.Counts.Should().BeEquivalentTo(new double[] { 0, 0, 0, 0, 0 });
 
@@ -57,7 +59,7 @@ internal class HistogramTests
     [Test]
     public void Test_Histogram_Normalization()
     {
-        ScottPlot.Statistics.Histogram hist = new(min: 100, max: 200, binCount: 5, addFinalBin: false);
+        Histogram hist = new Histogram(100, 200, 5, addFinalBin: false);
 
         hist.Add(125);
         hist.Add(145);
@@ -65,9 +67,9 @@ internal class HistogramTests
         hist.Add(165);
         hist.Counts.Should().BeEquivalentTo(new double[] { 0, 1, 2, 1, 0 });
 
-        hist.GetProbability().Should().BeEquivalentTo(new double[] { 0, .25, .5, .25, 0 });
+        hist.GetProbability().Should().BeEquivalentTo([0, .25, .5, .25, 0]);
 
-        hist.GetNormalized().Should().BeEquivalentTo(new double[] { 0, .5, 1, .5, 0 });
+        hist.GetNormalized().Should().BeEquivalentTo([0, .5, 1, .5, 0]);
 
         hist.GetNormalized(256).Should().BeEquivalentTo(new double[] { 0, 128, 256, 128, 0 });
     }
@@ -75,7 +77,7 @@ internal class HistogramTests
     [Test]
     public void Test_Histogram_CPH()
     {
-        ScottPlot.Statistics.Histogram hist = new(min: 100, max: 200, binCount: 5, addFinalBin: false);
+        Histogram hist = new Histogram(100, 200, 5, addFinalBin: false);
 
         hist.Add(125);
         hist.Add(145);
@@ -85,7 +87,7 @@ internal class HistogramTests
 
         hist.GetCumulative().Should().BeEquivalentTo(new double[] { 0, 1, 3, 4, 4 });
 
-        hist.GetCumulativeProbability().Should().BeEquivalentTo(new double[] { 0, .25, .75, 1, 1 });
+        hist.GetCumulativeProbability().Should().BeEquivalentTo([0, .25, .75, 1, 1]);
     }
 
     [Test]
@@ -94,7 +96,7 @@ internal class HistogramTests
         // Extending conversation in #2403, this test confirms bins meet expectations
         // https://github.com/ScottPlot/ScottPlot/issues/2403
 
-        var hist1 = ScottPlot.Statistics.Histogram.WithFixedBinSize(min: 0, max: 10, binSize: 1);
+        Histogram hist1 = Histogram.WithFixedBinSize(0, 10, 1);
 
         hist1.BinSize.Should().Be(1);
 
@@ -111,7 +113,7 @@ internal class HistogramTests
         // Extending conversation in #2403, this test confirms bins meet expectations
         // https://github.com/ScottPlot/ScottPlot/issues/2403
 
-        var hist1 = ScottPlot.Statistics.Histogram.WithFixedBinCount(min: 0, max: 10, binCount: 10);
+        Histogram hist1 = Histogram.WithFixedBinCount(0, 10, 10);
 
         hist1.BinSize.Should().Be(1);
 
@@ -127,11 +129,12 @@ internal class HistogramTests
     {
         // https://github.com/ScottPlot/ScottPlot/issues/2490
 
-        var hist1 = ScottPlot.Statistics.Histogram.WithFixedBinCount(min: 0, max: 1, binCount: 10);
+        Histogram hist1 = Histogram.WithFixedBinCount(0, 1, 10);
 
         hist1.BinSize.Should().Be(0.1);
 
-        double[] expectedBins = new double[] { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+        double[] expectedBins = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+
         for (int i = 0; i < expectedBins.Length; i++)
         {
             hist1.Bins[i].Should().BeApproximately(expectedBins[i], 1e-10);
@@ -141,24 +144,12 @@ internal class HistogramTests
     [Test]
     public void Test_Histogram_MinMaxValidation()
     {
-        FluentActions
-            .Invoking(() => ScottPlot.Statistics.Histogram.WithFixedBinCount(min: 0, max: 1, binCount: 1))
-            .Should()
-            .NotThrow();
+        FluentActions.Invoking(static () => Histogram.WithFixedBinCount(0, 1, 1)).Should().NotThrow();
 
-        FluentActions
-            .Invoking(() => ScottPlot.Statistics.Histogram.WithFixedBinCount(min: 1, max: 0, binCount: 10))
-            .Should()
-            .Throw<ArgumentException>();
+        FluentActions.Invoking(static () => Histogram.WithFixedBinCount(1, 0, 10)).Should().Throw<ArgumentException>();
 
-        FluentActions
-            .Invoking(() => ScottPlot.Statistics.Histogram.WithFixedBinCount(min: 1, max: 1, binCount: 10))
-            .Should()
-            .Throw<ArgumentException>();
+        FluentActions.Invoking(static () => Histogram.WithFixedBinCount(1, 1, 10)).Should().Throw<ArgumentException>();
 
-        FluentActions
-            .Invoking(() => ScottPlot.Statistics.Histogram.WithFixedBinCount(min: 0, max: 1, binCount: 0))
-            .Should()
-            .Throw<ArgumentException>();
+        FluentActions.Invoking(static () => Histogram.WithFixedBinCount(0, 1, 0)).Should().Throw<ArgumentException>();
     }
 }

@@ -5,7 +5,7 @@ internal class PixelRectTests
     [Test]
     public void Test_PixelRect_Defaults()
     {
-        PixelRect pxRect = new();
+        PixelRect pxRect = new PixelRect();
         pxRect.Left.Should().Be(0);
         pxRect.Right.Should().Be(0);
         pxRect.Bottom.Should().Be(0);
@@ -16,7 +16,7 @@ internal class PixelRectTests
     [Test]
     public void Test_PixelRect_Constructor()
     {
-        PixelRect pxRect = new(-3, 7, 123, 11);
+        PixelRect pxRect = new PixelRect(-3, 7, 123, 11);
         pxRect.Left.Should().Be(-3);
         pxRect.Right.Should().Be(7);
         pxRect.Bottom.Should().Be(123);

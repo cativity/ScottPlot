@@ -2,15 +2,16 @@
 
 public sealed class MirroredXAxis : XAxisBase, IXAxis
 {
-    private readonly Edge _edge;
     private readonly IXAxis _axis;
-    public override Edge Edge => _edge;
-    public override CoordinateRangeMutable Range => new(_axis.Min, _axis.Max);
+
+    public override Edge Edge { get; }
+
+    public override CoordinateRangeMutable Range => new CoordinateRangeMutable(_axis.Min, _axis.Max);
 
     public MirroredXAxis(IXAxis axis, Edge? edge)
     {
         _axis = axis;
-        _edge = edge ?? axis.Edge;
+        Edge = edge ?? axis.Edge;
         TickGenerator = axis.TickGenerator;
     }
 }

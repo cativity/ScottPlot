@@ -1,8 +1,8 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// Represents the location of a point relative to a rectangle.
-/// UpperLeft means the point is at the top left of the rectangle.
+///     Represents the location of a point relative to a rectangle.
+///     UpperLeft means the point is at the top left of the rectangle.
 /// </summary>
 public enum Alignment
 {
@@ -19,11 +19,10 @@ public enum Alignment
 
 public static class AlignmentExtensions
 {
-    public static Alignment[,] AlignmentMatrix =
+    public static readonly Alignment[,] AlignmentMatrix =
     {
-        {Alignment.UpperLeft, Alignment.UpperCenter, Alignment.UpperRight },
-        {Alignment.MiddleLeft, Alignment.MiddleCenter, Alignment.MiddleRight },
-        {Alignment.LowerLeft, Alignment.LowerCenter, Alignment.LowerRight },
+        { Alignment.UpperLeft, Alignment.UpperCenter, Alignment.UpperRight }, { Alignment.MiddleLeft, Alignment.MiddleCenter, Alignment.MiddleRight },
+        { Alignment.LowerLeft, Alignment.LowerCenter, Alignment.LowerRight },
     };
 
     public static float HorizontalFraction(this Alignment alignment)
@@ -60,25 +59,13 @@ public static class AlignmentExtensions
         };
     }
 
-    public static bool IsUpperEdge(this Alignment a)
-    {
-        return a == Alignment.UpperLeft || a == Alignment.UpperCenter || a == Alignment.UpperRight;
-    }
+    public static bool IsUpperEdge(this Alignment a) => a is Alignment.UpperLeft or Alignment.UpperCenter or Alignment.UpperRight;
 
-    public static bool IsLowerEdge(this Alignment a)
-    {
-        return a == Alignment.LowerLeft || a == Alignment.LowerCenter || a == Alignment.LowerRight;
-    }
+    public static bool IsLowerEdge(this Alignment a) => a is Alignment.LowerLeft or Alignment.LowerCenter or Alignment.LowerRight;
 
-    public static bool IsLeftEdge(this Alignment a)
-    {
-        return a == Alignment.UpperLeft || a == Alignment.MiddleLeft || a == Alignment.LowerLeft;
-    }
+    public static bool IsLeftEdge(this Alignment a) => a is Alignment.UpperLeft or Alignment.MiddleLeft or Alignment.LowerLeft;
 
-    public static bool IsRightEdge(this Alignment a)
-    {
-        return a == Alignment.UpperRight || a == Alignment.MiddleRight || a == Alignment.LowerRight;
-    }
+    public static bool IsRightEdge(this Alignment a) => a is Alignment.UpperRight or Alignment.MiddleRight or Alignment.LowerRight;
 
     public static SKTextAlign ToSKTextAlign(this Alignment alignment)
     {

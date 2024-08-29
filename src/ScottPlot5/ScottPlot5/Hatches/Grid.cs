@@ -1,55 +1,34 @@
-﻿using SkiaSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ScottPlot.Hatches;
 
-namespace ScottPlot.Hatches
+public class Grid(bool rotate = false) : IHatch
 {
-    public class Grid : IHatch
+    public bool Rotate { get; set; } = rotate;
+
+    static Grid() => _bmp = CreateBitmap();
+
+    private static readonly SKBitmap _bmp;
+
+    private static SKBitmap CreateBitmap()
     {
-        public bool Rotate { get; set; }
+        SKBitmap bmp = new SKBitmap(20, 20);
+        using SKPaint paint = new SKPaint();
+        paint.Color = Colors.White.ToSKColor();
+        paint.IsStroke = true;
+        paint.StrokeWidth = 3;
+        //using SKPath? path = new SKPath();
+        using SKCanvas canvas = new SKCanvas(bmp);
 
-        static Grid()
-        {
-            bmp = CreateBitmap();
-        }
-        public Grid(bool rotate = false)
-        {
-            Rotate = rotate;
-        }
+        canvas.Clear(Colors.Black.ToSKColor());
+        canvas.DrawRect(0, 0, 20, 20, paint);
 
-        private static SKBitmap bmp;
-        private static SKBitmap CreateBitmap()
-        {
-            var bmp = new SKBitmap(20, 20);
-            using var paint = new SKPaint()
-            {
-                Color = Colors.White.ToSKColor(),
-                IsStroke = true,
-                StrokeWidth = 3
-            };
-            using var path = new SKPath();
-            using var canvas = new SKCanvas(bmp);
+        return bmp;
+    }
 
-            canvas.Clear(Colors.Black.ToSKColor());
-            canvas.DrawRect(0, 0, 20, 20, paint);
+    public SKShader GetShader(Color backgroundColor, Color hatchColor, PixelRect rect)
+    {
+        SKMatrix rotationMatrix = Rotate ? SKMatrix.CreateRotationDegrees(45) : SKMatrix.Identity;
 
-            return bmp;
-        }
-
-        public SKShader GetShader(Color backgroundColor, Color hatchColor, PixelRect rect)
-        {
-            var rotationMatrix = Rotate ? SKMatrix.CreateRotationDegrees(45) : SKMatrix.Identity;
-
-            return SKShader.CreateBitmap(
-                bmp,
-                SKShaderTileMode.Repeat,
-                SKShaderTileMode.Repeat,
-                SKMatrix.CreateScale(0.5f, 0.5f)
-                    .PostConcat(rotationMatrix))
-                    .WithColorFilter(Drawing.GetMaskColorFilter(hatchColor, backgroundColor));
-        }
+        return SKShader.CreateBitmap(_bmp, SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, SKMatrix.CreateScale(0.5f, 0.5f).PostConcat(rotationMatrix))
+                       .WithColorFilter(Drawing.GetMaskColorFilter(hatchColor, backgroundColor));
     }
 }

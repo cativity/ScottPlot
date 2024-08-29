@@ -8,20 +8,22 @@ public class DateTimeXAxis : XAxisBase, IXAxis
 
     private IDateTimeTickGenerator _tickGenerator = new DateTimeAutomatic();
 
-    public override ITickGenerator TickGenerator
+    public override ITickGenerator? TickGenerator
     {
         get => _tickGenerator;
         set
         {
-            if (value is not IDateTimeTickGenerator)
+            if (value is not IDateTimeTickGenerator tickGenerator)
+            {
                 throw new ArgumentException($"Date axis must have a {nameof(ITickGenerator)} generator");
+            }
 
-            _tickGenerator = (IDateTimeTickGenerator)value;
+            _tickGenerator = tickGenerator;
         }
     }
 
-    public IEnumerable<double> ConvertToCoordinateSpace(IEnumerable<DateTime> dates) =>
-        TickGenerator is IDateTimeTickGenerator dateTickGenerator
-            ? dateTickGenerator.ConvertToCoordinateSpace(dates)
-            : throw new InvalidOperationException("Date axis configured with non-date tick generator");
+    public IEnumerable<double> ConvertToCoordinateSpace(IEnumerable<DateTime> dates)
+        => TickGenerator is IDateTimeTickGenerator dateTickGenerator
+               ? dateTickGenerator.ConvertToCoordinateSpace(dates)
+               : throw new InvalidOperationException("Date axis configured with non-date tick generator");
 }

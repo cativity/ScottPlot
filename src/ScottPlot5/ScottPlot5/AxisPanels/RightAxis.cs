@@ -1,4 +1,6 @@
-﻿namespace ScottPlot.AxisPanels;
+﻿using ScottPlot.TickGenerators;
+
+namespace ScottPlot.AxisPanels;
 
 public class RightAxis : YAxisBase, IYAxis
 {
@@ -6,7 +8,7 @@ public class RightAxis : YAxisBase, IYAxis
 
     public RightAxis()
     {
-        TickGenerator = new TickGenerators.NumericAutomatic();
+        TickGenerator = new NumericAutomatic();
         LabelRotation = 90;
     }
 }

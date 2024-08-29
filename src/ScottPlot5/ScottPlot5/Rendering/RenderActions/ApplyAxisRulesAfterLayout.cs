@@ -4,6 +4,6 @@ public class ApplyAxisRulesAfterLayout : IRenderAction
 {
     public void Render(RenderPack rp)
     {
-        rp.Plot.Axes.Rules.ForEach(x => x.Apply(rp, beforeLayout: false));
+        rp.Plot.Axes.Rules.ForEach(x => x.Apply(rp, false));
     }
 }

@@ -10,7 +10,9 @@ internal class SetupAndTeardown
     {
         // delete old test images
         if (Directory.Exists(Paths.OutputFolder))
+        {
             Directory.Delete(Paths.OutputFolder, true);
+        }
 
         // create a fresh output folder
         Directory.CreateDirectory(Paths.OutputFolder);
@@ -22,6 +24,5 @@ internal class SetupAndTeardown
     [OneTimeTearDown]
     public void RunAfterAllTests()
     {
-
     }
 }

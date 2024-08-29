@@ -1,8 +1,9 @@
-﻿namespace ScottPlotTests.Statistics;
+﻿using ScottPlot.Statistics.Tests;
+
+namespace ScottPlotTests.Statistics;
 
 internal class TTestTests
 {
-
     [Test]
     //[TestCase(2, 0.6839986556042016, 0.564592904143043)] // require different algorithm
     //[TestCase(3, 1.2737845484273527, 0.2717212823478658)] // require different algorithm
@@ -21,7 +22,7 @@ internal class TTestTests
     public void Test_Statistics_UnpairedTTest(int n, double expectedT, double expectedP)
     {
         /* Tested with Python:
-         
+
         import scipy.stats as stats
 
         sample1 = [71, 99, 67, 34, 79, 22, 16, 36, 73, 22, 26, 72, 87, 58, 54]
@@ -35,13 +36,13 @@ internal class TTestTests
         double[] sample1 = [71, 99, 67, 34, 79, 22, 16, 36, 73, 22, 26, 72, 87, 58, 54];
         double[] sample2 = [91, 38, 2, 43, 19, 52, 22, 54, 30, 48, 46, 41, 46, 88, 92];
 
-        Population pop1 = new(sample1[..n]);
-        Population pop2 = new(sample2[..n]);
+        Population pop1 = new Population(sample1[..n]);
+        Population pop2 = new Population(sample2[..n]);
         pop1.Count.Should().Be(n);
         pop2.Count.Should().Be(n);
 
-        ScottPlot.Statistics.Tests.UnpairedTTest utt = new(pop1, pop2);
-        utt.T.Should().BeApproximately(expectedT, precision: 1e-6);
-        utt.P.Should().BeApproximately(expectedP, precision: 1e-6);
+        UnpairedTTest utt = new UnpairedTTest(pop1, pop2);
+        utt.T.Should().BeApproximately(expectedT, 1e-6);
+        utt.P.Should().BeApproximately(expectedP, 1e-6);
     }
 }

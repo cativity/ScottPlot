@@ -3,28 +3,28 @@
 public class MouseState
 {
     /// <summary>
-    /// A click-drag must exceed this number of pixels before it is considered a drag.
+    ///     A click-drag must exceed this number of pixels before it is considered a drag.
     /// </summary>
-    public float MinimumDragDistance = 5;
+    public float MinimumDragDistance { get; set; } = 5;
 
-    private readonly HashSet<MouseButton> Pressed = new();
+    private readonly HashSet<MouseButton> _pressed = [];
 
-    public Pixel LastPosition = new(float.NaN, float.NaN);
+    public Pixel LastPosition = new Pixel(float.NaN, float.NaN);
 
-    public void Down(MouseButton button) => Pressed.Add(button);
+    public void Down(MouseButton button) => _pressed.Add(button);
 
-    public bool IsDown(MouseButton button) => Pressed.Contains(button);
+    public bool IsDown(MouseButton button) => _pressed.Contains(button);
 
-    public IReadOnlyCollection<MouseButton> PressedButtons => Pressed.ToArray();
+    public IReadOnlyCollection<MouseButton> PressedButtons => [.. _pressed];
 
     public Pixel MouseDownPosition { get; private set; }
 
-    public MultiAxisLimitManager MouseDownAxisLimits = new();
+    public readonly MultiAxisLimitManager MouseDownAxisLimits = new MultiAxisLimitManager();
 
     public void Up(MouseButton button)
     {
         ForgetMouseDown();
-        Pressed.Remove(button);
+        _pressed.Remove(button);
     }
 
     public void Down(Pixel position, MouseButton button, MultiAxisLimitManager limits)
@@ -47,15 +47,13 @@ public class MouseState
     public bool IsDragging(Pixel position)
     {
         if (float.IsNaN(MouseDownPosition.X))
+        {
             return false;
+        }
 
         Pixel pixelDifference = MouseDownPosition - position;
-        PixelSize ps = new(pixelDifference.X, pixelDifference.Y);
+        PixelSize ps = new PixelSize(pixelDifference.X, pixelDifference.Y);
 
-        float dragDistance = ps.Diagonal;
-        if (dragDistance > MinimumDragDistance)
-            return true;
-
-        return false;
+        return ps.Diagonal > MinimumDragDistance;
     }
 }

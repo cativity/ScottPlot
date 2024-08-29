@@ -4,14 +4,17 @@ namespace Sandbox.WinForms3D.Plottables3D;
 
 internal class Rectangle3D : IPlottable3D
 {
-    Surface3D[] Surfaces { get; }
+    private Surface3D[] Surfaces { get; }
+
     public Point3D Location { get; }
+
     public Size3D Size { get; }
 
     public Rectangle3D(Point3D location, Size3D size)
     {
         Location = location;
         Size = size;
+
         Surfaces =
         [
             GetBottom(),
@@ -109,7 +112,7 @@ internal class Rectangle3D : IPlottable3D
 
     public void Render(RenderPack3D rp)
     {
-        foreach (var p in Surfaces)
+        foreach (Surface3D? p in Surfaces)
         {
             p.Render(rp);
         }

@@ -4,47 +4,31 @@ public class GridStyle
 {
     public bool IsVisible { get; set; } = true;
 
-    public LineStyle MajorLineStyle { get; set; } = new()
-    {
-        Width = 1,
-        Color = Colors.Black.WithOpacity(.1),
-        AntiAlias = false,
-    };
+    public LineStyle MajorLineStyle { get; set; } = new LineStyle { Width = 1, Color = Colors.Black.WithOpacity(.1), AntiAlias = false, };
 
-    public LineStyle MinorLineStyle { get; set; } = new()
-    {
-        Width = 0,
-        IsVisible = true,
-        Color = Colors.Black.WithOpacity(.05),
-        AntiAlias = false,
-    };
+    public LineStyle MinorLineStyle { get; set; } = new LineStyle { Width = 0, IsVisible = true, Color = Colors.Black.WithOpacity(.05), AntiAlias = false, };
 
     public int MaximumNumberOfGridLines { get; set; } = 1_000;
+
     public bool IsBeneathPlottables { get; set; } = true;
 
-    public void Render(RenderPack rp, IAxis axis, IEnumerable<Tick> ticks)
+    public void Render(RenderPack rp, IAxis axis, IList<Tick> ticks)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
         if (MinorLineStyle.CanBeRendered)
         {
-            float[] xTicksMinor = ticks
-                .Where(x => !x.IsMajor)
-                .Select(x => axis.GetPixel(x.Position, rp.DataRect))
-                .Take(MaximumNumberOfGridLines)
-                .ToArray();
+            float[] xTicksMinor = ticks.Where(x => !x.IsMajor).Select(x => axis.GetPixel(x.Position, rp.DataRect)).Take(MaximumNumberOfGridLines).ToArray();
 
             RenderGridLines(rp, xTicksMinor, axis.Edge, MinorLineStyle);
         }
 
         if (MajorLineStyle.CanBeRendered)
         {
-            float[] xTicksMajor = ticks
-                .Where(x => x.IsMajor)
-                .Select(x => axis.GetPixel(x.Position, rp.DataRect))
-                .Take(MaximumNumberOfGridLines)
-                .ToArray();
+            float[] xTicksMajor = ticks.Where(x => x.IsMajor).Select(x => axis.GetPixel(x.Position, rp.DataRect)).Take(MaximumNumberOfGridLines).ToArray();
 
             RenderGridLines(rp, xTicksMajor, axis.Edge, MajorLineStyle);
         }
@@ -59,16 +43,12 @@ public class GridStyle
         {
             float px = positions[i];
 
-            starts[i] = edge.IsHorizontal()
-                ? new Pixel(px, rp.DataRect.Bottom)
-                : new Pixel(rp.DataRect.Left, px);
+            starts[i] = edge.IsHorizontal() ? new Pixel(px, rp.DataRect.Bottom) : new Pixel(rp.DataRect.Left, px);
 
-            ends[i] = edge.IsHorizontal()
-                ? new Pixel(px, rp.DataRect.Top)
-                : new Pixel(rp.DataRect.Right, px);
+            ends[i] = edge.IsHorizontal() ? new Pixel(px, rp.DataRect.Top) : new Pixel(rp.DataRect.Right, px);
         }
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         lineStyle.Render(rp.Canvas, starts, ends, paint);
     }
 }

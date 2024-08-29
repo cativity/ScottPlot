@@ -1,14 +1,16 @@
-﻿namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
+﻿using ScottPlot.Testing;
+
+namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
 
 internal class KeyPanAndZoomTests
 {
-    const int FIGURE_WIDTH = 400;
-    const int FIGURE_HEIGHT = 300;
+    //private const int FIGURE_WIDTH = 400;
+    //private const int FIGURE_HEIGHT = 300;
 
     [Test]
     public void Test_ArrowKey_Pan()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.TapUpArrow();
@@ -27,7 +29,7 @@ internal class KeyPanAndZoomTests
     [Test]
     public void Test_CtrlArrowKey_Zoom()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.PressCtrl();

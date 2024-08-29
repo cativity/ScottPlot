@@ -1,89 +1,52 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// Represents a point in coordinate space (X and Y axis units)
+///     Represents a point in coordinate space (X and Y axis units)
 /// </summary>
-public struct Coordinates : IEquatable<Coordinates>
+public struct Coordinates(double x, double y) : IEquatable<Coordinates>
 {
-    public double X { get; set; }
-    public double Y { get; set; }
+    public double X { get; set; } = x;
 
-    public bool AreReal => NumericConversion.IsReal(X) && NumericConversion.IsReal(Y);
+    public double Y { get; set; } = y;
 
-    public Coordinates(double x, double y)
-    {
-        X = x;
-        Y = y;
-    }
+    public readonly bool AreReal => NumericConversion.IsReal(X) && NumericConversion.IsReal(Y);
 
-    public double DistanceSquared(Coordinates pt)
+    public readonly double DistanceSquared(Coordinates pt)
     {
         double dX = Math.Abs(X - pt.X);
         double dY = Math.Abs(Y - pt.Y);
-        return dX * dX + dY * dY;
+
+        return (dX * dX) + (dY * dY);
     }
 
-    public double Distance(Coordinates pt)
+    public readonly double Distance(Coordinates pt) => Math.Sqrt(DistanceSquared(pt));
+
+    public override readonly string ToString() => $"Coordinates {{ X = {X}, Y = {Y} }}";
+
+    public static Coordinates NaN => new Coordinates(double.NaN, double.NaN);
+
+    public static Coordinates Origin => new Coordinates(0, 0);
+
+    public readonly Coordinates Infinity => new Coordinates(double.PositiveInfinity, double.PositiveInfinity);
+
+    public readonly Coordinates Rotated => new Coordinates(Y, X);
+
+    public readonly bool Equals(Coordinates other) => Equals(X, other.X) && Equals(Y, other.Y);
+
+    public override readonly bool Equals(object? obj)
     {
-        return Math.Sqrt(DistanceSquared(pt));
+        return obj is Coordinates other && Equals(other);
     }
 
-    public override string ToString()
-    {
-        return $"Coordinates {{ X = {X}, Y = {Y} }}";
-    }
+    public static bool operator ==(Coordinates a, Coordinates b) => a.Equals(b);
 
-    public static Coordinates NaN => new(double.NaN, double.NaN);
+    public static bool operator !=(Coordinates a, Coordinates b) => !a.Equals(b);
 
-    public static Coordinates Origin => new(0, 0);
+    public override readonly int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
 
-    public static Coordinates Infinity => new(double.PositiveInfinity, double.PositiveInfinity);
+    public readonly CoordinateRect ToRect(double radiusX, double radiusY) => new(X - radiusX, X + radiusX, Y - radiusY, Y + radiusY);
 
-    public Coordinates Rotated => new(Y, X);
+    public readonly CoordinateRect ToRect(double radius) => ToRect(radius, radius);
 
-    public bool Equals(Coordinates other)
-    {
-        return Equals(X, other.X) && Equals(Y, other.Y);
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is null)
-            return false;
-
-        if (obj is Coordinates other)
-            return Equals(other);
-
-        return false;
-    }
-
-    public static bool operator ==(Coordinates a, Coordinates b)
-    {
-        return a.Equals(b);
-    }
-
-    public static bool operator !=(Coordinates a, Coordinates b)
-    {
-        return !a.Equals(b);
-    }
-
-    public override int GetHashCode()
-    {
-        return X.GetHashCode() ^ Y.GetHashCode();
-    }
-
-    public CoordinateRect ToRect(double radiusX, double radiusY)
-    {
-        return new CoordinateRect(X - radiusX, X + radiusX, Y - radiusY, Y + radiusY);
-    }
-
-    public CoordinateRect ToRect(double radius)
-    {
-        return ToRect(radius, radius);
-    }
-
-    public Coordinates WithDelta(double dX, double dY)
-    {
-        return new(X + dX, Y + dY);
-    }
+    public readonly Coordinates WithDelta(double dX, double dY) => new(X + dX, Y + dY);
 }

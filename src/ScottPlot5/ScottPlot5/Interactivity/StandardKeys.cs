@@ -1,30 +1,28 @@
 ﻿namespace ScottPlot.Interactivity;
 
 /// <summary>
-/// Structures for commonly used keys.
-/// Use these as a safer alternative to instantiating your own.
+///     Structures for commonly used keys.
+///     Use these as a safer alternative to instantiating your own.
 /// </summary>
 public static class StandardKeys
 {
-    public static readonly Key Alt = new("alt");
-    public static readonly Key Control = new("ctrl");
-    public static readonly Key Shift = new("shift");
+    public static Key Alt { get; } = new Key("alt");
 
-    public static readonly Key Down = new("down");
-    public static readonly Key Up = new("up");
-    public static readonly Key Left = new("left");
-    public static readonly Key Right = new("right");
+    public static Key Control { get; } = new Key("ctrl");
 
-    public static readonly Key Unknown = new("unknown");
+    public static Key Shift { get; } = new Key("shift");
 
-    public static readonly Key A = new("a");
+    public static Key Down { get; } = new Key("down");
 
-    public static bool IsArrowKey(Key key)
-    {
-        if (key == Left) return true;
-        else if (key == Right) return true;
-        else if (key == Down) return true;
-        else if (key == Up) return true;
-        else return false;
-    }
+    public static Key Up { get; } = new Key("up");
+
+    public static Key Left { get; } = new Key("left");
+
+    public static Key Right { get; } = new Key("right");
+
+    public static Key Unknown { get; } = new Key("unknown");
+
+    public static Key A { get; } = new Key("a");
+
+    public static bool IsArrowKey(Key key) => key == Left || key == Right || key == Down || key == Up;
 }

@@ -1,15 +1,19 @@
-﻿namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
+﻿using ScottPlot.Interactivity;
+using ScottPlot.Testing;
+
+namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
 
 internal class KeyboardAutoscaleTests
 {
-    const int FIGURE_WIDTH = 400;
-    const int FIGURE_HEIGHT = 300;
-    Pixel FIGURE_CENTER => new(FIGURE_WIDTH / 2, FIGURE_HEIGHT / 2);
+    //private const int FIGURE_WIDTH = 400;
+    //private const int FIGURE_HEIGHT = 300;
+
+    //private Pixel FIGURE_CENTER => new Pixel(FIGURE_WIDTH / 2, FIGURE_HEIGHT / 2);
 
     [Test]
     public void Test_KeyboardAutoscale_ResetsAxisLimits()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         plotControl.Plot.Add.Signal(Generate.Sin());
         plotControl.Plot.Add.Signal(Generate.Cos());
 
@@ -22,7 +26,7 @@ internal class KeyboardAutoscaleTests
         plotControl.Plot.Axes.GetLimits().Center.Should().NotBe(originalLimits.Center);
 
         // keyboard AutoAxis
-        plotControl.PressKey(ScottPlot.Interactivity.StandardKeys.A);
+        plotControl.PressKey(StandardKeys.A);
         plotControl.Plot.Axes.GetLimits().Center.Should().Be(originalLimits.Center);
     }
 }

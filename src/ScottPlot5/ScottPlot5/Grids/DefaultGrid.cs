@@ -3,11 +3,16 @@
 public class DefaultGrid(IXAxis xAxis, IYAxis yAxis) : IGrid
 {
     public bool IsVisible { get; set; } = true;
+
     public bool IsBeneathPlottables { get; set; } = true;
+
     public IXAxis XAxis { get; set; } = xAxis;
+
     public IYAxis YAxis { get; set; } = yAxis;
-    public GridStyle XAxisStyle { get; set; } = new();
-    public GridStyle YAxisStyle { get; set; } = new();
+
+    public GridStyle XAxisStyle { get; set; } = new GridStyle();
+
+    public GridStyle YAxisStyle { get; set; } = new GridStyle();
 
     public Color MajorLineColor
     {
@@ -49,21 +54,23 @@ public class DefaultGrid(IXAxis xAxis, IYAxis yAxis) : IGrid
     public void Render(RenderPack rp)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
         if (XAxisStyle.IsVisible)
         {
-            var minX = Math.Min(XAxis.Min, XAxis.Max);
-            var maxX = Math.Max(XAxis.Min, XAxis.Max);
-            var xTicks = XAxis.TickGenerator.Ticks.Where(x => x.Position >= minX && x.Position <= maxX);
+            double minX = Math.Min(XAxis.Min, XAxis.Max);
+            double maxX = Math.Max(XAxis.Min, XAxis.Max);
+            List<Tick> xTicks = XAxis.TickGenerator?.Ticks.Where(x => x.Position >= minX && x.Position <= maxX).ToList() ?? [];
             XAxisStyle.Render(rp, XAxis, xTicks);
         }
 
         if (YAxisStyle.IsVisible)
         {
-            var minY = Math.Min(YAxis.Min, YAxis.Max);
-            var maxY = Math.Max(YAxis.Min, YAxis.Max);
-            var yTicks = YAxis.TickGenerator.Ticks.Where(x => x.Position >= minY && x.Position <= maxY);
+            double minY = Math.Min(YAxis.Min, YAxis.Max);
+            double maxY = Math.Max(YAxis.Min, YAxis.Max);
+            List<Tick> yTicks = YAxis.TickGenerator?.Ticks.Where(x => x.Position >= minY && x.Position <= maxY).ToList() ?? [];
             YAxisStyle.Render(rp, YAxis, yTicks);
         }
     }

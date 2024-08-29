@@ -1,13 +1,15 @@
-﻿namespace ScottPlotTests.RenderTests;
+﻿using ScottPlot.Plottables;
+
+namespace ScottPlotTests.RenderTests;
 
 internal class LayoutTests
 {
     [Test]
     public void Test_Layout_Automatic()
     {
-        ScottPlot.Plot plt = new();
-        plt.Add.Signal(ScottPlot.Generate.Sin());
-        plt.Add.Signal(ScottPlot.Generate.Cos());
+        Plot plt = new Plot();
+        plt.Add.Signal(Generate.Sin());
+        plt.Add.Signal(Generate.Cos());
 
         foreach (IAxis panel in plt.Axes.GetAxes())
         {
@@ -26,9 +28,9 @@ internal class LayoutTests
     [Test]
     public void Test_Layout_Automatic_MinPanelSize()
     {
-        ScottPlot.Plot plt = new();
-        plt.Add.Signal(ScottPlot.Generate.Sin());
-        plt.Add.Signal(ScottPlot.Generate.Cos());
+        Plot plt = new Plot();
+        plt.Add.Signal(Generate.Sin());
+        plt.Add.Signal(Generate.Cos());
 
         foreach (IAxis panel in plt.Axes.GetAxes())
         {
@@ -48,9 +50,9 @@ internal class LayoutTests
     [Test]
     public void Test_Layout_Automatic_MaxPanelSize()
     {
-        ScottPlot.Plot plt = new();
-        plt.Add.Signal(ScottPlot.Generate.Sin());
-        plt.Add.Signal(ScottPlot.Generate.Cos());
+        Plot plt = new Plot();
+        plt.Add.Signal(Generate.Sin());
+        plt.Add.Signal(Generate.Cos());
 
         foreach (IAxis panel in plt.Axes.GetAxes())
         {
@@ -70,9 +72,9 @@ internal class LayoutTests
     [Test]
     public void Test_Layout_Automatic_FixedPanelSize()
     {
-        ScottPlot.Plot plt = new();
-        plt.Add.Signal(ScottPlot.Generate.Sin());
-        plt.Add.Signal(ScottPlot.Generate.Cos());
+        Plot plt = new Plot();
+        plt.Add.Signal(Generate.Sin());
+        plt.Add.Signal(Generate.Cos());
 
         foreach (IAxis panel in plt.Axes.GetAxes())
         {
@@ -95,16 +97,16 @@ internal class LayoutTests
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3104
 
-        ScottPlot.Plot myPlot = new();
+        Plot myPlot = new Plot();
 
         // plottables use the standard X and Y axes by default
-        var sig1 = myPlot.Add.Signal(Generate.Sin(51, mult: 0.01));
+        Signal sig1 = myPlot.Add.Signal(Generate.Sin(51, 0.01));
         sig1.Axes.XAxis = myPlot.Axes.Bottom;
         sig1.Axes.YAxis = myPlot.Axes.Left;
         myPlot.Axes.Left.Label.Text = "Primary Y Axis";
 
         // add a new plottable and tell it to use the right Y axis
-        var sig2 = myPlot.Add.Signal(Generate.Cos(51, mult: 100));
+        Signal sig2 = myPlot.Add.Signal(Generate.Cos(51, 100));
         sig2.Axes.XAxis = myPlot.Axes.Bottom;
         sig2.Axes.YAxis = myPlot.Axes.Right;
         myPlot.Axes.Right.Label.Text = "Secondary Y Axis";

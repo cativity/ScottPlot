@@ -12,4 +12,3 @@ public partial class MainPage : ContentPage
         MauiPlot1.Refresh();
     }
 }
-

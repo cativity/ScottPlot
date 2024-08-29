@@ -48,7 +48,7 @@
             formsPlot.Name = "formsPlot";
             formsPlot.Size = new Size(701, 434);
             formsPlot.TabIndex = 6;
-            formsPlot.MouseMove += formsPlot_MouseMove;
+            formsPlot.MouseMove += FormsPlot_MouseMove;
             // 
             // btnSlide
             // 
@@ -58,7 +58,7 @@
             btnSlide.TabIndex = 2;
             btnSlide.Text = "Slide";
             btnSlide.UseVisualStyleBackColor = true;
-            btnSlide.Click += btnSlide_Click;
+            btnSlide.Click += BtnSlide_Click;
             // 
             // btnJump
             // 
@@ -68,7 +68,7 @@
             btnJump.TabIndex = 1;
             btnJump.Text = "Jump";
             btnJump.UseVisualStyleBackColor = true;
-            btnJump.Click += btnJump_Click;
+            btnJump.Click += BtnJump_Click;
             // 
             // btnFull
             // 
@@ -78,7 +78,7 @@
             btnFull.TabIndex = 0;
             btnFull.Text = "Full";
             btnFull.UseVisualStyleBackColor = true;
-            btnFull.Click += btnFull_Click;
+            btnFull.Click += BtnFull_Click;
             // 
             // cbInvertedX
             // 
@@ -91,7 +91,7 @@
             cbInvertedX.TabIndex = 4;
             cbInvertedX.Text = "X";
             cbInvertedX.UseVisualStyleBackColor = true;
-            cbInvertedX.CheckedChanged += cbInverted_CheckedChanged;
+            cbInvertedX.CheckedChanged += CbInverted_CheckedChanged;
             // 
             // cbInvertedY
             // 
@@ -104,7 +104,7 @@
             cbInvertedY.TabIndex = 5;
             cbInvertedY.Text = "Y";
             cbInvertedY.UseVisualStyleBackColor = true;
-            cbInvertedY.CheckedChanged += cbInverted_CheckedChanged;
+            cbInvertedY.CheckedChanged += CbInverted_CheckedChanged;
             // 
             // lblInverted
             // 

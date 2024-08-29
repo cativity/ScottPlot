@@ -6,7 +6,7 @@ internal class ApiDocGeneration
     public void Test_Docs()
     {
         string xmlFilePath = Paths.GetScottPlotXmlFilePath();
-        ApiDocs docs = new(typeof(Plot), xmlFilePath);
+        ApiDocs docs = new ApiDocs(typeof(Plot), xmlFilePath);
 
         string savePath = Path.Combine(Paths.OutputFolder, "API.md");
         File.WriteAllText(savePath, docs.GetMarkdown());

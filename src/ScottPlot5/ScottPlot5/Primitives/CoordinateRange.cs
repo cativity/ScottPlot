@@ -3,55 +3,60 @@
 public readonly record struct CoordinateRange(double Min, double Max)
 {
     public double Span => Max - Min;
+
     public double Center => (Min + Max) / 2;
-    public static CoordinateRange Infinity => new(double.NegativeInfinity, double.PositiveInfinity);
-    public static CoordinateRange NotSet => new(double.PositiveInfinity, double.NegativeInfinity);
-    public static CoordinateRange NoLimits => new(double.NaN, double.NaN);
+
+    public static CoordinateRange Infinity => new CoordinateRange(double.NegativeInfinity, double.PositiveInfinity);
+
+    public static CoordinateRange NotSet => new CoordinateRange(double.PositiveInfinity, double.NegativeInfinity);
+
+    public static CoordinateRange NoLimits => new CoordinateRange(double.NaN, double.NaN);
+
     public bool IsReal => NumericConversion.IsReal(Max) && NumericConversion.IsReal(Min);
 
     public bool IsInverted => Min > Max;
+
     public double TrueMin => Math.Min(Min, Max);
+
     public double TrueMax => Math.Max(Min, Max);
 
     public bool Contains(double value)
     {
-        if (value < TrueMin)
-            return false;
-        else if (value > TrueMax)
-            return false;
-        else
-            return true;
+        return value >= TrueMin && value <= TrueMax;
     }
 
     public bool Intersects(CoordinateRange other)
     {
-        var trueMin = Math.Min(Min, Max);
-        var trueMax = Math.Max(Min, Max);
-        var otherTrueMin = Math.Min(other.Min, other.Max);
-        var otherTrueMax = Math.Max(other.Min, other.Max);
+        double trueMin = Math.Min(Min, Max);
+        double trueMax = Math.Max(Min, Max);
+        double otherTrueMin = Math.Min(other.Min, other.Max);
+        double otherTrueMax = Math.Max(other.Min, other.Max);
 
         // other engulfs this
         if (otherTrueMin < trueMin && otherTrueMax > trueMax)
+        {
             return true;
+        }
 
         // this engulfs other
         if (trueMin < otherTrueMin && trueMax > otherTrueMax)
+        {
             return true;
+        }
 
         // partial intersection
-        if (Contains(otherTrueMin) || Contains(otherTrueMax))
-            return true;
-
-        return false;
+        return Contains(otherTrueMin) || Contains(otherTrueMax);
     }
 
     /// <summary>
-    /// Return the range of values spanned by the given collection
+    ///     Return the range of values spanned by the given collection
     /// </summary>
-    public static CoordinateRange MinMax(IEnumerable<double> values)
+    public static CoordinateRange MinMax(IList<double> values)
     {
         if (values.Any())
+        {
             return NotSet;
+        }
 
         double min = double.MaxValue;
         double max = double.MinValue;
@@ -66,16 +71,15 @@ public readonly record struct CoordinateRange(double Min, double Max)
     }
 
     /// <summary>
-    /// Return the range of values spanned by the given collection (ignoring NaN)
+    ///     Return the range of values spanned by the given collection (ignoring NaN)
     /// </summary>
     public static CoordinateRange MinMaxNan(IEnumerable<double> values)
     {
         double min = double.NaN;
         double max = double.NaN;
 
-        foreach (double value in values)
+        foreach (double value in values.Where(static value => !double.IsNaN(value)))
         {
-            if (double.IsNaN(value)) continue;
             min = double.IsNaN(min) ? value : Math.Min(min, value);
             max = double.IsNaN(max) ? value : Math.Max(max, value);
         }
@@ -84,22 +88,18 @@ public readonly record struct CoordinateRange(double Min, double Max)
     }
 
     /// <summary>
-    /// Return a new range expanded to include the given point
+    ///     Return a new range expanded to include the given point
     /// </summary>
     public CoordinateRange Expanded(double value)
     {
         double min = Math.Min(value, Min);
         double max = Math.Max(value, Max);
+
         return new CoordinateRange(min, max);
     }
 
     /// <summary>
-    /// Return a copy of this range where <see cref="Max"/> is never less than <see cref="Min"/>
+    ///     Return a copy of this range where <see cref="Max" /> is never less than <see cref="Min" />
     /// </summary>
-    public CoordinateRange Rectified()
-    {
-        return Max >= Min
-            ? new(Min, Max)
-            : new(Max, Min);
-    }
+    public CoordinateRange Rectified() => Max >= Min ? new CoordinateRange(Min, Max) : new CoordinateRange(Max, Min);
 }

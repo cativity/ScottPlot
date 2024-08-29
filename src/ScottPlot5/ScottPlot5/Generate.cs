@@ -1,68 +1,84 @@
-﻿namespace ScottPlot;
+﻿using System.Numerics;
+using ScottPlot.DataGenerators;
 
-#nullable enable
+namespace ScottPlot;
+
+//#nullable enable
 
 /// <summary>
-/// This class contains methods which generate sample data for testing and demonstration purposes
+///     This class contains methods which generate sample data for testing and demonstration purposes
 /// </summary>
 public static class Generate
 {
-    public static RandomDataGenerator RandomData { get; } = new(0);
+    public static RandomDataGenerator RandomData { get; } = new RandomDataGenerator(0);
 
     #region numerical 1D
 
     /// <summary>
-    /// Return an array of evenly-spaced numbers
+    ///     Return an array of evenly-spaced numbers
     /// </summary>
     public static double[] Consecutive(int count = 51, double delta = 1, double first = 0)
     {
         double[] ys = new double[count];
+
         for (int i = 0; i < ys.Length; i++)
-            ys[i] = i * delta + first;
+        {
+            ys[i] = (i * delta) + first;
+        }
+
         return ys;
     }
 
     /// <summary>
-    /// Return an array of sine waves between -1 and 1.
-    /// Values are multiplied by <paramref name="mult"/> then shifted by <paramref name="offset"/>.
-    /// Phase shifts the sine wave horizontally between 0 and 2 Pi.
+    ///     Return an array of sine waves between -1 and 1.
+    ///     Values are multiplied by <paramref name="mult" /> then shifted by <paramref name="offset" />.
+    ///     Phase shifts the sine wave horizontally between 0 and 2 Pi.
     /// </summary>
     public static double[] Sin(int count = 51, double mult = 1, double offset = 0, double oscillations = 1, double phase = 0)
     {
         double sinScale = 2 * Math.PI * oscillations / (count - 1);
         double[] ys = new double[count];
+
         for (int i = 0; i < ys.Length; i++)
-            ys[i] = Math.Sin(i * sinScale + phase * Math.PI * 2) * mult + offset;
+        {
+            ys[i] = (Math.Sin((i * sinScale) + (phase * Math.PI * 2)) * mult) + offset;
+        }
+
         return ys;
     }
 
     /// <summary>
-    /// Return an array of cosine waves between -1 and 1.
-    /// Values are multiplied by <paramref name="mult"/> then shifted by <paramref name="offset"/>.
-    /// Phase shifts the sine wave horizontally between 0 and 2 Pi.
+    ///     Return an array of cosine waves between -1 and 1.
+    ///     Values are multiplied by <paramref name="mult" /> then shifted by <paramref name="offset" />.
+    ///     Phase shifts the sine wave horizontally between 0 and 2 Pi.
     /// </summary>
     public static double[] Cos(int count = 51, double mult = 1, double offset = 0, double oscillations = 1, double phase = 0)
     {
         double sinScale = 2 * Math.PI * oscillations / (count - 1);
         double[] ys = new double[count];
+
         for (int i = 0; i < ys.Length; i++)
-            ys[i] = Math.Cos(i * sinScale + phase * Math.PI * 2) * mult + offset;
+        {
+            ys[i] = (Math.Cos((i * sinScale) + (phase * Math.PI * 2)) * mult) + offset;
+        }
+
         return ys;
     }
 
-    [Obsolete("use Generate.Sin() then Generate.AddNoise()")]
-    public static double[] NoisySin(int count = 51, double magnitude = 1)
-    {
-        double[] sin = Sin(count);
-        AddNoiseInPlace(sin, magnitude);
-        return sin;
-    }
+    //[Obsolete("use Generate.Sin() then Generate.AddNoise()")]
+    //public static double[] NoisySin(int count = 51, double magnitude = 1)
+    //{
+    //    double[] sin = Sin(count);
+    //    AddNoiseInPlace(sin, magnitude);
+
+    //    return sin;
+    //}
 
     /// <summary>
-    /// An exponential curve that rises from 0 to <paramref name="mult"/> 
-    /// over <paramref name="count"/> points with random positive noise that scales
-    /// with the underlying signal. The rate constant of the exponential
-    /// curve is <paramref name="tau"/>.
+    ///     An exponential curve that rises from 0 to <paramref name="mult" />
+    ///     over <paramref name="count" /> points with random positive noise that scales
+    ///     with the underlying signal. The rate constant of the exponential
+    ///     curve is <paramref name="tau" />.
     /// </summary>
     public static double[] NoisyExponential(int count, double mult = 1000, double noise = .5, double tau = 5)
     {
@@ -86,8 +102,10 @@ public static class Generate
 
     public static double[] SquareWave(uint cycles = 20, uint pointsPerCycle = 1_000, double duty = .5, double low = 0, double high = 1)
     {
-        if (duty < 0 || duty > 1)
+        if (duty is < 0 or > 1)
+        {
             throw new ArgumentException($"{nameof(duty)} must be in the range [0, 1]");
+        }
 
         uint points = cycles * pointsPerCycle;
         uint cyclePointsHigh = (uint)(pointsPerCycle * duty);
@@ -100,24 +118,22 @@ public static class Generate
         for (int c = 0; c < cycles; c++)
         {
             for (int p = 0; p < cyclePointsLow; p++)
+            {
                 values[i++] = low;
+            }
 
             for (int p = 0; p < cyclePointsHigh; p++)
+            {
                 values[i++] = high;
+            }
         }
 
         return values;
     }
 
-    public static double[] Zeros(int count)
-    {
-        return Repeating(count, 0);
-    }
+    public static double[] Zeros(int count) => Repeating(count, 0);
 
-    public static double[] Ones(int count)
-    {
-        return Repeating(count, 1);
-    }
+    public static double[] Ones(int count) => Repeating(count, 1);
 
     public static double[] Repeating(int count, double value)
     {
@@ -131,10 +147,7 @@ public static class Generate
         return values;
     }
 
-    public static double[] NaN(int count)
-    {
-        return Repeating(count, double.NaN);
-    }
+    public static double[] NaN(int count) => Repeating(count, double.NaN);
 
     /// <summary>
     /// Return values from <paramref name="start"/> to <paramref name="stop"/> (inclusive) separated by <paramref name="step"/>
@@ -157,7 +170,7 @@ public static class Generate
     #region numerical 2D
 
     /// <summary>
-    /// Generates a 2D array of numbers with constant spacing.
+    ///     Generates a 2D array of numbers with constant spacing.
     /// </summary>
     /// <param name="rows"></param>
     /// <param name="columns"></param>
@@ -168,19 +181,22 @@ public static class Generate
     {
         double[,] data = new double[rows, columns];
 
-        var count = offset;
-        for (var y = 0; y < data.GetLength(0); y++)
+        double count = offset;
+
+        for (int y = 0; y < data.GetLength(0); y++)
+        {
             for (int x = 0; x < data.GetLength(1); x++)
             {
                 data[y, x] = count;
                 count += spacing;
             }
+        }
 
         return data;
     }
 
     /// <summary>
-    /// Generates a 2D sine pattern.
+    ///     Generates a 2D sine pattern.
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
@@ -194,6 +210,7 @@ public static class Generate
         for (int y = 0; y < height; y++)
         {
             double siny = Math.Cos(y * yPeriod) * multiple;
+
             for (int x = 0; x < width; x++)
             {
                 double sinx = Math.Sin(x * xPeriod) * multiple;
@@ -205,7 +222,7 @@ public static class Generate
     }
 
     /// <summary>
-    /// Generate a 2D array in a diagonal gradient pattern
+    ///     Generate a 2D array in a diagonal gradient pattern
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
@@ -221,12 +238,12 @@ public static class Generate
         for (int y = 0; y < height; y++)
         {
             double fracY = (double)y / height;
-            double valY = fracY * span + min;
+            double valY = (fracY * span) + min;
 
             for (int x = 0; x < width; x++)
             {
                 double fracX = (double)x / width;
-                double valX = fracX * span + min;
+                double valX = (fracX * span) + min;
 
                 intensities[y, x] = (valX + valY) / 2;
             }
@@ -240,7 +257,8 @@ public static class Generate
         double[] xs = Consecutive(columns);
         double[] ys = Consecutive(rows);
 
-        List<RootedCoordinateVector> vectors = new();
+        List<RootedCoordinateVector> vectors = [];
+
         for (int i = 0; i < xs.Length; i++)
         {
             for (int j = 0; j < ys.Length; j++)
@@ -249,14 +267,14 @@ public static class Generate
                 double y = (double)j / xs.Length * Math.PI * oscillations;
                 double dX = Math.Sin(x) + Math.Sin(y);
                 double dY = Math.Sin(x) - Math.Sin(y);
-                System.Numerics.Vector2 v = new((float)dX, (float)dY);
-                Coordinates pt = new(xs[i], ys[j]);
-                RootedCoordinateVector vector = new(pt, v);
+                Vector2 v = new Vector2((float)dX, (float)dY);
+                Coordinates pt = new Coordinates(xs[i], ys[j]);
+                RootedCoordinateVector vector = new RootedCoordinateVector(pt, v);
                 vectors.Add(vector);
             }
         }
 
-        return vectors.ToArray();
+        return [.. vectors];
     }
 
     #endregion
@@ -264,33 +282,25 @@ public static class Generate
     #region numerical random
 
     /// <summary>
-    /// Return a series of values starting with <paramref name="offset"/> and
-    /// each randomly deviating from the previous by at most <paramref name="mult"/>.
+    ///     Return a series of values starting with <paramref name="offset" /> and
+    ///     each randomly deviating from the previous by at most <paramref name="mult" />.
     /// </summary>
-    public static double[] RandomWalk(int count, double mult = 1, double offset = 0)
-    {
-        return RandomData.RandomWalk(count, mult, offset);
-    }
+    public static double[] RandomWalk(int count, double mult = 1, double offset = 0) => RandomData.RandomWalk(count, mult, offset);
 
-    [Obsolete("use RandomSample()")]
-    public static double[] Random(int count, double min = 0, double max = 1)
-    {
-        return RandomSample(count, min, max);
-    }
+    //[Obsolete("use RandomSample()")]
+    //public static double[] Random(int count, double min = 0, double max = 1) => RandomSample(count, min, max);
 
     /// <summary>
-    /// Return an array of <paramref name="count"/> random values 
-    /// from <paramref name="min"/> to <paramref name="max"/>
+    ///     Return an array of <paramref name="count" /> random values
+    ///     from <paramref name="min" /> to <paramref name="max" />
     /// </summary>
     public static double[] RandomSample(int count, double min = 0, double max = 1)
     {
-        return Enumerable.Range(0, count)
-            .Select(_ => RandomData.RandomNumber(min, max))
-            .ToArray();
+        return Enumerable.Range(0, count).Select(_ => RandomData.RandomNumber(min, max)).ToArray();
     }
 
     /// <summary>
-    /// Sequence of ascending numbers with random spacing between values.
+    ///     Sequence of ascending numbers with random spacing between values.
     /// </summary>
     public static double[] RandomAscending(int count, double minDelta = 0, double maxDelta = 1)
     {
@@ -306,108 +316,73 @@ public static class Generate
 
     public static double[] RandomNormal(int count, double mean = 0, double stdDev = 1)
     {
-        return Enumerable.Range(0, count)
-            .Select(_ => RandomData.RandomNormalNumber(mean, stdDev))
-            .ToArray();
+        return Enumerable.Range(0, count).Select(_ => RandomData.RandomNormalNumber(mean, stdDev)).ToArray();
     }
 
     /// <summary>
-    /// RandomSample integer between zero (inclusive) and <paramref name="max"/> (exclusive)
+    ///     RandomSample integer between zero (inclusive) and <paramref name="max" /> (exclusive)
     /// </summary>
-    public static int RandomInteger(int max)
-    {
-        return RandomData.RandomInteger(max);
-    }
+    public static int RandomInteger(int max) => RandomData.RandomInteger(max);
 
     /// <summary>
-    /// RandomSample integer between <paramref name="min"/> (inclusive) and <paramref name="max"/> (exclusive)
+    ///     RandomSample integer between <paramref name="min" /> (inclusive) and <paramref name="max" /> (exclusive)
     /// </summary>
-    public static int RandomInteger(int min, int max)
-    {
-        return RandomData.RandomInteger(min, max);
-    }
+    public static int RandomInteger(int min, int max) => RandomData.RandomInteger(min, max);
 
     /// <summary>
-    /// RandomSample integers between zero (inclusive) and <paramref name="max"/> (exclusive)
+    ///     RandomSample integers between zero (inclusive) and <paramref name="max" /> (exclusive)
     /// </summary>
     public static int[] RandomIntegers(int count, int max)
     {
-        return Enumerable
-            .Range(0, count)
-            .Select(x => RandomData.RandomInteger(max))
-            .ToArray();
+        return Enumerable.Range(0, count).Select(_ => RandomData.RandomInteger(max)).ToArray();
     }
 
     /// <summary>
-    /// RandomSample integers between <paramref name="min"/> (inclusive) and <paramref name="max"/> (exclusive)
+    ///     RandomSample integers between <paramref name="min" /> (inclusive) and <paramref name="max" /> (exclusive)
     /// </summary>
     public static int[] RandomIntegers(int count, int min, int max)
     {
-        return Enumerable
-            .Range(0, count)
-            .Select(x => RandomData.RandomInteger(min, max))
-            .ToArray();
+        return Enumerable.Range(0, count).Select(_ => RandomData.RandomInteger(min, max)).ToArray();
     }
 
     /// <summary>
-    /// RandomSample integer between 0 (inclusive) and 1 (exclusive)
+    ///     RandomSample integer between 0 (inclusive) and 1 (exclusive)
     /// </summary>
-    public static double RandomNumber()
-    {
-        return RandomData.RandomNumber(0, 1);
-    }
+    public static double RandomNumber() => RandomData.RandomNumber(0, 1);
 
     /// <summary>
-    /// RandomSample integer between 0 (inclusive) and <paramref name="max"/> (exclusive)
+    ///     RandomSample integer between 0 (inclusive) and <paramref name="max" /> (exclusive)
     /// </summary>
-    public static double RandomNumber(double max)
-    {
-        return RandomData.RandomNumber(0, max);
-    }
+    public static double RandomNumber(double max) => RandomData.RandomNumber(0, max);
 
     /// <summary>
-    /// RandomSample integer between <paramref name="min"/> (inclusive) and <paramref name="max"/> (exclusive)
+    ///     RandomSample integer between <paramref name="min" /> (inclusive) and <paramref name="max" /> (exclusive)
     /// </summary>
-    public static double RandomNumber(double min, double max)
-    {
-        return RandomData.RandomNumber(min, max);
-    }
+    public static double RandomNumber(double min, double max) => RandomData.RandomNumber(min, max);
 
     /// <summary>
-    /// Return a number normally distributed around the given <paramref name="mean"/> 
-    /// according to the <paramref name="stdDev"/> standard deviation.
+    ///     Return a number normally distributed around the given <paramref name="mean" />
+    ///     according to the <paramref name="stdDev" /> standard deviation.
     /// </summary>
-    public static double RandomNormalNumber(double mean = 0, double stdDev = 1)
-    {
-        return RandomData.RandomNormalNumber(mean, stdDev);
-    }
+    public static double RandomNormalNumber(double mean = 0, double stdDev = 1) => RandomData.RandomNormalNumber(mean, stdDev);
 
     /// <summary>
-    /// Random numbers between zero (inclusive) and <paramref name="max"/> (exclusive)
+    ///     Random numbers between zero (inclusive) and <paramref name="max" /> (exclusive)
     /// </summary>
-    public static double[] RandomNumbers(int count, double max)
-    {
-        return RandomData.RandomSample(count, 0, max);
-    }
+    public static double[] RandomNumbers(int count, double max) => RandomData.RandomSample(count, 0, max);
 
     /// <summary>
-    /// Random numbers between <paramref name="min"/> (inclusive) and <paramref name="max"/> (exclusive)
+    ///     Random numbers between <paramref name="min" /> (inclusive) and <paramref name="max" /> (exclusive)
     /// </summary>
-    public static double[] RandomNumbers(int count, double min, double max)
-    {
-        return RandomData.RandomSample(count, min, max);
-    }
+    public static double[] RandomNumbers(int count, double min, double max) => RandomData.RandomSample(count, min, max);
 
     /// <summary>
-    /// Return a copy of the given array with random values added to each point
+    ///     Return a copy of the given array with random values added to each point
     /// </summary>
-    public static double[] AddNoise(double[] input, double magnitude = 1)
-    {
-        return RandomData.AddNoise(input, magnitude);
-    }
+    public static double[] AddNoise(double[] input, double magnitude = 1) => RandomData.AddNoise(input, magnitude);
 
     /// <summary>
-    /// Mutate the given array by adding a random value to each point
+    ///     Mutate the given array by adding a random value to each point
     /// </summary>
     public static void AddNoiseInPlace(double[] values, double magnitude = 1)
     {
@@ -418,10 +393,7 @@ public static class Generate
 
     #region text
 
-    public static char RandomChar()
-    {
-        return (char)('A' + RandomInteger(26));
-    }
+    public static char RandomChar() => (char)('A' + RandomInteger(26));
 
     public static string RandomString(int length)
     {
@@ -441,8 +413,9 @@ public static class Generate
 
     public static Coordinates RandomCoordinates(double xMult = 1, double yMult = 1, double xOffset = 0, double yOffset = 0)
     {
-        double x = RandomData.RandomNumber() * xMult + xOffset;
-        double y = RandomData.RandomNumber() * yMult + yOffset;
+        double x = (RandomData.RandomNumber() * xMult) + xOffset;
+        double y = (RandomData.RandomNumber() * yMult) + yOffset;
+
         return new Coordinates(x, y);
     }
 
@@ -460,40 +433,36 @@ public static class Generate
 
     public static Coordinates RandomLocation()
     {
-        AxisLimits limits = new(0, 1, 0, 1);
+        AxisLimits limits = new AxisLimits(0, 1, 0, 1);
+
         return RandomLocation(limits);
     }
 
     public static Coordinates RandomLocation(AxisLimits limits)
     {
-        double x = RandomData.RandomNumber() * limits.HorizontalSpan + limits.Left;
-        double y = RandomData.RandomNumber() * limits.VerticalSpan + limits.Bottom;
+        double x = (RandomData.RandomNumber() * limits.HorizontalSpan) + limits.Left;
+        double y = (RandomData.RandomNumber() * limits.VerticalSpan) + limits.Bottom;
+
         return new Coordinates(x, y);
     }
 
     public static Coordinates[] RandomLocations(int count)
     {
-        return Enumerable
-            .Range(0, count)
-            .Select(x => RandomCoordinates())
-            .ToArray();
+        return Enumerable.Range(0, count).Select(static _ => RandomCoordinates()).ToArray();
     }
 
     public static Coordinates[] RandomLocations(int count, AxisLimits limits)
     {
-        return Enumerable
-            .Range(0, count)
-            .Select(x => RandomLocation(limits))
-            .ToArray();
+        return Enumerable.Range(0, count).Select(_ => RandomLocation(limits)).ToArray();
     }
 
     #endregion
 
     #region DateTime
 
-    public static System.DateTime[] Consecutive(int count, System.DateTime start, TimeSpan timeSpan)
+    public static DateTime[] Consecutive(int count, DateTime start, TimeSpan timeSpan)
     {
-        System.DateTime[] dates = new System.DateTime[count];
+        DateTime[] dates = new DateTime[count];
 
         for (int i = 0; i < count; i++)
         {
@@ -504,151 +473,131 @@ public static class Generate
         return dates;
     }
 
-    public static System.DateTime[] ConsecutiveDateTimes(int count, System.DateTime start, TimeSpan timeSpan)
-    {
-        return Consecutive(count, start, timeSpan);
-    }
+    public static DateTime[] ConsecutiveDateTimes(int count, DateTime start, TimeSpan timeSpan) => Consecutive(count, start, timeSpan);
 
-    public static System.DateTime[] ConsecutiveDays(int count, int year = 2023, int month = 1, int day = 1)
-    {
-        return Consecutive(count, new(year, month, day), TimeSpan.FromDays(1));
-    }
+    public static DateTime[] ConsecutiveDays(int count, int year = 2023, int month = 1, int day = 1)
+        => Consecutive(count, new DateTime(year, month, day), TimeSpan.FromDays(1));
 
-    public static System.DateTime[] ConsecutiveDays(int count, System.DateTime start)
-    {
-        return Consecutive(count, start, TimeSpan.FromDays(1));
-    }
+    public static DateTime[] ConsecutiveDays(int count, DateTime start) => Consecutive(count, start, TimeSpan.FromDays(1));
 
-    public static System.DateTime[] ConsecutiveWeekdays(int count, int year = 2023, int month = 1, int day = 1)
-    {
-        return ConsecutiveWeekdays(count, new(year, month, day));
-    }
+    public static DateTime[] ConsecutiveWeekdays(int count, int year = 2023, int month = 1, int day = 1)
+        => ConsecutiveWeekdays(count, new DateTime(year, month, day));
 
-    public static System.DateTime[] ConsecutiveWeekdays(int count, System.DateTime start)
+    public static DateTime[] ConsecutiveWeekdays(int count, DateTime start)
     {
-        System.DateTime[] dates = new System.DateTime[count];
+        DateTime[] dates = new DateTime[count];
         TimeSpan step = TimeSpan.FromDays(1);
         int i = 0;
+
         while (i < count)
         {
-            while (start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday)
+            while (start.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+            {
                 start += step;
+            }
+
             dates[i++] = start;
             start += step;
         }
+
         return dates;
     }
 
-    public static System.DateTime[] ConsecutiveHours(int count)
+    public static DateTime[] ConsecutiveHours(int count)
     {
-        var start = new System.DateTime(2023, 01, 01);
+        DateTime start = new DateTime(2023, 01, 01);
+
         return ConsecutiveHours(count, start);
     }
 
-    public static System.DateTime[] ConsecutiveHours(int count, System.DateTime start)
-    {
-        return Consecutive(count, start, TimeSpan.FromHours(1));
-    }
+    public static DateTime[] ConsecutiveHours(int count, DateTime start) => Consecutive(count, start, TimeSpan.FromHours(1));
 
-    public static System.DateTime[] ConsecutiveQuarterHours(int count, System.DateTime start)
-    {
-        return Consecutive(count, start, TimeSpan.FromMinutes(15));
-    }
+    public static DateTime[] ConsecutiveQuarterHours(int count, DateTime start) => Consecutive(count, start, TimeSpan.FromMinutes(15));
 
-    public static System.DateTime[] ConsecutiveMinutes(int count, System.DateTime start)
-    {
-        return Consecutive(count, start, TimeSpan.FromMinutes(1));
-    }
+    public static DateTime[] ConsecutiveMinutes(int count, DateTime start) => Consecutive(count, start, TimeSpan.FromMinutes(1));
 
-    public static System.DateTime[] ConsecutiveSeconds(int count, System.DateTime start)
-    {
-        return Consecutive(count, start, TimeSpan.FromSeconds(1));
-    }
+    public static DateTime[] ConsecutiveSeconds(int count, DateTime start) => Consecutive(count, start, TimeSpan.FromSeconds(1));
 
-    [Obsolete("use ConsecutiveDays(), ConsecutiveHours(), ConsecutiveMinutes(), etc.", true)]
-    public static class DateTime
-    {
-        /// <summary>
-        /// Date of the first ScottPlot commit
-        /// </summary>
-        public static readonly System.DateTime ExampleDate = new(2018, 01, 03);
+    //[Obsolete("use ConsecutiveDays(), ConsecutiveHours(), ConsecutiveMinutes(), etc.", true)]
+    //public static class DateTime
+    //{
+    //    /// <summary>
+    //    ///     Date of the first ScottPlot commit
+    //    /// </summary>
+    //    public static readonly System.DateTime ExampleDate = new System.DateTime(2018, 01, 03);
 
-        /// <summary>
-        /// Evenly-spaced DateTimes
-        /// </summary>
-        public static System.DateTime[] Consecutive(int count, System.DateTime start, TimeSpan step)
-        {
-            System.DateTime dt = start;
-            System.DateTime[] values = new System.DateTime[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = dt;
-                dt += step;
-            }
-            return values;
-        }
+    //    /// <summary>
+    //    ///     Evenly-spaced DateTimes
+    //    /// </summary>
+    //    public static System.DateTime[] Consecutive(int count, System.DateTime start, TimeSpan step)
+    //    {
+    //        System.DateTime dt = start;
+    //        System.DateTime[] values = new System.DateTime[count];
 
-        public static System.DateTime[] Weekdays(int count, System.DateTime start)
-        {
-            System.DateTime[] dates = new System.DateTime[count];
-            int i = 0;
-            while (i < count)
-            {
-                if (start.DayOfWeek != DayOfWeek.Saturday && start.DayOfWeek != DayOfWeek.Sunday)
-                {
-                    dates[i] = start;
-                    i++;
-                }
+    //        for (int i = 0; i < count; i++)
+    //        {
+    //            values[i] = dt;
+    //            dt += step;
+    //        }
 
-                start = start.AddDays(1);
-            }
-            return dates;
-        }
+    //        return values;
+    //    }
 
-        public static System.DateTime[] Weekdays(int count) => Weekdays(count, ExampleDate);
+    //    public static System.DateTime[] Weekdays(int count, System.DateTime start)
+    //    {
+    //        System.DateTime[] dates = new System.DateTime[count];
+    //        int i = 0;
 
-        public static System.DateTime[] Days(int count, System.DateTime start) => Consecutive(count, start, TimeSpan.FromDays(1));
+    //        while (i < count)
+    //        {
+    //            if (start.DayOfWeek != DayOfWeek.Saturday && start.DayOfWeek != DayOfWeek.Sunday)
+    //            {
+    //                dates[i] = start;
+    //                i++;
+    //            }
 
-        public static System.DateTime[] Days(int count) => Days(count, ExampleDate);
+    //            start = start.AddDays(1);
+    //        }
 
-        public static System.DateTime[] Hours(int count, System.DateTime start) => Consecutive(count, start, TimeSpan.FromHours(1));
+    //        return dates;
+    //    }
 
-        public static System.DateTime[] Hours(int count) => Hours(count, ExampleDate);
+    //    public static System.DateTime[] Weekdays(int count) => Weekdays(count, ExampleDate);
 
-        public static System.DateTime[] Minutes(int count, System.DateTime start) => Consecutive(count, start, TimeSpan.FromMinutes(1));
+    //    public static System.DateTime[] Days(int count, System.DateTime start) => Consecutive(count, start, TimeSpan.FromDays(1));
 
-        public static System.DateTime[] Minutes(int count) => Hours(count, ExampleDate);
+    //    public static System.DateTime[] Days(int count) => Days(count, ExampleDate);
 
-        public static System.DateTime[] Seconds(int count, System.DateTime start) => Consecutive(count, start, TimeSpan.FromSeconds(1));
+    //    public static System.DateTime[] Hours(int count, System.DateTime start) => Consecutive(count, start, TimeSpan.FromHours(1));
 
-        public static System.DateTime[] Seconds(int count) => Hours(count, ExampleDate);
-    }
+    //    public static System.DateTime[] Hours(int count) => Hours(count, ExampleDate);
+
+    //    public static System.DateTime[] Minutes(int count, System.DateTime start) => Consecutive(count, start, TimeSpan.FromMinutes(1));
+
+    //    public static System.DateTime[] Minutes(int count) => Hours(count, ExampleDate);
+
+    //    public static System.DateTime[] Seconds(int count, System.DateTime start) => Consecutive(count, start, TimeSpan.FromSeconds(1));
+
+    //    public static System.DateTime[] Seconds(int count) => Hours(count, ExampleDate);
+    //}
 
     #endregion
 
     #region Finance
 
-    public static OHLC RandomOHLC()
-    {
-        return RandomData.RandomOHLCs(1).Single();
-    }
+    public static OHLC RandomOHLC() => RandomData.RandomOHLCs(1).Single();
 
-    public static OHLC RandomOHLC(System.DateTime date)
+    public static OHLC RandomOHLC(DateTime date)
     {
         OHLC ohlc = RandomOHLC();
         ohlc.DateTime = date;
+
         return ohlc;
     }
 
-    public static List<OHLC> RandomOHLCs(int count)
-    {
-        return RandomData.RandomOHLCs(count);
-    }
+    public static List<OHLC> RandomOHLCs(int count) => RandomData.RandomOHLCs(count);
 
-    public static List<OHLC> RandomOHLCs(int count, System.DateTime startDate)
-    {
-        return RandomData.RandomOHLCs(count);
-    }
+    public static List<OHLC> RandomOHLCs(int count, DateTime startDate) => RandomData.RandomOHLCs(count);
 
     #endregion
 
@@ -656,17 +605,17 @@ public static class Generate
 
     public static Box RandomBox(double position)
     {
-        int N = 50;
+        const int n = 50;
         double mean = RandomData.RandomNumber(3);
         double stdDev = RandomData.RandomNumber(3);
 
-        double[] values = ScottPlot.Generate.RandomNormal(N, mean, stdDev);
+        double[] values = RandomNormal(n, mean, stdDev);
         Array.Sort(values);
         double min = values[0];
-        double q1 = values[N / 4];
-        double median = values[N / 2];
-        double q3 = values[3 * N / 4];
-        double max = values[N - 1];
+        double q1 = values[n / 4];
+        double median = values[n / 2];
+        double q3 = values[3 * n / 4];
+        double max = values[n - 1];
 
         return new Box
         {
@@ -686,54 +635,43 @@ public static class Generate
         byte r = RandomData.RandomByte();
         byte g = RandomData.RandomByte();
         byte b = RandomData.RandomByte();
+
         return new Color(r, g, b);
     }
 
     /// <summary>
-    /// Generate a dark color by defining the maximum value to use for R, G, and B
+    ///     Generate a dark color by defining the maximum value to use for R, G, and B
     /// </summary>
     public static Color RandomColor(byte max)
     {
         byte r = (byte)RandomData.RandomInteger(max);
         byte g = (byte)RandomData.RandomInteger(max);
         byte b = (byte)RandomData.RandomInteger(max);
+
         return new Color(r, g, b);
     }
 
-    public static Color RandomColor(IColormap colormap)
-    {
-        return colormap.GetColor(RandomData.RandomNumber());
-    }
+    public static Color RandomColor(IColormap colormap) => colormap.GetColor(RandomData.RandomNumber());
 
-    public static Color[] RandomColors(int count, IColormap colormap)
-    {
-        return RandomSample(count).Select(colormap.GetColor).ToArray();
-    }
+    public static Color[] RandomColors(int count, IColormap colormap) => RandomSample(count).Select(colormap.GetColor).ToArray();
 
     public static MarkerShape RandomMarkerShape()
     {
-        MarkerShape[] markerShapes = Enum
-            .GetValues(typeof(MarkerShape))
-            .Cast<MarkerShape>()
-            .ToArray();
+        MarkerShape[] markerShapes = Enum.GetValues(typeof(MarkerShape)).Cast<MarkerShape>().ToArray();
 
         int i = RandomInteger(markerShapes.Length);
+
         return markerShapes[i];
     }
 
-    public static CoordinateLine RandomLine()
-    {
-        return new CoordinateLine(RandomLocation(), RandomLocation());
-    }
+    public static CoordinateLine RandomLine() => new CoordinateLine(RandomLocation(), RandomLocation());
 
     public static LinePattern RandomLinePattern()
     {
-        LinePattern[] linePatterns = Enum
-            .GetValues(typeof(LinePattern))
-            .Cast<LinePattern>()
-            .ToArray();
+        LinePattern[] linePatterns = Enum.GetValues(typeof(LinePattern)).Cast<LinePattern>().ToArray();
 
         int i = RandomInteger(linePatterns.Length);
+
         return linePatterns[i];
     }
 
@@ -741,7 +679,7 @@ public static class Generate
 
     #region Data Generators
 
-    public readonly static DataGenerators.RandomWalker RandomWalker = new();
+    public static readonly RandomWalker RandomWalker = new RandomWalker();
 
     #endregion
 }

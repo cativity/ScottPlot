@@ -6,7 +6,8 @@ public abstract class ArgbColormapBase : ColormapBase
 
     public override Color GetColor(double normalizedIntensity)
     {
-        var argb = Argbs[(int)(normalizedIntensity * (Argbs.Length - 1))];
+        uint argb = Argbs[(int)(normalizedIntensity * (Argbs.Length - 1))];
+
         return Color.FromARGB(argb);
     }
 }

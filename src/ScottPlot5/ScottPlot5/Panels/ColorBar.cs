@@ -1,9 +1,9 @@
-﻿using System.Data;
+﻿using ScottPlot.AxisPanels;
 
 namespace ScottPlot.Panels;
 
 /// <summary>
-/// An axis panel which displays a colormap and range of values
+///     An axis panel which displays a colormap and range of values
 /// </summary>
 public class ColorBar(IHasColorAxis source, Edge edge = Edge.Right) : IPanel
 {
@@ -14,24 +14,24 @@ public class ColorBar(IHasColorAxis source, Edge edge = Edge.Right) : IPanel
     public Edge Edge { get; set; } = edge;
 
     /// <summary>
-    /// Axis (spine, ticks, label, etc) for the colorbar
+    ///     Axis (spine, ticks, label, etc) for the colorbar
     /// </summary>
-    public IAxis Axis { get; private set; } = edge switch
+    public IAxis Axis { get; } = edge switch
     {
-        Edge.Left => new AxisPanels.LeftAxis(),
-        Edge.Right => new AxisPanels.RightAxis(),
-        Edge.Bottom => new AxisPanels.BottomAxis(),
-        Edge.Top => new AxisPanels.TopAxis(),
+        Edge.Left => new LeftAxis(),
+        Edge.Right => new RightAxis(),
+        Edge.Bottom => new BottomAxis(),
+        Edge.Top => new TopAxis(),
         _ => throw new NotImplementedException()
     };
 
     /// <summary>
-    /// Thickness of the colorbar image (in pixels)
+    ///     Thickness of the colorbar image (in pixels)
     /// </summary>
     public float Width { get; set; } = 30;
 
     /// <summary>
-    /// Title for the colorbar, displayed outside the ticks.
+    ///     Title for the colorbar, displayed outside the ticks.
     /// </summary>
     public string Label
     {
@@ -40,21 +40,25 @@ public class ColorBar(IHasColorAxis source, Edge edge = Edge.Right) : IPanel
     }
 
     /// <summary>
-    /// Title for the colorbar, displayed outside the ticks.
+    ///     Title for the colorbar, displayed outside the ticks.
     /// </summary>
     public LabelStyle LabelStyle => Axis.Label;
 
-    public bool ShowDebugInformation { get; set; } = false;
+    public bool ShowDebugInformation { get; set; }
+
     public float MinimumSize { get; set; } = 0;
+
     public float MaximumSize { get; set; } = float.MaxValue;
 
     public float Measure()
     {
         if (!IsVisible)
+        {
             return 0;
+        }
 
         // use an example DataRect to estimate the size required by the ticks
-        PixelRect guessedDataArea = new(0, 600, 400, 0);
+        PixelRect guessedDataArea = new PixelRect(0, 600, 400, 0);
         GenerateTicks(guessedDataArea);
         float guessedAxisSize = Axis.Measure();
 
@@ -62,8 +66,8 @@ public class ColorBar(IHasColorAxis source, Edge edge = Edge.Right) : IPanel
     }
 
     /// <summary>
-    /// Return a rectangle encapsulating the colormap
-    /// bitmap plus the axis and ticks.
+    ///     Return a rectangle encapsulating the colormap
+    ///     bitmap plus the axis and ticks.
     /// </summary>
     public PixelRect GetPanelRect(PixelRect dataRect, float size, float offset)
     {
@@ -82,34 +86,18 @@ public class ColorBar(IHasColorAxis source, Edge edge = Edge.Right) : IPanel
     }
 
     /// <summary>
-    /// Return the rectangle to the side of the data area
-    /// where the colormap bitmap will be drawn.
+    ///     Return the rectangle to the side of the data area
+    ///     where the colormap bitmap will be drawn.
     /// </summary>
     private PixelRect GetColormapBitmapRect(PixelRect dataRect, float size, float offset)
     {
         // TODO: use size too
         return Edge switch
         {
-            Edge.Left => new(
-                left: dataRect.Left - Width - offset,
-                right: dataRect.Left - offset,
-                bottom: dataRect.Bottom,
-                top: dataRect.Top),
-            Edge.Right => new(
-                left: dataRect.Right + offset,
-                right: dataRect.Right + Width + offset,
-                bottom: dataRect.Bottom,
-                top: dataRect.Top),
-            Edge.Bottom => new(
-                left: dataRect.Left,
-                right: dataRect.Right,
-                bottom: dataRect.Bottom + Width + offset,
-                top: dataRect.Bottom + offset),
-            Edge.Top => new(
-                left: dataRect.Left,
-                right: dataRect.Right,
-                bottom: dataRect.Top - offset,
-                top: dataRect.Top - Width - offset),
+            Edge.Left => new PixelRect(dataRect.Left - Width - offset, dataRect.Left - offset, dataRect.Bottom, dataRect.Top),
+            Edge.Right => new PixelRect(dataRect.Right + offset, dataRect.Right + Width + offset, dataRect.Bottom, dataRect.Top),
+            Edge.Bottom => new PixelRect(dataRect.Left, dataRect.Right, dataRect.Bottom + Width + offset, dataRect.Bottom + offset),
+            Edge.Top => new PixelRect(dataRect.Left, dataRect.Right, dataRect.Top - offset, dataRect.Top - Width - offset),
             _ => throw new NotImplementedException($"{Edge}")
         };
     }
@@ -117,7 +105,9 @@ public class ColorBar(IHasColorAxis source, Edge edge = Edge.Right) : IPanel
     public void Render(RenderPack rp, float size, float offset)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
         PixelRect colormapRect = GetColormapBitmapRect(rp.DataRect, size, offset);
         RenderColorbarBitmap(rp, colormapRect);
@@ -161,9 +151,7 @@ public class ColorBar(IHasColorAxis source, Edge edge = Edge.Right) : IPanel
         Axis.Min = range.Min;
         Axis.Max = range.Max;
 
-        float edgeLength = Edge.IsVertical()
-            ? dataRect.Height
-            : dataRect.Width;
+        float edgeLength = Edge.IsVertical() ? dataRect.Height : dataRect.Width;
 
         Axis.RegenerateTicks(edgeLength);
     }

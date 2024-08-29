@@ -1,11 +1,13 @@
-﻿namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
+﻿using ScottPlot.Testing;
+
+namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
 
 internal class ScrollWheelZoomTests
 {
     [Test]
     public void Test_ScrollWheel_UpZoomsIn()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.ScrollWheelUp(plotControl.Center.MovedRight(100).MovedUp(100));
@@ -23,7 +25,7 @@ internal class ScrollWheelZoomTests
     [Test]
     public void Test_ScrollWheel_DownZoomsOut()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.ScrollWheelDown(plotControl.Center.MovedRight(100).MovedUp(100));
@@ -41,7 +43,7 @@ internal class ScrollWheelZoomTests
     [Test]
     public void Test_ShiftScrollWheel_UpZoomsInVertically()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.PressShift();
@@ -60,7 +62,7 @@ internal class ScrollWheelZoomTests
     [Test]
     public void Test_ShiftScrollWheel_UpZoomsInHorizontally()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.PressCtrl();

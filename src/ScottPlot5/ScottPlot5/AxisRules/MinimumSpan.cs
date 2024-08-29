@@ -2,26 +2,24 @@
 
 public class MinimumSpan(IXAxis xAxis, IYAxis yAxis, double xSpan, double ySpan) : IAxisRule
 {
-    readonly IXAxis XAxis = xAxis;
-    readonly IYAxis YAxis = yAxis;
+    public double XSpan { get; set; } = xSpan;
 
-    public double XSpan = xSpan;
-    public double YSpan = ySpan;
+    public double YSpan { get; set; } = ySpan;
 
     public void Apply(RenderPack rp, bool beforeLayout)
     {
-        if (XAxis.Range.Span < XSpan)
+        if (xAxis.Range.Span < XSpan)
         {
-            double xMin = XAxis.Range.Center - XSpan / 2;
-            double xMax = XAxis.Range.Center + XSpan / 2;
-            XAxis.Range.Set(xMin, xMax);
+            double xMin = xAxis.Range.Center - (XSpan / 2);
+            double xMax = xAxis.Range.Center + (XSpan / 2);
+            xAxis.Range.Set(xMin, xMax);
         }
 
-        if (YAxis.Range.Span < YSpan)
+        if (yAxis.Range.Span < YSpan)
         {
-            double yMin = YAxis.Range.Center - YSpan / 2;
-            double yMax = YAxis.Range.Center + YSpan / 2;
-            YAxis.Range.Set(yMin, yMax);
+            double yMin = yAxis.Range.Center - (YSpan / 2);
+            double yMax = yAxis.Range.Center + (YSpan / 2);
+            yAxis.Range.Set(yMin, yMax);
         }
     }
 }

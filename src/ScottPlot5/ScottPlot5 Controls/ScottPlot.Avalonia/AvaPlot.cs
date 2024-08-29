@@ -6,8 +6,8 @@ using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
 using Avalonia.Threading;
 using ScottPlot.Control;
+using ScottPlot.Interactivity;
 using SkiaSharp;
-
 using Controls = Avalonia.Controls;
 
 namespace ScottPlot.Avalonia;
@@ -17,8 +17,10 @@ public class AvaPlot : Controls.Control, IPlotControl
     public Plot Plot { get; internal set; }
 
     public IPlotInteraction Interaction { get; set; }
+
     public IPlotMenu Menu { get; set; }
-    public Interactivity.UserInputProcessor UserInputProcessor { get; }
+
+    public UserInputProcessor UserInputProcessor { get; }
 
     public GRContext? GRContext => null;
 
@@ -26,11 +28,11 @@ public class AvaPlot : Controls.Control, IPlotControl
 
     public AvaPlot()
     {
-        Plot = new() { PlotControl = this };
+        Plot = new Plot { PlotControl = this };
         ClipToBounds = true;
         DisplayScale = DetectDisplayScale();
         Interaction = new Interaction(this);
-        UserInputProcessor = new(Plot);
+        UserInputProcessor = new UserInputProcessor(Plot);
         Menu = new AvaPlotMenu(this);
         Focusable = true; // Required for keyboard events
         Refresh();
@@ -41,7 +43,9 @@ public class AvaPlot : Controls.Control, IPlotControl
         private readonly Plot _plot;
 
         public Rect Bounds { get; }
+
         public bool HitTest(Point p) => true;
+
         public bool Equals(ICustomDrawOperation? other) => false;
 
         public CustomDrawOp(Rect bounds, Plot plot)
@@ -57,25 +61,29 @@ public class AvaPlot : Controls.Control, IPlotControl
 
         public void Render(ImmediateDrawingContext context)
         {
-            var leaseFeature = context.TryGetFeature<ISkiaSharpApiLeaseFeature>();
-            if (leaseFeature is null) return;
+            ISkiaSharpApiLeaseFeature? leaseFeature = context.TryGetFeature<ISkiaSharpApiLeaseFeature>();
 
-            using var lease = leaseFeature.Lease();
-            PixelRect rect = new(0, (float)Bounds.Width, (float)Bounds.Height, 0);
+            if (leaseFeature is null)
+            {
+                return;
+            }
+
+            using ISkiaSharpApiLease? lease = leaseFeature.Lease();
+            PixelRect rect = new PixelRect(0, (float)Bounds.Width, (float)Bounds.Height, 0);
             _plot.Render(lease.SkCanvas, rect);
         }
     }
 
     public override void Render(DrawingContext context)
     {
-        Rect controlBounds = new(Bounds.Size);
-        CustomDrawOp customDrawOp = new(controlBounds, Plot);
+        Rect controlBounds = new Rect(Bounds.Size);
+        CustomDrawOp customDrawOp = new CustomDrawOp(controlBounds, Plot);
         context.Custom(customDrawOp);
     }
 
     public void Reset()
     {
-        Plot plot = new() { PlotControl = this };
+        Plot plot = new Plot { PlotControl = this };
         Reset(plot);
     }
 
@@ -153,9 +161,8 @@ public class AvaPlot : Controls.Control, IPlotControl
     }
 
     public float DetectDisplayScale()
-    {
-        // TODO: improve support for DPI scale detection
-        // https://github.com/ScottPlot/ScottPlot/issues/2760
-        return 1.0f;
-    }
+        =>
+            // TODO: improve support for DPI scale detection
+            // https://github.com/ScottPlot/ScottPlot/issues/2760
+            1.0f;
 }

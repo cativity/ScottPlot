@@ -1,15 +1,17 @@
-﻿namespace ScottPlotTests.RenderTests;
+﻿using ScottPlot.Plottables;
 
-internal class MultiAxis_Tests
+namespace ScottPlotTests.RenderTests;
+
+internal class MultiAxisTests
 {
     [Test]
     public void Test_MultiAxis_Memory()
     {
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
-        myPlot.Add.Signal(Generate.Sin(51, mult: 0.01));
+        myPlot.Add.Signal(Generate.Sin(51, 0.01));
 
-        var sig2 = myPlot.Add.Signal(Generate.Cos(51, mult: 100));
+        Signal sig2 = myPlot.Add.Signal(Generate.Cos(51, 100));
         sig2.Axes.YAxis = myPlot.Axes.AddLeftAxis();
 
         myPlot.SaveTestImage();
@@ -26,10 +28,10 @@ internal class MultiAxis_Tests
     [Test]
     public void Test_MultiAxis_Remove()
     {
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
-        myPlot.Add.Signal(Generate.Sin(51, mult: 10));
-        var sig2 = myPlot.Add.Signal(Generate.Cos(51, mult: 1));
+        myPlot.Add.Signal(Generate.Sin(51, 10));
+        Signal sig2 = myPlot.Add.Signal(Generate.Cos(51, 1));
 
         // create an additional axis and setup the second signal to use it
         IYAxis secondYAxis = myPlot.Axes.AddLeftAxis();
@@ -47,9 +49,9 @@ internal class MultiAxis_Tests
     [Test]
     public void Test_RightAxis_NoLeftAxis()
     {
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
-        var sig = myPlot.Add.Signal(Generate.Sin());
+        Signal sig = myPlot.Add.Signal(Generate.Sin());
         sig.Axes.YAxis = myPlot.Axes.Right;
 
         myPlot.Axes.Left.Range.HasBeenSet.Should().BeFalse();

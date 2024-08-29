@@ -2,5 +2,5 @@
 
 public interface IMinorTickGenerator
 {
-    IEnumerable<double> GetMinorTicks(double[] majorTicks, CoordinateRange visibleRange);
+    List<double> GetMinorTicks(double[] majorTicks, CoordinateRange visibleRange);
 }

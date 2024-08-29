@@ -1,49 +1,51 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
 namespace ScottPlot.WPF;
 
-[System.ComponentModel.ToolboxItem(false)]
-[System.ComponentModel.DesignTimeVisible(true)]
-[TemplatePart(Name = PART_SKElement, Type = typeof(SkiaSharp.Views.WPF.SKGLElement))]
+[ToolboxItem(false)]
+[DesignTimeVisible(true)]
+[TemplatePart(Name = _partSkElement, Type = typeof(SKGLElement))]
 public class WpfPlotGL : WpfPlotBase
 {
-    private const string PART_SKElement = "PART_SKElement";
+    private const string _partSkElement = "PART_SKElement";
 
-    private SkiaSharp.Views.WPF.SKGLElement? SKElement;
+    private SKGLElement? _skElement;
 
-    protected override FrameworkElement PlotFrameworkElement => SKElement!;
-    public override GRContext GRContext => SKElement?.GRContext ?? GRContext.CreateGl();
+    protected override FrameworkElement PlotFrameworkElement => _skElement!;
+
+    public override GRContext GRContext => _skElement?.GrContext ?? GRContext.CreateGl();
 
     static WpfPlotGL()
     {
-        DefaultStyleKeyProperty.OverrideMetadata(
-            forType: typeof(WpfPlotGL),
-            typeMetadata: new FrameworkPropertyMetadata(typeof(WpfPlotGL)));
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfPlotGL), new FrameworkPropertyMetadata(typeof(WpfPlotGL)));
     }
-
 
     public override void OnApplyTemplate()
     {
-        SKElement = Template.FindName(PART_SKElement, this) as SkiaSharp.Views.WPF.SKGLElement;
+        _skElement = Template.FindName(_partSkElement, this) as SKGLElement;
 
-        if (SKElement == null)
-            return;
-
-        SKElement.PaintSurface += (sender, e) =>
+        if (_skElement is null)
         {
-            float width = (float)e.Surface.Canvas.LocalClipBounds.Width;
-            float height = (float)e.Surface.Canvas.LocalClipBounds.Height;
-            PixelRect rect = new(0, width, height, 0);
+            return;
+        }
+
+        _skElement.PaintSurface += (sender, e) =>
+        {
+            float width = e.Surface.Canvas.LocalClipBounds.Width;
+            float height = e.Surface.Canvas.LocalClipBounds.Height;
+            PixelRect rect = new PixelRect(0, width, height, 0);
             Plot.Render(e.Surface.Canvas, rect);
         };
 
-        SKElement.MouseDown += SKElement_MouseDown;
-        SKElement.MouseUp += SKElement_MouseUp;
-        SKElement.MouseMove += SKElement_MouseMove;
-        SKElement.MouseWheel += SKElement_MouseWheel;
-        SKElement.KeyDown += SKElement_KeyDown;
-        SKElement.KeyUp += SKElement_KeyUp;
+        _skElement.MouseDown += SKElement_MouseDown;
+        _skElement.MouseUp += SKElement_MouseUp;
+        _skElement.MouseMove += SKElement_MouseMove;
+        _skElement.MouseWheel += SKElement_MouseWheel;
+        _skElement.KeyDown += SKElement_KeyDown;
+        _skElement.KeyUp += SKElement_KeyUp;
     }
 
     public override void Refresh()
@@ -51,10 +53,10 @@ public class WpfPlotGL : WpfPlotBase
         if (!CheckAccess())
         {
             Dispatcher.BeginInvoke(Refresh);
+
             return;
         }
 
-        SKElement?.InvalidateVisual();
+        _skElement?.InvalidateVisual();
     }
-
 }

@@ -4,14 +4,12 @@ public class RegenerateTicks : IRenderAction
 {
     public void Render(RenderPack rp)
     {
-        var xAxesWithData = rp.Plot.PlottableList.Select(x => x.Axes.XAxis).Distinct();
-        foreach (IXAxis xAxis in xAxesWithData)
+        foreach (IXAxis xAxis in rp.Plot.PlottableList.Select(static x => x.Axes.XAxis).OfType<IXAxis>().Distinct())
         {
             xAxis.RegenerateTicks(rp.DataRect.Width);
         }
 
-        var yAxesWithData = rp.Plot.PlottableList.Select(x => x.Axes.YAxis).Distinct();
-        foreach (IYAxis yAxis in yAxesWithData)
+        foreach (IYAxis yAxis in rp.Plot.PlottableList.Select(static x => x.Axes.YAxis).OfType<IYAxis>().Distinct())
         {
             yAxis.RegenerateTicks(rp.DataRect.Height);
         }

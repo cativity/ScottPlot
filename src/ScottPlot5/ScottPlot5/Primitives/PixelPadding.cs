@@ -1,7 +1,7 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// Represents the size (in pixels) of padding on all edges of a rectangle
+///     Represents the size (in pixels) of padding on all edges of a rectangle
 /// </summary>
 public struct PixelPadding
 {
@@ -10,8 +10,9 @@ public struct PixelPadding
     public float Bottom;
     public float Top;
 
-    public float Horizontal => Left + Right;
-    public float Vertical => Top + Bottom;
+    public readonly float Horizontal => Left + Right;
+
+    public readonly float Vertical => Top + Bottom;
 
     public PixelPadding(float padding)
     {
@@ -55,5 +56,5 @@ public struct PixelPadding
 
     public void Contract(float amount) => Expand(-amount);
 
-    public static PixelPadding Zero => new();
+    public static PixelPadding Zero => new PixelPadding();
 }

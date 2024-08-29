@@ -7,20 +7,13 @@ namespace ScottPlot.Palettes;
 
 public class Redness : IPalette
 {
-    public string Name { get; } = "Redness";
+    public string Name => "Redness";
 
-    public string Description { get; } = string.Empty;
+    public string Description => string.Empty;
 
-    public Color[] Colors { get; } = Color.FromHex(HexColors);
+    public Color[] Colors { get; } = Color.FromHex(_hexColors);
 
-    private static readonly string[] HexColors =
-    {
-        "#FF0000", "#FF4F00", "#FFA900", "#900303", "#FF8181"
-    };
+    private static readonly string[] _hexColors = ["#FF0000", "#FF4F00", "#FFA900", "#900303", "#FF8181"];
 
-    public Color GetColor(int index)
-    {
-        return Colors[index % Colors.Length];
-    }
+    public Color GetColor(int index) => Colors[index % Colors.Length];
 }
-

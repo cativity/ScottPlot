@@ -1,10 +1,12 @@
-﻿namespace ScottPlot.PlotStyles;
+﻿using ScottPlot.Palettes;
+
+namespace ScottPlot.PlotStyles;
 
 public class Dark : PlotStyle
 {
     public Dark()
     {
-        Palette = new Palettes.Penumbra();
+        Palette = new Penumbra();
         AxisColor = Color.FromHex("#d7d7d7");
         GridMajorLineColor = Color.FromHex("#404040");
         FigureBackgroundColor = Color.FromHex("#181818");

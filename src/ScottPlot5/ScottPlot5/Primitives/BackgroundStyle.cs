@@ -4,16 +4,20 @@ public class BackgroundStyle : IDisposable
 {
     public Color Color { get; set; } = Colors.White;
 
-    private SKBitmap? SKBitmap { get; set; } = null;
-    public ImagePosition ImagePosition { get; set; } = ImagePosition.Stretch;
-    public bool AntiAlias = true;
+    private SKBitmap? SKBitmap { get; set; }
 
-    public Image? _Image;
+    public ImagePosition ImagePosition { get; set; } = ImagePosition.Stretch;
+
+    public bool AntiAlias { get; set; } = true;
+
+    private Image? _image;
+
     public Image? Image
     {
-        get => _Image; set
+        get => _image;
+        set
         {
-            _Image = value;
+            _image = value;
 
             if (value is not null)
             {
@@ -26,18 +30,15 @@ public class BackgroundStyle : IDisposable
     public void Dispose()
     {
         SKBitmap?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
-    public PixelRect GetImageRect(PixelRect targetRect)
-    {
-        return Image is null
-            ? PixelRect.Zero
-            : ImagePosition.GetRect(Image.Size, targetRect);
-    }
+    public PixelRect GetImageRect(PixelRect targetRect) => Image is null ? PixelRect.Zero : ImagePosition.GetRect(Image.Size, targetRect);
 
     public void Render(SKCanvas canvas, PixelRect target)
     {
-        using SKPaint paint = new() { Color = Color.ToSKColor() };
+        using SKPaint paint = new SKPaint();
+        paint.Color = Color.ToSKColor();
         Drawing.FillRectangle(canvas, target, paint);
 
         if (Image is not null)

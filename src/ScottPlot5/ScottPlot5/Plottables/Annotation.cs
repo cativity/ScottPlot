@@ -3,18 +3,22 @@
 public class Annotation : LabelStyleProperties, IPlottable, IHasLabel
 {
     public bool IsVisible { get; set; } = true;
+
     public IAxes Axes { get; set; } = new Axes();
+
     public IEnumerable<LegendItem> LegendItems => LegendItem.None;
 
-    public override LabelStyle LabelStyle { get; set; } = new() { ShadowColor = Colors.Black.WithAlpha(.2) };
+    public override LabelStyle LabelStyle { get; set; } = new LabelStyle { ShadowColor = Colors.Black.WithAlpha(.2) };
 
-    [Obsolete("Interact properties in this class (e.g., LabelFontColor) or properties of LabelStyle")]
-    public LabelStyle Label { get => LabelStyle; set => LabelStyle = value; }
+    //[Obsolete("Interact properties in this class (e.g., LabelFontColor) or properties of LabelStyle")]
+    //public LabelStyle Label { get => LabelStyle; set => LabelStyle = value; }
 
     public string Text { get => LabelText; set => LabelText = value; }
 
     public Alignment Alignment { get; set; } = Alignment.UpperLeft;
+
     public float OffsetX { get; set; } = 10;
+
     public float OffsetY { get; set; } = 10;
 
     public AxisLimits GetAxisLimits() => AxisLimits.NoLimits;
@@ -22,9 +26,11 @@ public class Annotation : LabelStyleProperties, IPlottable, IHasLabel
     public virtual void Render(RenderPack rp)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
         Pixel px = LabelStyle.GetRenderLocation(rp.DataRect, Alignment, OffsetX, OffsetY, paint);
 

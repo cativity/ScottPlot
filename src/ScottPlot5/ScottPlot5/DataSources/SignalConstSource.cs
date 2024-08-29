@@ -3,13 +3,15 @@
 public class SignalConstSource<T>
     where T : struct, IComparable
 {
-    public readonly SegmentedTree<T> SegmentedTree = new();
+    public readonly SegmentedTree<T> SegmentedTree = new SegmentedTree<T>();
 
     public readonly T[] Ys;
     public readonly double Period;
 
-    public double XOffset = 0;
-    public double YOffset = 0;
+    public double XOffset { get; set; } = 0;
+
+    public double YOffset { get; set; } = 0;
+
     public int MinRenderIndex = 0;
     public int MaxRenderIndex = int.MaxValue;
 
@@ -20,9 +22,11 @@ public class SignalConstSource<T>
         SegmentedTree.SourceArray = ys;
         MaxRenderIndex = ys.Length - 1;
     }
+
     public AxisLimits GetAxisLimits()
     {
         SegmentedTree.MinMaxRangeQuery(0, Ys.Length - 1, out double low, out double high);
+
         return new AxisLimits(0, Ys.Length * Period, low, high);
     }
 
@@ -43,37 +47,47 @@ public class SignalConstSource<T>
     {
         int xMinIndex = GetIndex(xMin, false);
         int xMaxIndex = GetIndex(xMax, false);
+
         return xMaxIndex >= MinRenderIndex && xMinIndex <= MaxRenderIndex;
     }
 
     public SignalRangeY GetLimitsY(int firstIndex, int lastIndex)
     {
         SegmentedTree.MinMaxRangeQuery(firstIndex, lastIndex, out double min, out double max);
-        return new(min, max);
+
+        return new SignalRangeY(min, max);
     }
 
     public List<PixelColumn> GetPixelColumns(IAxes axes)
     {
-        List<PixelColumn> cols = new();
+        List<PixelColumn> cols = [];
 
         // ensure the same i1 isn't sampled twice
         int latIndex1 = int.MinValue;
+
         for (int xPixelIndex = 0; xPixelIndex < (int)axes.DataRect.Width; xPixelIndex++)
         {
             float xPixel = axes.DataRect.Left + xPixelIndex;
             double xRangeMin = axes.GetCoordinateX(xPixel);
+            Debug.Assert(axes.XAxis is not null);
             float xUnitsPerPixel = (float)(axes.XAxis.Width / axes.DataRect.Width);
             double xRangeMax = xRangeMin + xUnitsPerPixel;
 
             // off the edge of the data
-            if (RangeContainsSignal(xRangeMin, xRangeMax) == false)
+            if (!RangeContainsSignal(xRangeMin, xRangeMax))
+            {
                 continue;
+            }
 
             // determine column limits horizontally
             int i1 = GetIndex(xRangeMin, true);
             int i2 = GetIndex(xRangeMax, true);
+
             if (i1 == latIndex1)
+            {
                 continue;
+            }
+
             latIndex1 = i1;
 
             // first and last Y vales for this column

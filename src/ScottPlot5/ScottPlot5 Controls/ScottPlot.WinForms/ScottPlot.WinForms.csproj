@@ -2,7 +2,8 @@
 
     <PropertyGroup>
         <!-- targets must be in this order for the control to appear in the toolbox -->
-        <TargetFrameworks>net6.0-windows;net462</TargetFrameworks>
+        <TargetFrameworks>net8.0-windows</TargetFrameworks>
+        <!--<TargetFrameworks>net6.0-windows;net462</TargetFrameworks>-->
         <Nullable>enable</Nullable>
         <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>disable</ImplicitUsings>
@@ -47,9 +48,15 @@
 
     <!-- Package dependencies -->
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="*">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
+        <PackageReference Include="Roslynator.Analyzers" Version="4.12.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="2.*" />
         <ProjectReference Include="..\..\ScottPlot5\ScottPlot.csproj" />

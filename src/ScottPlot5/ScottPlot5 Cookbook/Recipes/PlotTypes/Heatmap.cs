@@ -1,72 +1,82 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using ScottPlot.Colormaps;
+using ScottPlot.Panels;
+using ScottPlot.TickGenerators;
+using Range = ScottPlot.Range;
 
 namespace ScottPlotCookbook.Recipes.PlotTypes;
 
+[UsedImplicitly]
 public class Heatmap : ICategory
 {
     public string Chapter => "Plot Types";
+
     public string CategoryName => "Heatmap";
-    public string CategoryDescription => "Heatmaps display values from 2D data " +
-        "as an image with cells of different intensities";
+
+    public string CategoryDescription => "Heatmaps display values from 2D data as an image with cells of different intensities";
 
     public class HeatmapQuickstart : RecipeBase
     {
         public override string Name => "Heatmap Quickstart";
+
         public override string Description => "Heatmaps can be created from 2D arrays";
 
         [Test]
         public override void Execute()
         {
             double[,] data = SampleData.MonaLisa();
-            myPlot.Add.Heatmap(data);
+            MyPlot.Add.Heatmap(data);
         }
     }
 
     public class HeatmapInverted : RecipeBase
     {
         public override string Name => "Inverted Heatmap";
-        public override string Description => "Heatmaps can be inverted by " +
-            "reversing the order of colors in the colormap";
+
+        public override string Description => "Heatmaps can be inverted by reversing the order of colors in the colormap";
 
         [Test]
         public override void Execute()
         {
             double[,] data = SampleData.MonaLisa();
 
-            var hm1 = myPlot.Add.Heatmap(data);
-            hm1.Colormap = new ScottPlot.Colormaps.Viridis();
-            hm1.Position = new(0, 65, 0, 100);
+            ScottPlot.Plottables.Heatmap hm1 = MyPlot.Add.Heatmap(data);
+            hm1.Colormap = new Viridis();
+            hm1.Position = new CoordinateRect(0, 65, 0, 100);
 
-            var hm2 = myPlot.Add.Heatmap(data);
-            hm2.Colormap = new ScottPlot.Colormaps.Viridis().Reversed();
-            hm2.Position = new(100, 165, 0, 100);
+            ScottPlot.Plottables.Heatmap hm2 = MyPlot.Add.Heatmap(data);
+            hm2.Colormap = new Viridis().Reversed();
+            hm2.Position = new CoordinateRect(100, 165, 0, 100);
         }
     }
 
     public class HeatmapColormap : RecipeBase
     {
         public override string Name => "Heatmap with custom Colormap";
-        public override string Description => "A heatmap's Colormap is the logic " +
-            "used to convert from cell value to cell color and they can set by the user. " +
-            "ScottPlot comes with many common colormaps, " +
-            "but users may implement IColormap and apply their own. " +
-            "A colorbar can be added to indicate which colors map to which values.";
+
+        public override string Description
+            => "A heatmap's Colormap is the logic "
+               + "used to convert from cell value to cell color and they can set by the user. "
+               + "ScottPlot comes with many common colormaps, "
+               + "but users may implement IColormap and apply their own. "
+               + "A colorbar can be added to indicate which colors map to which values.";
 
         [Test]
         public override void Execute()
         {
             double[,] data = SampleData.MonaLisa();
 
-            var hm1 = myPlot.Add.Heatmap(data);
-            hm1.Colormap = new ScottPlot.Colormaps.Turbo();
+            ScottPlot.Plottables.Heatmap hm1 = MyPlot.Add.Heatmap(data);
+            hm1.Colormap = new Turbo();
 
-            myPlot.Add.ColorBar(hm1);
+            MyPlot.Add.ColorBar(hm1);
         }
     }
 
     public class HeatmapMultipleColorbar : RecipeBase
     {
         public override string Name => "Multiple Colorbars";
+
         public override string Description => "Multiple colorbars may be added to plots.";
 
         [Test]
@@ -74,34 +84,34 @@ public class Heatmap : ICategory
         {
             double[,] data = SampleData.MonaLisa();
 
-            var hm1 = myPlot.Add.Heatmap(data);
-            hm1.Extent = new(0, 1, 0, 1);
-            hm1.Colormap = new ScottPlot.Colormaps.Turbo();
-            myPlot.Add.ColorBar(hm1);
+            ScottPlot.Plottables.Heatmap hm1 = MyPlot.Add.Heatmap(data);
+            hm1.Extent = new CoordinateRect(0, 1, 0, 1);
+            hm1.Colormap = new Turbo();
+            MyPlot.Add.ColorBar(hm1);
 
-            var hm2 = myPlot.Add.Heatmap(data);
-            hm2.Extent = new(1.5, 2.5, 0, 1);
-            hm2.Colormap = new ScottPlot.Colormaps.Viridis();
-            myPlot.Add.ColorBar(hm2);
+            ScottPlot.Plottables.Heatmap hm2 = MyPlot.Add.Heatmap(data);
+            hm2.Extent = new CoordinateRect(1.5, 2.5, 0, 1);
+            hm2.Colormap = new Viridis();
+            MyPlot.Add.ColorBar(hm2);
         }
     }
 
     public class ColorbarTitle : RecipeBase
     {
         public override string Name => "Colorbar Title";
-        public override string Description => "A colorbar displays a colormap " +
-            "on an edge of the plot, and it has an optional label which can " +
-            "be customized to display a title.";
+
+        public override string Description
+            => "A colorbar displays a colormap on an edge of the plot, and it has an optional label which can be customized to display a title.";
 
         [Test]
         public override void Execute()
         {
             double[,] data = SampleData.MonaLisa();
 
-            var hm = myPlot.Add.Heatmap(data);
-            hm.Colormap = new ScottPlot.Colormaps.Turbo();
+            ScottPlot.Plottables.Heatmap hm = MyPlot.Add.Heatmap(data);
+            hm.Colormap = new Turbo();
 
-            var cb = myPlot.Add.ColorBar(hm);
+            ColorBar cb = MyPlot.Add.ColorBar(hm);
             cb.Label = "Intensity";
             cb.LabelStyle.FontSize = 24;
         }
@@ -110,37 +120,34 @@ public class Heatmap : ICategory
     public class ColorbarTickFormatter : RecipeBase
     {
         public override string Name => "Colorbar Tick Formatter";
-        public override string Description => "Colorbars have an optional custom tick " +
-            "formatter that allows users to control the string format of tick labels.";
+
+        public override string Description
+            => "Colorbars have an optional custom tick formatter that allows users to control the string format of tick labels.";
 
         [Test]
         public override void Execute()
         {
             double[,] data = SampleData.MonaLisa();
 
-            var hm = myPlot.Add.Heatmap(data);
-            var cb = myPlot.Add.ColorBar(hm);
-
-            // create a static function containing the string formatting logic
-            static string CustomFormatter(double position)
-            {
-                return $"{Math.Round(position / 2.55)} %";
-            }
+            ScottPlot.Plottables.Heatmap hm = MyPlot.Add.Heatmap(data);
+            ColorBar cb = MyPlot.Add.ColorBar(hm);
 
             // create a custom tick generator using your custom label formatter
-            ScottPlot.TickGenerators.NumericAutomatic myTickGenerator = new()
-            {
-                LabelFormatter = CustomFormatter
-            };
 
             // tell the colorbar to use the custom tick generator
-            cb.Axis.TickGenerator = myTickGenerator;
+            cb.Axis.TickGenerator = new NumericAutomatic { LabelFormatter = CustomFormatter };
+
+            return;
+
+            // create a static function containing the string formatting logic
+            static string CustomFormatter(double position) => $"{Math.Round(position / 2.55)} %";
         }
     }
 
     public class HeatmapFlip : RecipeBase
     {
         public override string Name => "Flipped Heatmap";
+
         public override string Description => "Heatmaps can be flipped horizontally and/or vertically";
 
         [Test]
@@ -148,33 +155,34 @@ public class Heatmap : ICategory
         {
             double[,] data = SampleData.MonaLisa();
 
-            myPlot.Add.Text("default", 0, 1.5);
-            var hm1 = myPlot.Add.Heatmap(data);
+            MyPlot.Add.Text("default", 0, 1.5);
+            ScottPlot.Plottables.Heatmap hm1 = MyPlot.Add.Heatmap(data);
             hm1.Position = new CoordinateRect(0, 1, 0, 1);
 
-            myPlot.Add.Text("flip X", 2, 1.5);
-            var hm2 = myPlot.Add.Heatmap(data);
+            MyPlot.Add.Text("flip X", 2, 1.5);
+            ScottPlot.Plottables.Heatmap hm2 = MyPlot.Add.Heatmap(data);
             hm2.Position = new CoordinateRect(2, 3, 0, 1);
             hm2.FlipHorizontally = true;
 
-            myPlot.Add.Text("flip Y", 4, 1.5);
-            var hm3 = myPlot.Add.Heatmap(data);
+            MyPlot.Add.Text("flip Y", 4, 1.5);
+            ScottPlot.Plottables.Heatmap hm3 = MyPlot.Add.Heatmap(data);
             hm3.Position = new CoordinateRect(4, 5, 0, 1);
             hm3.FlipVertically = true;
 
-            myPlot.Add.Text("flip X&Y", 6, 1.5);
-            var hm4 = myPlot.Add.Heatmap(data);
+            MyPlot.Add.Text("flip X&Y", 6, 1.5);
+            ScottPlot.Plottables.Heatmap hm4 = MyPlot.Add.Heatmap(data);
             hm4.Position = new CoordinateRect(6, 7, 0, 1);
             hm4.FlipHorizontally = true;
             hm4.FlipVertically = true;
 
-            myPlot.Axes.SetLimits(-.5, 7.5, -1, 2);
+            MyPlot.Axes.SetLimits(-.5, 7.5, -1, 2);
         }
     }
 
     public class HeatmapSmooth : RecipeBase
     {
         public override string Name => "Smooth Heatmap";
+
         public override string Description => "Enable the `Smooth` property for anti-aliased rendering";
 
         [Test]
@@ -182,12 +190,12 @@ public class Heatmap : ICategory
         {
             double[,] data = SampleData.MonaLisa();
 
-            myPlot.Add.Text("Smooth = false", 0, 1.1);
-            var hm1 = myPlot.Add.Heatmap(data);
+            MyPlot.Add.Text("Smooth = false", 0, 1.1);
+            ScottPlot.Plottables.Heatmap hm1 = MyPlot.Add.Heatmap(data);
             hm1.Position = new CoordinateRect(0, 1, 0, 1);
 
-            myPlot.Add.Text("Smooth = true", 1.1, 1.1);
-            var hm2 = myPlot.Add.Heatmap(data);
+            MyPlot.Add.Text("Smooth = true", 1.1, 1.1);
+            ScottPlot.Plottables.Heatmap hm2 = MyPlot.Add.Heatmap(data);
             hm2.Position = new CoordinateRect(1.1, 2.1, 0, 1);
             hm2.Smooth = true;
         }
@@ -196,6 +204,7 @@ public class Heatmap : ICategory
     public class HeatmapTransparentCells : RecipeBase
     {
         public override string Name => "Transparent Cells";
+
         public override string Description => "Assign double.NaN to a heatmap cell to make it transparent.";
 
         [Test]
@@ -203,6 +212,7 @@ public class Heatmap : ICategory
         {
             // start with 2D data and set some cells to NaN
             double[,] data = SampleData.MonaLisa();
+
             for (int y = 20; y < 80; y++)
             {
                 for (int x = 20; x < 60; x++)
@@ -212,16 +222,16 @@ public class Heatmap : ICategory
             }
 
             // create a line chart
-            myPlot.Add.Signal(Generate.Sin());
-            myPlot.Add.Signal(Generate.Cos());
+            MyPlot.Add.Signal(Generate.Sin());
+            MyPlot.Add.Signal(Generate.Cos());
 
             // plot the heatmap on top of the line chart
-            var hm1 = myPlot.Add.Heatmap(data);
-            hm1.Position = new(10, 35, -1.5, .5);
+            ScottPlot.Plottables.Heatmap hm1 = MyPlot.Add.Heatmap(data);
+            hm1.Position = new CoordinateRect(10, 35, -1.5, .5);
 
             // the NaN transparency color can be customized
-            var hm2 = myPlot.Add.Heatmap(data);
-            hm2.Position = new(40, 55, -.5, .75);
+            ScottPlot.Plottables.Heatmap hm2 = MyPlot.Add.Heatmap(data);
+            hm2.Position = new CoordinateRect(40, 55, -.5, .75);
             hm2.NaNCellColor = Colors.Magenta.WithAlpha(.4);
         }
     }
@@ -229,6 +239,7 @@ public class Heatmap : ICategory
     public class HeatmapGlobalTransparency : RecipeBase
     {
         public override string Name => "Global Transparency";
+
         public override string Description => "The transparency of the entire heatmap can be adjusted.";
 
         [Test]
@@ -237,12 +248,12 @@ public class Heatmap : ICategory
             double[,] data = SampleData.MonaLisa();
 
             // create a line chart
-            myPlot.Add.Signal(Generate.Sin());
-            myPlot.Add.Signal(Generate.Cos());
+            MyPlot.Add.Signal(Generate.Sin());
+            MyPlot.Add.Signal(Generate.Cos());
 
             // plot the heatmap on top of the line chart
-            var hm = myPlot.Add.Heatmap(data);
-            hm.Position = new(10, 35, -1.5, .5);
+            ScottPlot.Plottables.Heatmap hm = MyPlot.Add.Heatmap(data);
+            hm.Position = new CoordinateRect(10, 35, -1.5, .5);
             hm.Opacity = 0.5;
         }
     }
@@ -250,8 +261,9 @@ public class Heatmap : ICategory
     public class HeatmapAlphaMap : RecipeBase
     {
         public override string Name => "Alpha Map";
-        public override string Description => "An alpha map (a 2d array of byte values) can be used to " +
-            "apply custom transparency to each cell of a heatmap.";
+
+        public override string Description
+            => "An alpha map (a 2d array of byte values) can be used to apply custom transparency to each cell of a heatmap.";
 
         [Test]
         public override void Execute()
@@ -273,12 +285,12 @@ public class Heatmap : ICategory
             }
 
             // create a line chart
-            myPlot.Add.Signal(Generate.Sin());
-            myPlot.Add.Signal(Generate.Cos());
+            MyPlot.Add.Signal(Generate.Sin());
+            MyPlot.Add.Signal(Generate.Cos());
 
             // plot the heatmap on top of the line chart
-            var hm = myPlot.Add.Heatmap(data);
-            hm.Position = new(10, 35, -1.5, .5);
+            ScottPlot.Plottables.Heatmap hm = MyPlot.Add.Heatmap(data);
+            hm.Position = new CoordinateRect(10, 35, -1.5, .5);
             hm.AlphaMap = alphaMap;
         }
     }
@@ -286,47 +298,43 @@ public class Heatmap : ICategory
     public class FramelessHeatmap : RecipeBase
     {
         public override string Name => "Frameless Heatmap";
-        public override string Description => "A frameless heatmap can be achieved by disabling " +
-            "axis labels and ticks, then setting the margins to 0 so the data area tightly fits the data.";
+
+        public override string Description
+            => "A frameless heatmap can be achieved by disabling "
+               + "axis labels and ticks, then setting the margins to 0 so the data area tightly fits the data.";
 
         [Test]
         public override void Execute()
         {
-            double[,] data = {
-                { 1, 2, 3 },
-                { 4, 5, 6 },
-                { 7, 8, 9 },
-            };
+            double[,] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, };
 
             // add a heatmap to the plot
-            myPlot.Add.Heatmap(data);
+            MyPlot.Add.Heatmap(data);
 
             // hide axes on all edges of the figure
-            myPlot.Layout.Frameless();
+            MyPlot.Layout.Frameless();
 
             // disable padding around the heatmap data
-            myPlot.Axes.Margins(0, 0);
+            MyPlot.Axes.Margins(0, 0);
         }
     }
 
     public class HeatmapCellAlignment : RecipeBase
     {
         public override string Name => "HeatmapCellAlignment";
-        public override string Description => "Heatmap cells are aligned in their centers by default. " +
-            "This means that the bottom left cell will be centered at (0, 0), and its lower left corner will be " +
-            "to the lower left of the origin. Setting sell alignment to lower left causes the lower left of the " +
-            "heatmap to be exactly at (0, 0).";
+
+        public override string Description
+            => "Heatmap cells are aligned in their centers by default. "
+               + "This means that the bottom left cell will be centered at (0, 0), and its lower left corner will be "
+               + "to the lower left of the origin. Setting sell alignment to lower left causes the lower left of the "
+               + "heatmap to be exactly at (0, 0).";
 
         [Test]
         public override void Execute()
         {
-            double[,] data = {
-                { 1, 2, 3 },
-                { 4, 5, 6 },
-                { 7, 8, 9 },
-            };
+            double[,] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, };
 
-            var hm = myPlot.Add.Heatmap(data);
+            ScottPlot.Plottables.Heatmap hm = MyPlot.Add.Heatmap(data);
             hm.CellAlignment = Alignment.LowerLeft;
         }
     }
@@ -334,19 +342,15 @@ public class Heatmap : ICategory
     public class HeatmapCellSize : RecipeBase
     {
         public override string Name => "Heatmap Cell Size";
-        public override string Description => "Dimensions of a heatmap may be set by specifying how " +
-            "large a cell should be in pixel units.";
+
+        public override string Description => "Dimensions of a heatmap may be set by specifying how large a cell should be in pixel units.";
 
         [Test]
         public override void Execute()
         {
-            double[,] data = {
-                { 1, 2, 3 },
-                { 4, 5, 6 },
-                { 7, 8, 9 },
-            };
+            double[,] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, };
 
-            var hm = myPlot.Add.Heatmap(data);
+            ScottPlot.Plottables.Heatmap hm = MyPlot.Add.Heatmap(data);
             hm.CellAlignment = Alignment.LowerLeft;
             hm.CellWidth = 100;
             hm.CellHeight = 10;
@@ -356,9 +360,11 @@ public class Heatmap : ICategory
     public class HeatmapManualRange : RecipeBase
     {
         public override string Name => "Heatmap with Manual Color Range";
-        public override string Description => "The user can define the range of values " +
-            "to represent with colors in the colormap. Values outside that range will be clipped " +
-            "to the nearest color in the colormap.";
+
+        public override string Description
+            => "The user can define the range of values "
+               + "to represent with colors in the colormap. Values outside that range will be clipped "
+               + "to the nearest color in the colormap.";
 
         [Test]
         public override void Execute()
@@ -367,12 +373,12 @@ public class Heatmap : ICategory
             double[,] data = SampleData.MonaLisa();
 
             // add a heatmap and colorbar to the plot
-            var hm = myPlot.Add.Heatmap(data);
-            hm.Colormap = new ScottPlot.Colormaps.Turbo();
-            myPlot.Add.ColorBar(hm);
+            ScottPlot.Plottables.Heatmap hm = MyPlot.Add.Heatmap(data);
+            hm.Colormap = new Turbo();
+            MyPlot.Add.ColorBar(hm);
 
             // force the colormap to span a manual range of values
-            hm.ManualRange = new(50, 150);
+            hm.ManualRange = new Range(50, 150);
         }
     }
 }

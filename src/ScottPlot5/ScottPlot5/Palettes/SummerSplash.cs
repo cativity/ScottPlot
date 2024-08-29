@@ -8,19 +8,13 @@ namespace ScottPlot.Palettes;
 
 public class SummerSplash : IPalette
 {
-    public string Name { get; } = "Summer Splash";
+    public string Name => "Summer Splash";
 
-    public string Description { get; } = string.Empty;
+    public string Description => string.Empty;
 
-    public Color[] Colors { get; } = Color.FromHex(HexColors);
+    public Color[] Colors { get; } = Color.FromHex(_hexColors);
 
-    private static readonly string[] HexColors =
-    {
-        "#05445E", "#189AB4", "#75E6DA" , "#D4F1F4"
-    };
+    private static readonly string[] _hexColors = ["#05445E", "#189AB4", "#75E6DA", "#D4F1F4"];
 
-    public Color GetColor(int index)
-    {
-        return Colors[index % Colors.Length];
-    }
+    public Color GetColor(int index) => Colors[index % Colors.Length];
 }

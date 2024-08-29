@@ -7,20 +7,13 @@ namespace ScottPlot.Palettes;
 
 public class SnowStorm : IPalette
 {
-    public string Name { get; } = "Snow Storm";
+    public string Name => "Snow Storm";
 
-    public string Description { get; } = "From the " +
-        "Nord collection of palettes: https://github.com/arcticicestudio/nord";
+    public string Description => "From the Nord collection of palettes: https://github.com/arcticicestudio/nord";
 
-    public Color[] Colors { get; } = Color.FromHex(HexColors);
+    public Color[] Colors { get; } = Color.FromHex(_hexColors);
 
-    private static readonly string[] HexColors =
-    {
-        "#D8DEE9", "#E5E9F0", "#ECEFF4"
-    };
+    private static readonly string[] _hexColors = ["#D8DEE9", "#E5E9F0", "#ECEFF4"];
 
-    public Color GetColor(int index)
-    {
-        return Colors[index % Colors.Length];
-    }
+    public Color GetColor(int index) => Colors[index % Colors.Length];
 }

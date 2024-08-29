@@ -17,13 +17,13 @@ public partial class SharedAxes : Form, IDemoWindow
         formsPlot2.Plot.Add.Signal(Generate.Cos());
 
         // use fixed layout so plots remain perfectly aligned
-        PixelPadding padding = new(50, 20, 30, 5);
+        PixelPadding padding = new PixelPadding(50, 20, 30, 5);
         formsPlot1.Plot.Layout.Fixed(padding);
         formsPlot2.Plot.Layout.Fixed(padding);
 
         // update linking options
-        checkShareX.CheckedChanged += (s, e) => UpdateLinkedPlots();
-        checkShareY.CheckedChanged += (s, e) => UpdateLinkedPlots();
+        checkShareX.CheckedChanged += (_, _) => UpdateLinkedPlots();
+        checkShareY.CheckedChanged += (_, _) => UpdateLinkedPlots();
         UpdateLinkedPlots();
     }
 
@@ -34,8 +34,8 @@ public partial class SharedAxes : Form, IDemoWindow
         formsPlot2.Plot.Axes.UnlinkAll();
 
         // add new link rules based on what is checked
-        formsPlot1.Plot.Axes.Link(formsPlot2, x: checkShareX.Checked, y: checkShareY.Checked);
-        formsPlot2.Plot.Axes.Link(formsPlot1, x: checkShareX.Checked, y: checkShareY.Checked);
+        formsPlot1.Plot.Axes.Link(formsPlot2, checkShareX.Checked, checkShareY.Checked);
+        formsPlot2.Plot.Axes.Link(formsPlot1, checkShareX.Checked, checkShareY.Checked);
 
         // reset axis limits and refresh both plots
         formsPlot1.Plot.Axes.AutoScale();

@@ -1,7 +1,3 @@
-﻿using SkiaSharp;
+﻿namespace ScottPlotTests.FontTests;
 
-namespace ScottPlotTests.FontTests;
-
-internal class FontMeasurementTests
-{
-}
+internal class FontMeasurementTests;

@@ -1,24 +1,29 @@
-﻿using ScottPlot.Interactivity;
+﻿using ScottPlot.Control;
+using ScottPlot.Interactivity;
 using ScottPlot.Interactivity.UserActions;
+using Key = ScottPlot.Interactivity.Key;
 
 namespace ScottPlot.Testing;
 
 /// <summary>
-/// A plot control that renders in-memory and has
-/// functionality useful for testing interactivity.
+///     A plot control that renders in-memory and has
+///     functionality useful for testing interactivity.
 /// </summary>
 public class MockPlotControl : IPlotControl
 {
     public int Width { get; set; } = 400;
+
     public int Height { get; set; } = 300;
 
-    public Pixel Center => new(Width / 2, Height / 2);
+    public Pixel Center => new Pixel(Width / 2D, Height / 2D);
 
     public Plot Plot { get; private set; }
+
     public GRContext? GRContext => null;
 
     public IPlotInteraction Interaction { get; set; }
-    public Interactivity.UserInputProcessor UserInputProcessor { get; }
+
+    public UserInputProcessor UserInputProcessor { get; }
 
     public IPlotMenu Menu // TODO: mock menu
     {
@@ -28,27 +33,29 @@ public class MockPlotControl : IPlotControl
 
     public MockPlotControl()
     {
-        Plot = new() { PlotControl = this };
-        Interaction = new Control.Interaction(this);
-        UserInputProcessor = new(Plot) { IsEnabled = true };
+        Plot = new Plot { PlotControl = this };
+        Interaction = new Interaction(this);
+        UserInputProcessor = new UserInputProcessor(Plot) { IsEnabled = true };
 
         // force a render on startup so we can immediately use pixel drag actions
         Refresh();
     }
 
     public float DisplayScale { get; set; } = 1;
+
     public float DetectDisplayScale() => DisplayScale;
 
-    public int RefreshCount { get; private set; } = 0;
+    public int RefreshCount { get; private set; }
+
     public void Refresh()
     {
-        RefreshCount += 1;
+        RefreshCount++;
         Plot.RenderInMemory(Width, Height);
     }
 
     public void Reset()
     {
-        Reset(new Plot() { PlotControl = this });
+        Reset(new Plot { PlotControl = this });
     }
 
     public void Reset(Plot plot)
@@ -59,8 +66,9 @@ public class MockPlotControl : IPlotControl
         oldPlot.Dispose();
     }
 
-    public int ContextMenuLaunchCount { get; private set; } = 0;
-    public void ShowContextMenu(Pixel position) => ContextMenuLaunchCount += 1;
+    public int ContextMenuLaunchCount { get; private set; }
+
+    public void ShowContextMenu(Pixel position) => ++ContextMenuLaunchCount;
 
     public void ScrollWheelUp(Pixel pixel)
     {
@@ -75,14 +83,23 @@ public class MockPlotControl : IPlotControl
     }
 
     public void PressShift() => PressKey(StandardKeys.Shift);
+
     public void ReleaseShift() => ReleaseKey(StandardKeys.Shift);
+
     public void PressCtrl() => PressKey(StandardKeys.Control);
+
     public void ReleaseCtrl() => ReleaseKey(StandardKeys.Control);
+
     public void PressAlt() => PressKey(StandardKeys.Alt);
+
     public void ReleaseAlt() => ReleaseKey(StandardKeys.Alt);
+
     public void TapRightArrow() => TapKey(StandardKeys.Right);
+
     public void TapLeftArrow() => TapKey(StandardKeys.Left);
+
     public void TapUpArrow() => TapKey(StandardKeys.Up);
+
     public void TapDownArrow() => TapKey(StandardKeys.Down);
 
     public void PressKey(Key key)

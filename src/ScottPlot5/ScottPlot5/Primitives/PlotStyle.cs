@@ -1,52 +1,85 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// This object holds many common plot style customizations
-/// and facilitates switching between styles or copying styles
-/// from one plot to another.
+///     This object holds many common plot style customizations
+///     and facilitates switching between styles or copying styles
+///     from one plot to another.
 /// </summary>
 public class PlotStyle
 {
     // plot
-    public IPalette? Palette { get; set; } = null;
-    public Color? FigureBackgroundColor { get; set; } = null;
-    public Color? DataBackgroundColor { get; set; } = null;
+    public IPalette? Palette { get; set; }
+
+    public Color? FigureBackgroundColor { get; set; }
+
+    public Color? DataBackgroundColor { get; set; }
 
     // axes and grids
-    public Color? AxisColor { get; set; } = null;
-    public Color? GridMajorLineColor { get; set; } = null;
+    public Color? AxisColor { get; set; }
+
+    public Color? GridMajorLineColor { get; set; }
 
     // legend
-    public Color? LegendBackgroundColor { get; set; } = null;
-    public Color? LegendFontColor { get; set; } = null;
-    public Color? LegendOutlineColor { get; set; } = null;
+    public Color? LegendBackgroundColor { get; set; }
+
+    public Color? LegendFontColor { get; set; }
+
+    public Color? LegendOutlineColor { get; set; }
 
     /// <summary>
-    /// Apply these style settings to the given plot
+    ///     Apply these style settings to the given plot
     /// </summary>
     public void Apply(Plot plot)
     {
         // plot
-        if (FigureBackgroundColor.HasValue) plot.FigureBackground.Color = FigureBackgroundColor.Value;
-        if (DataBackgroundColor.HasValue) plot.DataBackground.Color = DataBackgroundColor.Value;
-        if (Palette is not null) plot.Add.Palette = Palette;
+        if (FigureBackgroundColor.HasValue)
+        {
+            plot.FigureBackground.Color = FigureBackgroundColor.Value;
+        }
+
+        if (DataBackgroundColor.HasValue)
+        {
+            plot.DataBackground.Color = DataBackgroundColor.Value;
+        }
+
+        if (Palette is not null)
+        {
+            plot.Add.Palette = Palette;
+        }
 
         // axes and grids
-        if (AxisColor.HasValue) plot.Axes.Color(AxisColor.Value);
-        if (GridMajorLineColor.HasValue) plot.Grid.MajorLineColor = GridMajorLineColor.Value;
+        if (AxisColor.HasValue)
+        {
+            plot.Axes.Color(AxisColor.Value);
+        }
+
+        if (GridMajorLineColor.HasValue)
+        {
+            plot.Grid.MajorLineColor = GridMajorLineColor.Value;
+        }
 
         // legend
-        if (LegendBackgroundColor.HasValue) plot.Legend.BackgroundColor = LegendBackgroundColor.Value;
-        if (LegendFontColor.HasValue) plot.Legend.FontColor = LegendFontColor.Value;
-        if (LegendOutlineColor.HasValue) plot.Legend.OutlineColor = LegendOutlineColor.Value;
+        if (LegendBackgroundColor.HasValue)
+        {
+            plot.Legend.BackgroundColor = LegendBackgroundColor.Value;
+        }
+
+        if (LegendFontColor.HasValue)
+        {
+            plot.Legend.FontColor = LegendFontColor.Value;
+        }
+
+        if (LegendOutlineColor.HasValue)
+        {
+            plot.Legend.OutlineColor = LegendOutlineColor.Value;
+        }
     }
 
     /// <summary>
-    /// Return the styles represented by the given plot
+    ///     Return the styles represented by the given plot
     /// </summary>
     public static PlotStyle FromPlot(Plot plot)
-    {
-        return new PlotStyle()
+        => new PlotStyle
         {
             // plot
             Palette = plot.Add.Palette,
@@ -62,15 +95,13 @@ public class PlotStyle
             LegendFontColor = plot.Legend.FontColor,
             LegendOutlineColor = plot.Legend.OutlineColor,
         };
-    }
 
     /// <summary>
-    /// Return a plot style with all values nulled except those
-    /// that are different than the given style
+    ///     Return a plot style with all values nulled except those
+    ///     that are different than the given style
     /// </summary>
     public PlotStyle WhereDifferentFrom(PlotStyle other)
-    {
-        return new PlotStyle()
+        => new PlotStyle
         {
             // TODO: can this be done with reflection?
 
@@ -88,5 +119,4 @@ public class PlotStyle
             LegendFontColor = LegendFontColor != other.LegendFontColor ? LegendFontColor : null,
             LegendOutlineColor = LegendOutlineColor != other.LegendOutlineColor ? LegendOutlineColor : null,
         };
-    }
 }

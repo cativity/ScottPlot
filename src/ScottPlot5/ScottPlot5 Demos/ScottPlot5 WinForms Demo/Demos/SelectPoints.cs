@@ -1,33 +1,36 @@
 ﻿using ScottPlot;
+using ScottPlot.Plottables;
+using Rectangle = ScottPlot.Plottables.Rectangle;
 
 namespace WinForms_Demo.Demos;
 
 public partial class SelectPoints : Form, IDemoWindow
 {
-    readonly Coordinates[] DataPoints;
-    Coordinates MouseDownCoordinates;
-    Coordinates MouseNowCoordinates;
-    CoordinateRect MouseSlectionRect => new(MouseDownCoordinates, MouseNowCoordinates);
-    bool MouseIsDown = false;
-    readonly ScottPlot.Plottables.Rectangle RectanglePlot;
+    private readonly Coordinates[] _dataPoints;
+    private Coordinates _mouseDownCoordinates;
+    private Coordinates _mouseNowCoordinates;
+
+    private CoordinateRect MouseSlectionRect => new CoordinateRect(_mouseDownCoordinates, _mouseNowCoordinates);
+
+    private bool _mouseIsDown;
+    private readonly Rectangle _rectanglePlot;
 
     public string Title => "Select Data Points";
 
-    public string Description => "Demonstrates how to use mouse events " +
-        "to draw a rectangle around data points to select them";
+    public string Description => "Demonstrates how to use mouse events to draw a rectangle around data points to select them";
 
     public SelectPoints()
     {
         InitializeComponent();
 
         // add sample data to the plot and keep track of the points
-        DataPoints = Generate.RandomCoordinates(100);
-        var sp = formsPlot1.Plot.Add.Scatter(DataPoints);
+        _dataPoints = Generate.RandomCoordinates(100);
+        Scatter sp = formsPlot1.Plot.Add.Scatter(_dataPoints);
         sp.LineWidth = 0;
 
         // add a rectangle we can use as a selection indicator
-        RectanglePlot = formsPlot1.Plot.Add.Rectangle(0, 0, 0, 0);
-        RectanglePlot.FillStyle.Color = Colors.Red.WithAlpha(.2);
+        _rectanglePlot = formsPlot1.Plot.Add.Rectangle(0, 0, 0, 0);
+        _rectanglePlot.FillStyle.Color = Colors.Red.WithAlpha(.2);
 
         // add events to trigger in response to mouse actions
         formsPlot1.MouseMove += FormsPlot1_MouseMove;
@@ -38,32 +41,35 @@ public partial class SelectPoints : Form, IDemoWindow
     private void FormsPlot1_MouseDown(object? sender, MouseEventArgs e)
     {
         if (!checkBox1.Checked)
+        {
             return;
+        }
 
-        MouseIsDown = true;
-        RectanglePlot.IsVisible = true;
-        MouseDownCoordinates = formsPlot1.Plot.GetCoordinates(e.X, e.Y);
+        _mouseIsDown = true;
+        _rectanglePlot.IsVisible = true;
+        _mouseDownCoordinates = formsPlot1.Plot.GetCoordinates(e.X, e.Y);
         formsPlot1.Interaction.Disable(); // disable the default click-drag-pan behavior
     }
 
     private void FormsPlot1_MouseUp(object? sender, MouseEventArgs e)
     {
         if (!checkBox1.Checked)
+        {
             return;
+        }
 
-        MouseIsDown = false;
-        RectanglePlot.IsVisible = false;
+        _mouseIsDown = false;
+        _rectanglePlot.IsVisible = false;
 
         // clear old markers
-        formsPlot1.Plot.Remove<ScottPlot.Plottables.Marker>();
+        formsPlot1.Plot.Remove<Marker>();
 
         // identify selectedPoints
-        var selectedPoints = DataPoints.Where(x => MouseSlectionRect.Contains(x));
+        IEnumerable<Coordinates> selectedPoints = _dataPoints.Where(MouseSlectionRect.Contains);
 
         // add markers to outline selected points
-        foreach (Coordinates selectedPoint in selectedPoints)
+        foreach (Marker newMarker in selectedPoints.Select(selectedPoint => formsPlot1.Plot.Add.Marker(selectedPoint)))
         {
-            var newMarker = formsPlot1.Plot.Add.Marker(selectedPoint);
             newMarker.MarkerStyle.Shape = MarkerShape.OpenCircle;
             newMarker.MarkerStyle.Size = 10;
             newMarker.MarkerStyle.FillColor = Colors.Red.WithAlpha(.2);
@@ -72,8 +78,8 @@ public partial class SelectPoints : Form, IDemoWindow
         }
 
         // reset the mouse positions
-        MouseDownCoordinates = Coordinates.NaN;
-        MouseNowCoordinates = Coordinates.NaN;
+        _mouseDownCoordinates = Coordinates.NaN;
+        _mouseNowCoordinates = Coordinates.NaN;
 
         // update the plot
         formsPlot1.Refresh();
@@ -82,11 +88,13 @@ public partial class SelectPoints : Form, IDemoWindow
 
     private void FormsPlot1_MouseMove(object? sender, MouseEventArgs e)
     {
-        if (!MouseIsDown || !checkBox1.Checked)
+        if (!_mouseIsDown || !checkBox1.Checked)
+        {
             return;
+        }
 
-        MouseNowCoordinates = formsPlot1.Plot.GetCoordinates(e.X, e.Y);
-        RectanglePlot.CoordinateRect = MouseSlectionRect;
+        _mouseNowCoordinates = formsPlot1.Plot.GetCoordinates(e.X, e.Y);
+        _rectanglePlot.CoordinateRect = MouseSlectionRect;
         formsPlot1.Refresh();
     }
 }

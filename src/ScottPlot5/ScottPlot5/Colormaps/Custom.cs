@@ -1,20 +1,13 @@
 ﻿namespace ScottPlot.Colormaps;
 
-public class Custom : ColormapBase
+public class Custom(Color[] colors, string name = "custom") : ColormapBase
 {
-    public override string Name { get; }
-
-    private readonly Color[] Colors;
-
-    public Custom(Color[] colors, string name = "custom")
-    {
-        Colors = colors;
-        Name = name;
-    }
+    public override string Name { get; } = name;
 
     public override Color GetColor(double position)
     {
-        int index = (int)((Colors.Length - 1) * position);
-        return Colors[index];
+        int index = (int)((colors.Length - 1) * position);
+
+        return colors[index];
     }
 }

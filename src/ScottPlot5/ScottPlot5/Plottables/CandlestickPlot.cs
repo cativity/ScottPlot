@@ -6,68 +6,55 @@ public class CandlestickPlot(IOHLCSource data) : IPlottable
 
     public IAxes Axes { get; set; } = new Axes();
 
-    private readonly IOHLCSource Data = data;
+    /// <summary>
+    ///     X position of candles is sourced from the OHLC's DateTime by default.
+    ///     If this option is enabled, X position will be an ascending integers starting at 0 with no gaps.
+    /// </summary>
+    public bool Sequential { get; set; }
 
     /// <summary>
-    /// X position of candles is sourced from the OHLC's DateTime by default.
-    /// If this option is enabled, X position will be an ascending integers starting at 0 with no gaps.
+    ///     Fractional width of the candle symbol relative to its time span
     /// </summary>
-    public bool Sequential { get; set; } = false;
+    public double SymbolWidth { get; set; } = .8;
 
-    /// <summary>
-    /// Fractional width of the candle symbol relative to its time span
-    /// </summary>
-    public double SymbolWidth = .8;
+    public LineStyle RisingLineStyle { get; } = new LineStyle { Color = Color.FromHex("#089981"), Width = 2, };
 
-    public LineStyle RisingLineStyle { get; } = new()
-    {
-        Color = Color.FromHex("#089981"),
-        Width = 2,
-    };
+    public LineStyle FallingLineStyle { get; } = new LineStyle { Color = Color.FromHex("#f23645"), Width = 2, };
 
-    public LineStyle FallingLineStyle { get; } = new()
-    {
-        Color = Color.FromHex("#f23645"),
-        Width = 2,
-    };
+    public FillStyle RisingFillStyle { get; } = new FillStyle { Color = Color.FromHex("#089981"), };
 
-    public FillStyle RisingFillStyle { get; } = new()
-    {
-        Color = Color.FromHex("#089981"),
-    };
+    public FillStyle FallingFillStyle { get; } = new FillStyle { Color = Color.FromHex("#f23645"), };
 
-    public FillStyle FallingFillStyle { get; } = new()
-    {
-        Color = Color.FromHex("#f23645"),
-    };
-
-    public IEnumerable<LegendItem> LegendItems => Enumerable.Empty<LegendItem>();
+    public IEnumerable<LegendItem> LegendItems => [];
 
     public AxisLimits GetAxisLimits()
     {
-        AxisLimits limits = Data.GetLimits(); // TODO: Data.GetSequentialLimits()
+        AxisLimits limits = data.GetLimits(); // TODO: Data.GetSequentialLimits()
 
         if (Sequential)
         {
-            limits = new AxisLimits(0, Data.GetOHLCs().Count, limits.Bottom, limits.Top);
+            return new AxisLimits(0, data.GetOHLCs().Count, limits.Bottom, limits.Top);
+        }
+
+        List<OHLC> ohlcs = data.GetOHLCs();
+
+        if (ohlcs.Count == 0)
+        {
             return limits;
         }
 
-        List<OHLC> ohlcs = Data.GetOHLCs();
-        if (ohlcs.Count == 0)
-            return limits;
+        double left = ohlcs[0].DateTime.ToOADate() - (ohlcs[0].TimeSpan.TotalDays / 2);
+        double right = ohlcs[^1].DateTime.ToOADate() + (ohlcs[^1].TimeSpan.TotalDays / 2);
 
-        double left = ohlcs.First().DateTime.ToOADate() - ohlcs.First().TimeSpan.TotalDays / 2;
-        double right = ohlcs.Last().DateTime.ToOADate() + ohlcs.Last().TimeSpan.TotalDays / 2;
-
-        return new(left, right, limits.Bottom, limits.Top);
+        return new AxisLimits(left, right, limits.Bottom, limits.Top);
     }
 
     public virtual void Render(RenderPack rp)
     {
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
-        IList<OHLC> ohlcs = Data.GetOHLCs();
+        IList<OHLC> ohlcs = data.GetOHLCs();
+
         for (int i = 0; i < ohlcs.Count; i++)
         {
             OHLC ohlc = ohlcs[i];
@@ -78,8 +65,11 @@ public class CandlestickPlot(IOHLCSource data) : IPlottable
             float top = Axes.GetPixelY(ohlc.High);
             float bottom = Axes.GetPixelY(ohlc.Low);
 
-            float center, left, right;
-            if (Sequential == false)
+            float center,
+                  left,
+                  right;
+
+            if (!Sequential)
             {
                 double centerNumber = NumericConversion.ToNumber(ohlc.DateTime);
                 center = Axes.GetPixelX(centerNumber);
@@ -90,19 +80,21 @@ public class CandlestickPlot(IOHLCSource data) : IPlottable
             else
             {
                 center = Axes.GetPixelX(i);
-                left = Axes.GetPixelX(i - (float)SymbolWidth / 2);
-                right = Axes.GetPixelX(i + (float)SymbolWidth / 2);
+                left = Axes.GetPixelX(i - ((float)SymbolWidth / 2));
+                right = Axes.GetPixelX(i + ((float)SymbolWidth / 2));
             }
 
             // do not render OHLCs off the screen
             if (right < rp.DataRect.Left || left > rp.DataRect.Right)
+            {
                 continue;
+            }
 
             float open = Axes.GetPixelY(ohlc.Open);
             float close = Axes.GetPixelY(ohlc.Close);
 
             // center line
-            using SKPath path = new();
+            using SKPath path = new SKPath();
             path.MoveTo(center, top);
             path.LineTo(center, bottom);
 
@@ -110,7 +102,8 @@ public class CandlestickPlot(IOHLCSource data) : IPlottable
             rp.Canvas.DrawPath(path, paint);
 
             // rectangle
-            SKRect rect = new(left, Math.Max(open, close), right, Math.Min(open, close));
+            SKRect rect = new SKRect(left, Math.Max(open, close), right, Math.Min(open, close));
+
             if (open != close)
             {
                 fillStyle.ApplyToPaint(paint, rect.ToPixelRect());

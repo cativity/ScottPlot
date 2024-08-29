@@ -1,14 +1,13 @@
-﻿using Eto.Forms;
+﻿using Eto;
+using Eto.Forms;
 
+namespace Sandbox.Eto;
 
-namespace Sandbox.Eto
+internal static class Program
 {
-    static class Program
+    [STAThread]
+    private static void Main(string[] args)
     {
-        [STAThread]
-        static void Main(string[] args)
-        {
-            new Application(global::Eto.Platform.Detect).Run(new MainWindow());
-        }
+        new Application(Platform.Detect).Run(new MainWindow());
     }
 }

@@ -4,19 +4,13 @@ namespace ScottPlot.Palettes;
 
 public class Nero : IPalette
 {
-    public string Name { get; } = "Nero";
+    public string Name => "Nero";
 
-    public string Description { get; } = string.Empty;
+    public string Description => string.Empty;
 
-    public Color[] Colors { get; } = Color.FromHex(HexColors);
+    public Color[] Colors { get; } = Color.FromHex(_hexColors);
 
-    private static readonly string[] HexColors =
-    {
-        "#013A20","#478C5C","#94C973","#BACC81","#CDD193"
-    };
+    private static readonly string[] _hexColors = ["#013A20", "#478C5C", "#94C973", "#BACC81", "#CDD193"];
 
-    public Color GetColor(int index)
-    {
-        return Colors[index % Colors.Length];
-    }
+    public Color GetColor(int index) => Colors[index % Colors.Length];
 }

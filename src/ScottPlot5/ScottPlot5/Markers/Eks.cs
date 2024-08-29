@@ -6,7 +6,7 @@ internal class Eks : IMarker
     {
         float radius = size / 2;
 
-        SKPath path = new();
+        SKPath path = new SKPath();
         path.MoveTo(center.X + radius, center.Y + radius);
         path.LineTo(center.X - radius, center.Y - radius);
         path.MoveTo(center.X - radius, center.Y + radius);
@@ -15,4 +15,3 @@ internal class Eks : IMarker
         Drawing.DrawPath(canvas, paint, path, markerStyle.LineStyle);
     }
 }
-

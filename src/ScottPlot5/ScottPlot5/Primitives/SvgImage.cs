@@ -2,26 +2,30 @@
 
 internal class SvgImage : IDisposable
 {
-    private bool IsDisposed = false;
+    private bool _isDisposed = false;
     public readonly int Width;
     public readonly int Height;
-    private readonly MemoryStream Stream;
+    private readonly MemoryStream _stream;
+
     public SKCanvas Canvas => _canvas ?? throw new InvalidOperationException("Canvas can NOT be access after rendering!");
+
     private SKCanvas? _canvas;
 
     public SvgImage(int width, int height)
     {
         Width = width;
         Height = height;
-        Stream = new MemoryStream();
-        SKRect rect = new(0, 0, Width, Height);
-        _canvas = SKSvgCanvas.Create(rect, Stream);
+        _stream = new MemoryStream();
+        SKRect rect = new SKRect(0, 0, Width, Height);
+        _canvas = SKSvgCanvas.Create(rect, _stream);
     }
+
     ~SvgImage()
     {
         // Release unmanaged resources if the Dispose method wasn't called explicitly
         Dispose(false);
     }
+
     public string GetXml()
     {
         // The SVG document is not guaranteed to be valid until the canvas is disposed
@@ -29,7 +33,8 @@ internal class SvgImage : IDisposable
         _canvas?.Dispose();
         // Canvas no more relevant
         _canvas = null;
-        return Encoding.UTF8.GetString(Stream.ToArray());
+
+        return Encoding.UTF8.GetString(_stream.ToArray());
     }
 
     public void Dispose()
@@ -37,21 +42,23 @@ internal class SvgImage : IDisposable
         Dispose(true);
         GC.SuppressFinalize(this); // Prevent the finalizer from running
     }
+
     protected virtual void Dispose(bool disposing)
     {
-        if (!IsDisposed)
+        if (_isDisposed)
         {
-            if (disposing)
-            {
-                // Dispose managed resources
-                _canvas?.Dispose();
-                Stream.Dispose();
-            }
-
-            // Dispose unmanaged resources
-
-            IsDisposed = true;
+            return;
         }
-    }
 
+        if (disposing)
+        {
+            // Dispose managed resources
+            _canvas?.Dispose();
+            _stream.Dispose();
+        }
+
+        // Dispose unmanaged resources
+
+        _isDisposed = true;
+    }
 }

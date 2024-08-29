@@ -6,14 +6,15 @@ using System;
 namespace ScottPlot.Plottables;
 
 /// <summary>
-/// This plot type uses an OpenGL shader for rendering.
-/// It extends <see cref="ScatterGL"/> to provide additional customizations.
+///     This plot type uses an OpenGL shader for rendering.
+///     It extends <see cref="ScatterGL" /> to provide additional customizations.
 /// </summary>
 public class ScatterGLCustom : ScatterGL
 {
     private IMarkersDrawProgram? JoinsProgram;
 
-    public ScatterGLCustom(IScatterSource data, IPlotControl control) : base(data, control)
+    public ScatterGLCustom(IScatterSource data, IPlotControl control)
+        : base(data, control)
     {
     }
 
@@ -33,16 +34,16 @@ public class ScatterGLCustom : ScatterGL
         context.ResetContext();
 
         if (!GLHasBeenInitialized)
+        {
             InitializeGL();
+        }
 
-        GL.Viewport(
-            x: (int)Axes.DataRect.Left,
-            y: (int)(height - Axes.DataRect.Bottom),
-            width: (int)Axes.DataRect.Width,
-            height: (int)Axes.DataRect.Height);
+        GL.Viewport((int)Axes.DataRect.Left, (int)(height - Axes.DataRect.Bottom), (int)Axes.DataRect.Width, (int)Axes.DataRect.Height);
 
         if (LinesProgram is null)
+        {
             throw new NullReferenceException(nameof(LinesProgram));
+        }
 
         LinesProgram.Use();
         LinesProgram.SetTransform(CalcTransform());
@@ -55,12 +56,14 @@ public class ScatterGLCustom : ScatterGL
 
         // skip joins rendering if they are completely overlapped by markers
         if (MarkerStyle.Size < LineStyle.Width
-                || MarkerStyle.Shape == MarkerShape.OpenSquare
-                || MarkerStyle.Shape == MarkerShape.OpenCircle
-                || MarkerStyle.Shape == MarkerShape.None)
+            || MarkerStyle.Shape == MarkerShape.OpenSquare
+            || MarkerStyle.Shape == MarkerShape.OpenCircle
+            || MarkerStyle.Shape == MarkerShape.None)
         {
             if (JoinsProgram is null)
+            {
                 throw new NullReferenceException(nameof(JoinsProgram));
+            }
 
             JoinsProgram.Use();
             JoinsProgram.SetTransform(CalcTransform());
@@ -70,6 +73,7 @@ public class ScatterGLCustom : ScatterGL
             GL.BindVertexArray(VertexArrayObject);
             GL.DrawArrays(PrimitiveType.Points, 0, VerticesCount);
         }
+
         RenderMarkers();
     }
 }

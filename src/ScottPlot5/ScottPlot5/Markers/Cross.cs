@@ -6,7 +6,7 @@ internal class Cross : IMarker
     {
         float offset = size / 2;
 
-        var path = new SKPath();
+        SKPath path = new SKPath();
         path.MoveTo(center.X + offset, center.Y);
         path.LineTo(center.X - offset, center.Y);
         path.MoveTo(center.X, center.Y + offset);

@@ -1,13 +1,13 @@
 ﻿using GraphicalTestRunner;
-using ScottPlot;
 using System.Data;
 using System.Diagnostics;
+using Color = System.Drawing.Color;
 
 namespace Graphical_Test_Runner;
 
 public partial class CollectionCompareForm : Form
 {
-    FolderComparisonResults? FolderResults = null;
+    private FolderComparisonResults? _folderResults;
 
     public CollectionCompareForm()
     {
@@ -15,17 +15,11 @@ public partial class CollectionCompareForm : Form
         Width = 890;
         Height = 832;
 
-        var docsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        string docsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         string defaultFolder = Path.Combine(docsFolder, @"ScottPlot\TestImageCollections");
-        if (Directory.Exists(defaultFolder))
-        {
-            defaultFolder = Directory.GetDirectories(defaultFolder).Last();
-        }
-        else
-        {
-            defaultFolder = "C:/path/to/old/images/";
-        }
+
+        defaultFolder = Directory.Exists(defaultFolder) ? Directory.GetDirectories(defaultFolder).Last() : "C:/path/to/old/images/";
 
         tbBefore.Text = defaultFolder;
         tbAfter.Text = Path.GetFullPath(@"..\..\..\..\..\..\..\dev\www\cookbook\5.0\images");
@@ -35,31 +29,42 @@ public partial class CollectionCompareForm : Form
         btnAnalyze.Click += (s, e) =>
         {
             if (btnAnalyze.Text == "Analyze")
+            {
                 Analyze();
+            }
             else
-                Stop = true;
+            {
+                _stop = true;
+            }
         };
 
         dataGridView1.SelectionChanged += (s, e) =>
         {
-            if (FolderResults is null)
+            if (_folderResults is null)
+            {
                 return;
+            }
 
             int selectedRowCount = dataGridView1.Rows.GetRowCount(DataGridViewElementStates.Selected);
-            if (selectedRowCount == 0)
-                return;
 
-            string selectedFilename = dataGridView1.SelectedRows[0].Cells[0].Value.ToString()!;
-            int index = Array.IndexOf(FolderResults.Filenames, selectedFilename);
-            string path1 = FolderResults.GetPath1(index);
-            string path2 = FolderResults.GetPath2(index);
+            if (selectedRowCount == 0)
+            {
+                return;
+            }
+
+            string? selectedFilename = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
+            int index = Array.IndexOf(_folderResults.Filenames, selectedFilename);
+            string path1 = _folderResults.GetPath1(index);
+            string path2 = _folderResults.GetPath2(index);
             imageComparer1.SetImages(path1, path2);
         };
 
         dataGridView1.Sorted += (s, e) =>
         {
             for (int i = 0; i < dataGridView1.RowCount; i++)
+            {
                 Recolor(dataGridView1.Rows[i]);
+            }
         };
 
         btnUT.Click += (s, e) =>
@@ -87,16 +92,16 @@ public partial class CollectionCompareForm : Form
         };
     }
 
-    private bool Stop = false;
+    private bool _stop;
 
     private void Analyze()
     {
-        FolderResults = new(tbBefore.Text, tbAfter.Text);
+        _folderResults = new FolderComparisonResults(tbBefore.Text, tbAfter.Text);
 
-        Stop = false;
+        _stop = false;
         btnAnalyze.Text = "Stop";
 
-        DataTable table = new();
+        DataTable table = new DataTable();
         table.Columns.Add("name", typeof(string));
         table.Columns.Add("change", typeof(string));
         table.Columns.Add("total diff", typeof(double));
@@ -111,38 +116,44 @@ public partial class CollectionCompareForm : Form
         dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
         dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-        int MAX_IMAGE_COUNT = int.MaxValue;
+        const int maxImageCount = int.MaxValue;
         //MAX_IMAGE_COUNT = 20;
 
-        for (int i = 0; i < Math.Min(FolderResults.ImageDiffs.Length, MAX_IMAGE_COUNT); i++)
+        for (int i = 0; i < Math.Min(_folderResults.ImageDiffs.Length, maxImageCount); i++)
         {
-            if (Stop)
+            if (_stop)
+            {
                 break;
+            }
 
-            progressBar1.Maximum = FolderResults.ImageDiffs.Length;
+            progressBar1.Maximum = _folderResults.ImageDiffs.Length;
             progressBar1.Value = i + 1;
-            Text = $"Analyzing {i + 1} of {FolderResults.ImageDiffs.Length}...";
-            FolderResults.Analyze(i);
+            Text = $"Analyzing {i + 1} of {_folderResults.ImageDiffs.Length}...";
+            _folderResults.Analyze(i);
             Application.DoEvents();
 
-            if (checkHideUnchanged.Checked && FolderResults.Summaries[i] == "unchanged")
+            if (checkHideUnchanged.Checked && _folderResults.Summaries[i] == "unchanged")
+            {
                 continue;
+            }
 
             DataRow row = table.NewRow();
-            row.SetField(0, FolderResults.Filenames[i]);
-            row.SetField(1, FolderResults.Summaries[i]);
-            row.SetField(2, FolderResults.ImageDiffs[i]?.TotalDifference);
-            row.SetField(3, FolderResults.ImageDiffs[i]?.MaxDifference);
+            row.SetField(0, _folderResults.Filenames[i]);
+            row.SetField(1, _folderResults.Summaries[i]);
+            row.SetField(2, _folderResults.ImageDiffs[i]?.TotalDifference);
+            row.SetField(3, _folderResults.ImageDiffs[i]?.MaxDifference);
 
             table.Rows.Add(row);
             Recolor(dataGridView1.Rows[table.Rows.Count - 1]);
             dataGridView1.AutoResizeColumns();
 
             if (table.Rows.Count == 1)
+            {
                 dataGridView1.Rows[0].Selected = true;
+            }
         }
 
-        Text = $"Analyzed {FolderResults.ImageDiffs.Length} image pairs";
+        Text = $"Analyzed {_folderResults.ImageDiffs.Length} image pairs";
         progressBar1.Value = 0;
         btnAnalyze.Text = "Analyze";
     }
@@ -151,7 +162,7 @@ public partial class CollectionCompareForm : Form
     {
         if (row.Cells[1].Value.ToString() == "changed")
         {
-            row.Cells[1].Style.BackColor = System.Drawing.Color.Yellow;
+            row.Cells[1].Style.BackColor = Color.Yellow;
         }
         else if (row.Cells[1].Value.ToString() == "unchanged")
         {
@@ -163,7 +174,7 @@ public partial class CollectionCompareForm : Form
         }
         else
         {
-            row.Cells[1].Style.BackColor = System.Drawing.Color.LightSteelBlue;
+            row.Cells[1].Style.BackColor = Color.LightSteelBlue;
         }
     }
 }

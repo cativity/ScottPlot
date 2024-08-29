@@ -1,24 +1,13 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// Represents a distance in pixel units
+///     Represents a distance in pixel units
 /// </summary>
-public readonly struct PixelLength
+public readonly struct PixelLength(float length)
 {
-    public readonly float Length;
+    public readonly float Length = length;
 
-    public PixelLength(float length)
-    {
-        Length = length;
-    }
+    public static implicit operator PixelLength(float length) => new PixelLength(length);
 
-    public static implicit operator PixelLength(float length)
-    {
-        return new PixelLength(length);
-    }
-
-    public override string ToString()
-    {
-        return $"{Length} pixels";
-    }
+    public override string ToString() => $"{Length} pixels";
 }

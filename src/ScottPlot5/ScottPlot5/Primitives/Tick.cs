@@ -20,13 +20,7 @@ public readonly struct Tick
         IsMajor = isMajor;
     }
 
-    public static Tick Major(double position, string label)
-    {
-        return new Tick(position, label, true);
-    }
+    public static Tick Major(double position, string label) => new Tick(position, label, true);
 
-    public static Tick Minor(double position)
-    {
-        return new Tick(position, string.Empty, false);
-    }
+    public static Tick Minor(double position) => new Tick(position, string.Empty, false);
 }

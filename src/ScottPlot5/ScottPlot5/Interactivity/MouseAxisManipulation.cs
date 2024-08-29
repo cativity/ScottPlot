@@ -1,36 +1,35 @@
 ﻿namespace ScottPlot.Interactivity;
 
 /// <summary>
-/// This class stores logic for changing axis limits according to mouse inputs in pixel units.
-/// Methods here are similar to those in <see cref="Plot.Axes"/> except their inputs are all mouse events.
+///     This class stores logic for changing axis limits according to mouse inputs in pixel units.
+///     Methods here are similar to those in <see cref="Plot.Axes" /> except their inputs are all mouse events.
 /// </summary>
 public static class MouseAxisManipulation
 {
-    public static void MouseWheelZoom(Plot plot, double fracX, double fracY, Pixel pixel, bool ChangeOpposingAxesTogether)
+    public static void MouseWheelZoom(Plot plot, double fracX, double fracY, Pixel pixel, bool changeOpposingAxesTogether)
     {
         pixel = pixel.Divide(plot.ScaleFactorF);
-        MultiAxisLimits originalLimits = new(plot);
+        MultiAxisLimits originalLimits = new MultiAxisLimits(plot);
         PixelRect dataRect = plot.RenderManager.LastRender.DataRect;
 
         // restore MouseDown limits
         originalLimits.Recall();
 
-        var axisUnderMouse = plot.GetAxis(pixel);
-
-        if (axisUnderMouse is not null)
+        if (plot.GetAxis(pixel) is IAxis axisUnderMouse)
         {
-            if (ChangeOpposingAxesTogether && axisUnderMouse.IsHorizontal())
+            if (changeOpposingAxesTogether && axisUnderMouse.IsHorizontal())
             {
                 plot.Axes.XAxes.ForEach(xAxis => xAxis.Range.ZoomFrac(fracX, xAxis.GetCoordinate(pixel.X, dataRect)));
             }
-            if (ChangeOpposingAxesTogether && axisUnderMouse.IsVertical())
+
+            if (changeOpposingAxesTogether && axisUnderMouse.IsVertical())
             {
                 plot.Axes.YAxes.ForEach(yAxis => yAxis.Range.ZoomFrac(fracY, yAxis.GetCoordinate(pixel.Y, dataRect)));
             }
             else
             {
                 double frac = axisUnderMouse.IsHorizontal() ? fracX : fracY;
-                float scaledCoord = (axisUnderMouse.IsHorizontal() ? pixel.X : pixel.Y);
+                float scaledCoord = axisUnderMouse.IsHorizontal() ? pixel.X : pixel.Y;
                 axisUnderMouse.Range.ZoomFrac(frac, axisUnderMouse.GetCoordinate(scaledCoord, dataRect));
             }
         }
@@ -54,11 +53,9 @@ public static class MouseAxisManipulation
         float scaledDeltaX = pixelDeltaX / plot.ScaleFactorF;
         float scaledDeltaY = pixelDeltaY / plot.ScaleFactorF;
 
-        IAxis? axisUnderMouse = plot.GetAxis(mouseDown);
-
         PixelRect dataRect = plot.RenderManager.LastRender.DataRect;
 
-        if (axisUnderMouse is not null)
+        if (plot.GetAxis(mouseDown) is IAxis axisUnderMouse)
         {
             if (control.Interaction.ChangeOpposingAxesTogether && axisUnderMouse.IsHorizontal())
             {
@@ -92,11 +89,9 @@ public static class MouseAxisManipulation
         float pixelDeltaX = mouseNow.X - mouseDown.X;
         float pixelDeltaY = -(mouseNow.Y - mouseDown.Y);
 
-        IAxis? axisUnderMouse = plot.GetAxis(mouseDown);
-
         PixelRect lastRenderDataRect = plot.RenderManager.LastRender.DataRect;
 
-        if (axisUnderMouse is not null)
+        if (plot.GetAxis(mouseDown) is IAxis axisUnderMouse)
         {
             if (control.Interaction.ChangeOpposingAxesTogether && axisUnderMouse.IsHorizontal())
             {
@@ -127,16 +122,18 @@ public static class MouseAxisManipulation
         mouseDown = mouseDown.Divide(plot.ScaleFactorF);
         mouseNow = mouseNow.Divide(plot.ScaleFactorF);
 
-        IAxis? axisUnderMouse = plot.GetAxis(mouseDown);
-        if (axisUnderMouse is not null)
+        if (plot.GetAxis(mouseDown) is IAxis axisUnderMouse)
         {
             // Do not respond if the axis under the mouse has no data
             // https://github.com/ScottPlot/ScottPlot/issues/3810
-            var xAxes = plot.GetPlottables().Select(x => (IAxis)x.Axes.XAxis);
-            var yAxes = plot.GetPlottables().Select(x => (IAxis)x.Axes.YAxis);
+            IEnumerable<IAxis> xAxes = plot.GetPlottables().Select(static x => x.Axes.XAxis).Cast<IAxis>();
+            IEnumerable<IAxis> yAxes = plot.GetPlottables().Select(static x => x.Axes.YAxis).Cast<IAxis>();
             bool axesIsUsedByPlottables = xAxes.Contains(axisUnderMouse) || yAxes.Contains(axisUnderMouse);
+
             if (!axesIsUsedByPlottables)
+            {
                 return;
+            }
 
             // NOTE: this function only changes shape of the rectangle.
             // It doesn't modify axis limits, so no action is required on the opposite axis.
@@ -156,6 +153,7 @@ public static class MouseAxisManipulation
         if (axisUnderMouse is null)
         {
             plot.Axes.AutoScale();
+
             return;
         }
 

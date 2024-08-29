@@ -1,4 +1,6 @@
-﻿namespace ScottPlot.Maui;
+﻿using ScottPlot.Control;
+
+namespace ScottPlot.Maui;
 
 internal static class MauiPlotExtensions
 {
@@ -7,38 +9,29 @@ internal static class MauiPlotExtensions
         Point? position = e.GetPosition(null);
 
         if (position is null)
-            return new(double.NaN, double.NaN);
+        {
+            return new Pixel(double.NaN, double.NaN);
+        }
 
-        Point tmpPos = new Point(
-                position.Value.X * plot.DisplayScale,
-                position.Value.X * plot.DisplayScale
-            );
+        Point tmpPos = new Point(position.Value.X * plot.DisplayScale, position.Value.X * plot.DisplayScale);
 
         return tmpPos.ToPixel();
     }
 
-    internal static Pixel ToPixel(this Point p)
-    {
-        return new Pixel((float)p.X, (float)p.Y);
-    }
+    internal static Pixel ToPixel(this Point p) => new((float)p.X, (float)p.Y);
 
-    internal static Point ToPoint(this Pixel p)
-    {
-        return new Point(p.X, p.Y);
-    }
+    internal static Point ToPoint(this Pixel p) => new(p.X, p.Y);
 
-    internal static Control.MouseButton ToButton(this TappedEventArgs e, MauiPlot plot)
+    internal static MouseButton ToButton(this TappedEventArgs e, MauiPlot plot)
     {
-        var props = e.GetPosition(plot);
-        switch (e.Buttons)
+        //Point? props = e.GetPosition(plot);
+
+        return e.Buttons switch
         {
-            case ButtonsMask.Primary:
-                return Control.MouseButton.Left;
-            case ButtonsMask.Secondary:
-                return Control.MouseButton.Right;
-            default:
-                return Control.MouseButton.Unknown;
-        }
+            ButtonsMask.Primary => MouseButton.Left,
+            ButtonsMask.Secondary => MouseButton.Right,
+            _ => MouseButton.Unknown,
+        };
     }
 
     /*internal static Control.Key Key(this KeyRoutedEventArgs e)
@@ -61,4 +54,3 @@ internal static class MauiPlotExtensions
         };
     }*/
 }
-

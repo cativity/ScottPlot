@@ -41,7 +41,7 @@ partial class CustomMenu
         btnDefault.TabIndex = 0;
         btnDefault.Text = "Default";
         btnDefault.UseVisualStyleBackColor = true;
-        btnDefault.Click += btnDefault_Click;
+        btnDefault.Click += BtnDefault_Click;
         // 
         // btnCustom
         // 
@@ -51,7 +51,7 @@ partial class CustomMenu
         btnCustom.TabIndex = 1;
         btnCustom.Text = "Custom";
         btnCustom.UseVisualStyleBackColor = true;
-        btnCustom.Click += btnCustom_Click;
+        btnCustom.Click += BtnCustom_Click;
         // 
         // formsPlot1
         // 

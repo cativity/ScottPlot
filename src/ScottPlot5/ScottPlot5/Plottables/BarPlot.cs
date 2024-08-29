@@ -1,26 +1,25 @@
 ﻿namespace ScottPlot.Plottables;
 
 /// <summary>
-/// Holds a collection of individually styled bars
+///     Holds a collection of individually styled bars
 /// </summary>
 public class BarPlot : IPlottable, IHasLegendText
 {
-    [Obsolete("use LegendText")]
-    public string Label { get => LegendText; set => LegendText = value; }
+    //[Obsolete("use LegendText")]
+    //public string Label { get => LegendText; set => LegendText = value; }
+
     public string LegendText { get; set; } = string.Empty;
 
     public bool IsVisible { get; set; } = true;
+
     public IAxes Axes { get; set; } = new Axes();
 
     public IEnumerable<Bar> Bars { get; set; } // TODO: bars data source
 
-    public LabelStyle ValueLabelStyle { get; set; } = new()
-    {
-        Alignment = Alignment.LowerCenter,
-    };
+    public LabelStyle ValueLabelStyle { get; set; } = new LabelStyle { Alignment = Alignment.LowerCenter, };
 
     /// <summary>
-    /// Apply a fill color to all bars
+    ///     Apply a fill color to all bars
     /// </summary>
     public Color Color
     {
@@ -34,7 +33,7 @@ public class BarPlot : IPlottable, IHasLegendText
     }
 
     /// <summary>
-    /// Define orientation for all bars
+    ///     Define orientation for all bars
     /// </summary>
     public bool Horizontal
     {
@@ -42,22 +41,14 @@ public class BarPlot : IPlottable, IHasLegendText
         {
             foreach (Bar bar in Bars)
             {
-                bar.Orientation = value
-                    ? Orientation.Horizontal
-                    : Orientation.Vertical;
+                bar.Orientation = value ? Orientation.Horizontal : Orientation.Vertical;
             }
         }
     }
 
-    public BarPlot(Bar bar)
-    {
-        Bars = new Bar[] { bar };
-    }
+    public BarPlot(Bar bar) => Bars = [bar];
 
-    public BarPlot(IEnumerable<Bar> bars)
-    {
-        Bars = bars;
-    }
+    public BarPlot(IEnumerable<Bar> bars) => Bars = bars;
 
     public IEnumerable<LegendItem> LegendItems
     {
@@ -68,11 +59,7 @@ public class BarPlot : IPlottable, IHasLegendText
                 return LegendItem.None;
             }
 
-            LegendItem item = new()
-            {
-                LabelText = LegendText,
-                FillColor = Bars.First().FillColor,
-            };
+            LegendItem item = new LegendItem { LabelText = LegendText, FillColor = Bars.First().FillColor, };
 
             return LegendItem.Single(item);
         }
@@ -80,7 +67,7 @@ public class BarPlot : IPlottable, IHasLegendText
 
     public AxisLimits GetAxisLimits()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
         foreach (Bar bar in Bars)
         {
@@ -92,7 +79,7 @@ public class BarPlot : IPlottable, IHasLegendText
 
     public virtual void Render(RenderPack rp)
     {
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
         foreach (Bar bar in Bars)
         {

@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:Sandbox.WPF"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="ScottPlot 5 - WPF Sandbox" 
+        Title="ScottPlot 5 - WPF Sandbox"
         Height="600" Width="800">
     <ScottPlot:WpfPlot Name="WpfPlot1" />
 </Window>

@@ -1,8 +1,6 @@
-﻿using System;
+﻿namespace ScottPlot;
 
-namespace ScottPlot;
-
-#nullable enable
+//#nullable enable
 
 public static class DataOperations
 {
@@ -22,9 +20,9 @@ public static class DataOperations
             {
                 double sum = 0;
                 sum += values[y * 2, x * 2];
-                sum += values[y * 2 + 1, x * 2];
-                sum += values[y * 2, x * 2 + 1];
-                sum += values[y * 2 + 1, x * 2 + 1];
+                sum += values[(y * 2) + 1, x * 2];
+                sum += values[y * 2, (x * 2) + 1];
+                sum += values[(y * 2) + 1, (x * 2) + 1];
                 output[y, x] = sum / 4;
             }
         }

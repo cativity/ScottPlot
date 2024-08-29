@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 
 namespace ScottPlotTests.CodeTests;
 
@@ -8,26 +7,21 @@ internal class CodeRequirementTests
     [Test]
     public void Test_AllTestMethods_HaveTestAttribute()
     {
-        var testMethods = Assembly.GetAssembly(typeof(CodeRequirementTests))!
-            .GetTypes()
-            .SelectMany(t => t.GetMethods())
-            .Where(x => x.Name.StartsWith("Test_"));
+        IEnumerable<MethodInfo> testMethods = Assembly.GetAssembly(typeof(CodeRequirementTests))?.GetTypes()
+                                                      .SelectMany(static t => t.GetMethods())
+                                                      .Where(static x => x.Name.StartsWith("Test_")) ?? [];
 
         foreach (MethodInfo mi in testMethods)
         {
-            bool hasTestAttribute = mi.CustomAttributes
-                .Select(x => x.AttributeType)
-                .Contains(typeof(TestAttribute));
+            bool hasTestAttribute = mi.CustomAttributes.Select(static x => x.AttributeType).Contains(typeof(TestAttribute));
 
-            bool hasParameterizedTestAttribute = mi.CustomAttributes
-                .Select(x => x.AttributeType)
-                .Contains(typeof(TestCaseAttribute));
+            bool hasParameterizedTestAttribute = mi.CustomAttributes.Select(static x => x.AttributeType).Contains(typeof(TestCaseAttribute));
 
             bool hasRequireAttribute = hasTestAttribute || hasParameterizedTestAttribute;
 
             if (!hasRequireAttribute)
             {
-                string name = $"{mi.DeclaringType}." + mi.ToString()!.Split(" ")[1];
+                string name = $"{mi.DeclaringType}." + mi.ToString()?.Split(" ")[1];
                 string message = $"{name} is missing the [Test] attribute.";
                 Assert.Fail(message);
             }
@@ -39,24 +33,23 @@ internal class CodeRequirementTests
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3693
 
-        var plottableTypes = Assembly.GetAssembly(typeof(ScottPlot.Plot))!
-            .GetTypes()
-            .Where(x => x.IsAssignableTo(typeof(ScottPlot.IPlottable)))
-            .Where(x => x.IsClass);
-
-        foreach (Type type in plottableTypes)
+        foreach (Type type in Assembly.GetAssembly(typeof(Plot))?.GetTypes().Where(static x => x.IsAssignableTo(typeof(IPlottable)) && x.IsClass) ?? [])
         {
-            MethodInfo[] mis = type.GetMethods().Where(x => x.Name == "Render").ToArray();
-
-            foreach (MethodInfo mi in mis)
+            foreach (MethodInfo mi in type.GetMethods().Where(static x => x.Name == "Render").ToArray())
             {
                 ParameterInfo[] pis = mi.GetParameters();
+
                 if (pis.Length != 1)
+                {
                     continue;
+                }
 
                 ParameterInfo pi = pis[0];
+
                 if (pi.ParameterType.Name != "RenderPack")
+                {
                     continue;
+                }
 
                 if (mi.IsFinal)
                 {
@@ -69,18 +62,12 @@ internal class CodeRequirementTests
     [Test]
     public void Test_RenderActions_ArePublic()
     {
-        var actionTypes = Assembly.GetAssembly(typeof(ScottPlot.Plot))!
-            .GetTypes()
-            .Where(x => x.IsAssignableTo(typeof(ScottPlot.IRenderAction)))
-            .Where(x => x.IsClass);
+        IEnumerable<Type> actionTypes =
+            Assembly.GetAssembly(typeof(Plot))?.GetTypes().Where(static x => x.IsAssignableTo(typeof(IRenderAction)) && x.IsClass) ?? [];
 
-        foreach (Type type in actionTypes)
+        foreach (Type type in actionTypes.Where(static type => !type.GetTypeInfo().IsVisible))
         {
-            TypeInfo classInfo = type.GetTypeInfo();
-            if (!classInfo.IsVisible)
-            {
-                throw new InvalidOperationException($"{type.Namespace}.{type.Name} should be public");
-            }
+            throw new InvalidOperationException($"{type.Namespace}.{type.Name} should be public");
         }
     }
 }

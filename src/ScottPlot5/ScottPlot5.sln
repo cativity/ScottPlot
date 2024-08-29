@@ -71,6 +71,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScottPlot.Maui", "ScottPlot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interactivity Inspector", "ScottPlot5 Tests\InteractivityInspector\Interactivity Inspector.csproj", "{A45822CE-201C-4E92-99D9-5AFEEFA1A22B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F09A9141-49C6-4AA8-960F-9D5939DC9448}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

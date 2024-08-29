@@ -7,14 +7,12 @@ internal class OpenDiamond : IMarker
         float radius = size / 2;
 
         SKPoint[] pointsList =
-        {
-            new(center.X + radius, center.Y),
-            new(center.X, center.Y + radius),
-            new(center.X - radius, center.Y),
-            new(center.X, center.Y - radius),
-        };
+        [
+            new SKPoint(center.X + radius, center.Y), new SKPoint(center.X, center.Y + radius), new SKPoint(center.X - radius, center.Y),
+            new SKPoint(center.X, center.Y - radius)
+        ];
 
-        SKPath path = new();
+        SKPath path = new SKPath();
         path.AddPoly(pointsList);
 
         Drawing.DrawPath(canvas, paint, path, markerStyle.LineStyle);

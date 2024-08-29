@@ -2,11 +2,10 @@
 
 public class LockedCenterX(IXAxis xAxis, double xCenter) : IAxisRule
 {
-    public readonly IXAxis XAxis = xAxis;
-    readonly double XCenter = xCenter;
+    public IXAxis XAxis { get; } = xAxis;
 
     public void Apply(RenderPack rp, bool beforeLayout)
     {
-        XAxis.Range.Pan(XCenter - XAxis.Range.Center);
+        XAxis.Range.Pan(xCenter - XAxis.Range.Center);
     }
 }

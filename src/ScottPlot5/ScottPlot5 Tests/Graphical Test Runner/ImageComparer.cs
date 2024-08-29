@@ -1,15 +1,20 @@
-﻿namespace GraphicalTestRunner;
+﻿using System.Diagnostics;
+using ScottPlot.Testing;
+using ScottPlot.WinForms;
+using Image = ScottPlot.Image;
+
+namespace GraphicalTestRunner;
 
 public partial class ImageComparer : UserControl
 {
-    Bitmap? Bmp1;
-    Bitmap? Bmp2;
-    ScottPlot.Testing.ImageDiff? ImgDiff;
-    int ImageMode = 0;
+    private Bitmap? _bmp1;
+    private Bitmap? _bmp2;
+    private ImageDiff? _imgDiff;
+    private int _imageMode;
 
-    private string Path1 = string.Empty;
-    private string Path2 = string.Empty;
-    Color SelectedBackgroundColor = System.Drawing.Color.FromArgb(50, SystemColors.ControlDark);
+    private string _path1 = string.Empty;
+    private string _path2 = string.Empty;
+    private readonly Color _selectedBackgroundColor = Color.FromArgb(50, SystemColors.ControlDark);
 
     public ImageComparer()
     {
@@ -23,14 +28,15 @@ public partial class ImageComparer : UserControl
         checkBox1.CheckedChanged += (s, e) => timer1.Enabled = checkBox1.Checked;
         checkBox2.CheckedChanged += (s, e) => UpdateDiffBitmap();
 
-        pictureBox1.DoubleClick += (s, e) => System.Diagnostics.Process.Start("explorer.exe", Path1!);
-        pictureBox2.DoubleClick += (s, e) => System.Diagnostics.Process.Start("explorer.exe", Path2!);
+        pictureBox1.DoubleClick += (s, e) => Process.Start("explorer.exe", _path1);
+        pictureBox2.DoubleClick += (s, e) => Process.Start("explorer.exe", _path2);
     }
 
     private void SwitchImages(int delta)
     {
-        ImageMode += delta;
-        if (ImageMode % 2 == 0)
+        _imageMode += delta;
+
+        if (_imageMode % 2 == 0)
         {
             SetBitmap1();
         }
@@ -42,62 +48,60 @@ public partial class ImageComparer : UserControl
 
     private void SetBitmap1()
     {
-        label1.BackColor = Bmp1 is not null ? SelectedBackgroundColor : SystemColors.Control;
+        label1.BackColor = _bmp1 is not null ? _selectedBackgroundColor : SystemColors.Control;
         label2.BackColor = SystemColors.Control;
-        pictureBox1.Image = Bmp1;
+        pictureBox1.Image = _bmp1;
     }
 
     private void SetBitmap2()
     {
-        label2.BackColor = Bmp2 is not null ? SelectedBackgroundColor : SystemColors.Control;
+        label2.BackColor = _bmp2 is not null ? _selectedBackgroundColor : SystemColors.Control;
         label1.BackColor = SystemColors.Control;
-        pictureBox1.Image = Bmp2;
+        pictureBox1.Image = _bmp2;
     }
 
     private void UpdateDiffBitmap()
     {
-        if (ImgDiff is null)
+        if (_imgDiff is null)
+        {
             return;
+        }
 
-        ScottPlot.Image? diffImage = checkBox2.Checked
-            ? ImgDiff.DifferenceImage!.GetAutoscaledImage()
-            : ImgDiff.DifferenceImage;
+        Image? diffImage = checkBox2.Checked ? _imgDiff.DifferenceImage?.GetAutoscaledImage() : _imgDiff.DifferenceImage;
 
-        pictureBox2.Image = (diffImage is not null)
-            ? ScottPlot.WinForms.FormsPlotExtensions.GetBitmap(diffImage)
-            : null;
+        pictureBox2.Image = diffImage?.GetBitmap();
     }
 
     public void SetImages(string path1, string path2)
     {
-        Path1 = path1;
-        Path2 = path2;
-        ScottPlot.Image? img1 = null;
-        ScottPlot.Image? img2 = null;
+        _path1 = path1;
+        _path2 = path2;
+        Image? img1 = null;
+        Image? img2 = null;
 
         if (File.Exists(path1))
         {
-            img1 = new(path1);
-            Bmp1 = ScottPlot.WinForms.FormsPlotExtensions.GetBitmap(img1);
+            img1 = new Image(path1);
+            _bmp1 = img1.GetBitmap();
         }
         else
         {
-            Bmp1 = null;
+            _bmp1 = null;
         }
 
         if (File.Exists(path2))
         {
-            img2 = new(path2);
-            Bmp2 = ScottPlot.WinForms.FormsPlotExtensions.GetBitmap(img2);
+            img2 = new Image(path2);
+            _bmp2 = img2.GetBitmap();
         }
 
         if (img1 is not null && img2 is not null)
         {
-            ImgDiff = new(img1, img2);
+            _imgDiff = new ImageDiff(img1, img2);
         }
         else
         {
-            ImgDiff = null;
+            _imgDiff = null;
         }
 
         SwitchImages(0);

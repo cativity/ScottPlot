@@ -6,16 +6,10 @@ public static class FormsPlotViewer
 {
     public static Form CreateForm(Plot plot, string title = "", int width = 600, int height = 400)
     {
-        FormsPlot formsPlot = new() { Dock = DockStyle.Fill };
+        FormsPlot formsPlot = new FormsPlot { Dock = DockStyle.Fill };
         formsPlot.Reset(plot);
 
-        Form form = new()
-        {
-            StartPosition = FormStartPosition.CenterScreen,
-            Width = width,
-            Height = height,
-            Text = title,
-        };
+        Form form = new Form { StartPosition = FormStartPosition.CenterScreen, Width = width, Height = height, Text = title, };
 
         form.Controls.Add(formsPlot);
 
@@ -27,8 +21,12 @@ public static class FormsPlotViewer
         Form form = CreateForm(plot, title, width, height);
 
         if (blocking)
+        {
             form.ShowDialog();
+        }
         else
+        {
             form.Show();
+        }
     }
 }

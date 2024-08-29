@@ -5,7 +5,7 @@ internal class CoordinateTests
     [Test]
     public void Test_Coordinate_DefaultValues()
     {
-        Coordinates coord = new();
+        Coordinates coord = new Coordinates();
         coord.X.Should().Be(0);
         coord.Y.Should().Be(0);
     }
@@ -18,7 +18,7 @@ internal class CoordinateTests
     [TestCase(0, double.PositiveInfinity)] // permitted
     public void Test_Coordinate_Construct(double x, double y)
     {
-        Coordinates coord = new(x, y);
+        Coordinates coord = new Coordinates(x, y);
         coord.X.Should().Be(x);
         coord.Y.Should().Be(y);
     }

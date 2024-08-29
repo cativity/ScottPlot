@@ -3,21 +3,14 @@
 namespace ScottPlot;
 
 /// <summary>
-/// A collection of methods for making common adjustments to plot layouts
+///     A collection of methods for making common adjustments to plot layouts
 /// </summary>
-public class LayoutManager
+public class LayoutManager(Plot plot)
 {
-    private readonly Plot Plot;
-
     public ILayoutEngine LayoutEngine { get; set; } = new Automatic();
 
-    public LayoutManager(Plot plot)
-    {
-        Plot = plot;
-    }
-
     /// <summary>
-    /// Automatically resize the layout on each render to achieve the best fit
+    ///     Automatically resize the layout on each render to achieve the best fit
     /// </summary>
     public void Default()
     {
@@ -25,7 +18,7 @@ public class LayoutManager
     }
 
     /// <summary>
-    /// Apply a fixed layout using the given rectangle to define the data area
+    ///     Apply a fixed layout using the given rectangle to define the data area
     /// </summary>
     public void Fixed(PixelRect dataRect)
     {
@@ -33,8 +26,8 @@ public class LayoutManager
     }
 
     /// <summary>
-    /// Apply a fixed layout using the given padding to define space between the
-    /// data area and the edge of the figure
+    ///     Apply a fixed layout using the given padding to define space between the
+    ///     data area and the edge of the figure
     /// </summary>
     public void Fixed(PixelPadding padding)
     {
@@ -42,10 +35,10 @@ public class LayoutManager
     }
 
     /// <summary>
-    /// Disable visibility of all axes and titles so the data area fills the entire figure
+    ///     Disable visibility of all axes and titles so the data area fills the entire figure
     /// </summary>
     public void Frameless()
     {
-        Plot.Axes.Frameless();
+        plot.Axes.Frameless();
     }
 }

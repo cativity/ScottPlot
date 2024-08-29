@@ -5,7 +5,7 @@ internal class BasicImageTests
     [Test]
     public void Test_Render_SinCos()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
 
         plt.Add.Signal(Generate.Sin(51));
         plt.Add.Signal(Generate.Cos(51));
@@ -16,7 +16,7 @@ internal class BasicImageTests
     [Test]
     public void Test_No_Data()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.SaveTestImage();
     }
 }

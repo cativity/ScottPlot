@@ -5,7 +5,7 @@ internal class ExpandingAxisLimitsTests
     [Test]
     public void Test_Default_IsNotSet()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
         limits.Left.Should().Be(double.NaN);
         limits.Right.Should().Be(double.NaN);
@@ -18,15 +18,15 @@ internal class ExpandingAxisLimitsTests
     [Test]
     public void Test_Init_AxisLimits()
     {
-        AxisLimits initialLimits = new(-13, 17, -42, 69);
-        ExpandingAxisLimits limits = new(initialLimits);
+        AxisLimits initialLimits = new AxisLimits(-13, 17, -42, 69);
+        ExpandingAxisLimits limits = new ExpandingAxisLimits(initialLimits);
         limits.AxisLimits.Should().Be(initialLimits);
     }
 
     [Test]
     public void Test_Expand_XY()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
         limits.Expand(-7, 13);
         limits.Left.Should().Be(-7);
@@ -44,7 +44,7 @@ internal class ExpandingAxisLimitsTests
     [Test]
     public void Test_Expand_X()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
         limits.ExpandX(-7);
         limits.Left.Should().Be(-7);
@@ -58,7 +58,7 @@ internal class ExpandingAxisLimitsTests
     [Test]
     public void Test_Expand_Y()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
         limits.ExpandY(13);
         limits.Bottom.Should().Be(13);
@@ -72,7 +72,7 @@ internal class ExpandingAxisLimitsTests
     [Test]
     public void Test_Expand_Coordinates()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
         limits.Expand(new Coordinates(-7, 13));
         limits.Left.Should().Be(-7);
@@ -90,13 +90,13 @@ internal class ExpandingAxisLimitsTests
     [Test]
     public void Test_Expand_CoordinateList()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
-        List<Coordinates> coordinates = new()
-        {
+        List<Coordinates> coordinates =
+        [
             new Coordinates(-7, 13),
             new Coordinates(42, -69)
-        };
+        ];
 
         limits.Expand(coordinates);
 
@@ -109,9 +109,9 @@ internal class ExpandingAxisLimitsTests
     [Test]
     public void Test_Expand_CoordinateRect()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
-        CoordinateRect rect = new(-7, 42, -69, 13);
+        CoordinateRect rect = new CoordinateRect(-7, 42, -69, 13);
 
         limits.Expand(rect);
 
@@ -124,9 +124,9 @@ internal class ExpandingAxisLimitsTests
     [Test]
     public void Test_Expand_AxisLimits()
     {
-        ExpandingAxisLimits limits = new();
+        ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
-        AxisLimits axisLimits = new(-7, 42, -69, 13);
+        AxisLimits axisLimits = new AxisLimits(-7, 42, -69, 13);
 
         limits.Expand(axisLimits);
 

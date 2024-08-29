@@ -7,14 +7,15 @@ public partial class SignalXYDrag : Form, IDemoWindow
 {
     public string Title => "Mouse Interactive SignalXY Plots";
 
-    public string Description => "Demonstrates how to create SignalXY plots " +
-        "which can be dragged with the mouse, and also how to display informatoin " +
-        "about which point is nearest the cursor.";
+    public string Description
+        => "Demonstrates how to create SignalXY plots "
+           + "which can be dragged with the mouse, and also how to display informatoin "
+           + "about which point is nearest the cursor.";
 
-    SignalXY? PlottableBeingDragged = null;
-    DataPoint StartingDragPosition = DataPoint.None;
-    double StartingDragOffset = 0;
-    Marker HighlightedPointMarker;
+    private SignalXY? _plottableBeingDragged;
+    private DataPoint _startingDragPosition = DataPoint.None;
+    private double _startingDragOffset;
+    private readonly Marker _highlightedPointMarker;
 
     public SignalXYDrag()
     {
@@ -27,11 +28,11 @@ public partial class SignalXYDrag : Form, IDemoWindow
         formsPlot1.Plot.Add.SignalXY(xs, ys1);
         formsPlot1.Plot.Add.SignalXY(xs, ys2);
 
-        HighlightedPointMarker = formsPlot1.Plot.Add.Marker(0, 0);
-        HighlightedPointMarker.IsVisible = false;
-        HighlightedPointMarker.Size = 15;
-        HighlightedPointMarker.LineWidth = 2;
-        HighlightedPointMarker.Shape = MarkerShape.OpenCircle;
+        _highlightedPointMarker = formsPlot1.Plot.Add.Marker(0, 0);
+        _highlightedPointMarker.IsVisible = false;
+        _highlightedPointMarker.Size = 15;
+        _highlightedPointMarker.LineWidth = 2;
+        _highlightedPointMarker.Shape = MarkerShape.OpenCircle;
 
         formsPlot1.MouseDown += FormsPlot1_MouseDown;
         formsPlot1.MouseUp += FormsPlot1_MouseUp;
@@ -41,19 +42,22 @@ public partial class SignalXYDrag : Form, IDemoWindow
     private void FormsPlot1_MouseDown(object? sender, MouseEventArgs e)
     {
         (SignalXY? sigXY, DataPoint dataPoint) = GetSignalXYUnderMouse(formsPlot1.Plot, e.X, e.Y);
-        if (sigXY is null)
-            return;
 
-        PlottableBeingDragged = sigXY;
-        StartingDragPosition = dataPoint;
-        StartingDragOffset = sigXY.Data.XOffset;
+        if (sigXY is null)
+        {
+            return;
+        }
+
+        _plottableBeingDragged = sigXY;
+        _startingDragPosition = dataPoint;
+        _startingDragOffset = sigXY.Data.XOffset;
         formsPlot1.Interaction.Disable(); // disable panning while dragging
     }
 
     private void FormsPlot1_MouseUp(object? sender, MouseEventArgs e)
     {
-        PlottableBeingDragged = null;
-        StartingDragPosition = DataPoint.None;
+        _plottableBeingDragged = null;
+        _startingDragPosition = DataPoint.None;
         formsPlot1.Interaction.Enable(); // enable panning again
         formsPlot1.Refresh();
     }
@@ -61,19 +65,19 @@ public partial class SignalXYDrag : Form, IDemoWindow
     private void FormsPlot1_MouseMove(object? sender, MouseEventArgs e)
     {
         // this rectangle is the area around the mouse in coordinate units
-        CoordinateRect rect = formsPlot1.Plot.GetCoordinateRect(e.X, e.Y, radius: 5);
+        CoordinateRect rect = formsPlot1.Plot.GetCoordinateRect(e.X, e.Y, 5);
 
         // update the cursor to reflect what is beneath it
-        if (PlottableBeingDragged is null)
+        if (_plottableBeingDragged is null)
         {
-            (var signalUnderMouse, DataPoint dp) = GetSignalXYUnderMouse(formsPlot1.Plot, e.X, e.Y);
+            (SignalXY? signalUnderMouse, DataPoint dp) = GetSignalXYUnderMouse(formsPlot1.Plot, e.X, e.Y);
             Cursor = signalUnderMouse is null ? Cursors.Arrow : Cursors.SizeWE;
-            HighlightedPointMarker.IsVisible = signalUnderMouse is not null;
+            _highlightedPointMarker.IsVisible = signalUnderMouse is not null;
 
             if (signalUnderMouse is not null)
             {
-                HighlightedPointMarker.Location = dp.Coordinates;
-                HighlightedPointMarker.Color = signalUnderMouse.Color;
+                _highlightedPointMarker.Location = dp.Coordinates;
+                _highlightedPointMarker.Color = signalUnderMouse.Color;
                 Text = $"Index {dp.Index} at {dp.Coordinates}";
                 formsPlot1.Refresh();
             }
@@ -82,27 +86,28 @@ public partial class SignalXYDrag : Form, IDemoWindow
         }
 
         // update the position of the plottable being dragged
-        if (PlottableBeingDragged is SignalXY sigXY)
+        if (_plottableBeingDragged is SignalXY sigXY)
         {
-            HighlightedPointMarker.IsVisible = false;
-            sigXY.Data.XOffset = rect.HorizontalCenter - StartingDragPosition.X + StartingDragOffset;
+            _highlightedPointMarker.IsVisible = false;
+            sigXY.Data.XOffset = rect.HorizontalCenter - _startingDragPosition.X + _startingDragOffset;
             formsPlot1.Refresh();
         }
     }
 
     /// <summary>
-    /// Returns the SignalXY object and data point beneath the mouse,
-    /// or null if nothing is beneath the mouse.
+    ///     Returns the SignalXY object and data point beneath the mouse,
+    ///     or null if nothing is beneath the mouse.
     /// </summary>
     private static (SignalXY? signalXY, DataPoint point) GetSignalXYUnderMouse(Plot plot, double x, double y)
     {
-        Pixel mousePixel = new(x, y);
+        Pixel mousePixel = new Pixel(x, y);
 
         Coordinates mouseLocation = plot.GetCoordinates(mousePixel);
 
         foreach (SignalXY signal in plot.GetPlottables<SignalXY>().Reverse())
         {
             DataPoint nearest = signal.Data.GetNearest(mouseLocation, plot.LastRender);
+
             if (nearest.IsReal)
             {
                 return (signal, nearest);

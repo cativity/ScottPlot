@@ -1,20 +1,25 @@
 ﻿namespace ScottPlot;
 
-///<summary>
-///Represents a range between any two finite values (inclusive)
-///</summary>
+/// <summary>
+///     Represents a range between any two finite values (inclusive)
+/// </summary>
 public readonly struct Range // TODO: evaluate if this can be replaced with more task-specific primitives
 {
     public double Min { get; }
+
     public double Max { get; }
 
     public Range(double min, double max)
     {
         if (double.IsInfinity(min) || double.IsNaN(min))
+        {
             throw new ArgumentException($"{nameof(min)} must be a real number");
+        }
 
         if (double.IsInfinity(max) || double.IsNaN(max))
+        {
             throw new ArgumentException($"{nameof(max)} must be a real number");
+        }
 
         if (min > max)
         {
@@ -25,13 +30,10 @@ public readonly struct Range // TODO: evaluate if this can be replaced with more
         Max = max;
     }
 
-    public override string ToString()
-    {
-        return $"Range: [{Min}, {Max}]";
-    }
+    public override string ToString() => $"Range: [{Min}, {Max}]";
 
     /// <summary>
-    /// Returns the given value as a fraction of the difference between Min and Max. This is a min-max feature scaling.
+    ///     Returns the given value as a fraction of the difference between Min and Max. This is a min-max feature scaling.
     /// </summary>
     /// <param name="value">The value to normalize</param>
     /// <param name="clamp">If true, values outside of the range will be clamped onto the interval [0, 1].</param>
@@ -45,19 +47,21 @@ public readonly struct Range // TODO: evaluate if this can be replaced with more
 
         double normalized = (value - Min) / (Max - Min);
 
-        Range unitRange = new(0, 1);
+        Range unitRange = new Range(0, 1);
+
         return clamp ? unitRange.Clamp(normalized) : normalized;
     }
 
-    ///<summary>
-    ///Returns the given value clamped to the range (inclusive).
-    ///</summary>
+    /// <summary>
+    ///     Returns the given value clamped to the range (inclusive).
+    /// </summary>
     public double Clamp(double value)
     {
         if (value < Min)
         {
             return Min;
         }
+
         if (value > Max)
         {
             return Max;
@@ -66,24 +70,19 @@ public readonly struct Range // TODO: evaluate if this can be replaced with more
         return value;
     }
 
-    public static Range GetRange(double[,] input)
-    {
-        return GetRange(input.Cast<double>());
-    }
+    public static Range GetRange(double[,] input) => GetRange(input.Cast<double>());
 
     public static Range GetRange(IEnumerable<double> input)
     {
         double min = double.PositiveInfinity;
         double max = double.NegativeInfinity;
-        foreach (var curr in input)
-        {
-            if (double.IsNaN(curr))
-                continue;
 
+        foreach (double curr in input.Where(static curr => !double.IsNaN(curr)))
+        {
             min = Math.Min(min, curr);
             max = Math.Max(max, curr);
         }
 
-        return new(min, max);
+        return new Range(min, max);
     }
 }

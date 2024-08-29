@@ -1,103 +1,108 @@
-﻿using System.Data;
-using System.Linq;
+﻿using ScottPlot.PathStrategies;
 
 namespace ScottPlot.Plottables;
 
 public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IHasLegendText
 {
-    [Obsolete("use LegendText")]
-    public string Label { get => LegendText; set => LegendText = value; }
+    //[Obsolete("use LegendText")]
+    //public string Label { get => LegendText; set => LegendText = value; }
+
     public string LegendText { get; set; } = string.Empty;
 
     public bool IsVisible { get; set; } = true;
+
     public IAxes Axes { get; set; } = new Axes();
 
-    public LineStyle LineStyle { get; set; } = new() { Width = 1 };
+    public LineStyle LineStyle { get; set; } = new LineStyle { Width = 1 };
+
     public float LineWidth { get => LineStyle.Width; set => LineStyle.Width = value; }
+
     public LinePattern LinePattern { get => LineStyle.Pattern; set => LineStyle.Pattern = value; }
+
     public Color LineColor { get => LineStyle.Color; set => LineStyle.Color = value; }
 
     public int MinRenderIndex { get => Data.MinRenderIndex; set => Data.MinRenderIndex = value; }
+
     public int MaxRenderIndex { get => Data.MaxRenderIndex; set => Data.MaxRenderIndex = value; }
 
-    public MarkerStyle MarkerStyle { get; set; } = new()
-    {
-        LineWidth = 1,
-        Size = 5,
-        Shape = MarkerShape.FilledCircle,
-    };
+    public MarkerStyle MarkerStyle { get; set; } = new MarkerStyle { LineWidth = 1, Size = 5, Shape = MarkerShape.FilledCircle, };
+
     public MarkerShape MarkerShape { get => MarkerStyle.Shape; set => MarkerStyle.Shape = value; }
+
     public float MarkerSize { get => MarkerStyle.Size; set => MarkerStyle.Size = value; }
+
     public Color MarkerFillColor { get => MarkerStyle.FillColor; set => MarkerStyle.FillColor = value; }
+
     public Color MarkerLineColor { get => MarkerStyle.LineColor; set => MarkerStyle.LineColor = value; }
+
     public Color MarkerColor { get => MarkerStyle.MarkerColor; set => MarkerStyle.MarkerColor = value; }
+
     public float MarkerLineWidth { get => MarkerStyle.LineWidth; set => MarkerStyle.LineWidth = value; }
 
     public IScatterSource Data { get; } = data;
 
-    public bool FillY { get; set; } = false;
+    public bool FillY { get; set; }
+
     public bool FillYBelow { get; set; } = true;
+
     public bool FillYAbove { get; set; } = true;
+
     public double FillYValue { get; set; } = 0;
+
     public Color FillYAboveColor { get; set; } = Colors.Blue.WithAlpha(.2);
+
     public Color FillYBelowColor { get; set; } = Colors.Blue.WithAlpha(.2);
-    public Color FillYColor { get => FillYAboveColor; set { FillYAboveColor = value; FillYBelowColor = value; } }
+
+    public Color FillYColor
+    {
+        get => FillYAboveColor;
+        set
+        {
+            FillYAboveColor = value;
+            FillYBelowColor = value;
+        }
+    }
 
     public List<ColorPosition> ColorPositions { get; set; } = [];
 
     public record struct ColorPosition(Color Color, double Position);
 
     public double OffsetX { get; set; } = 0;
+
     public double OffsetY { get; set; } = 0;
+
     public double ScaleX { get; set; } = 1;
+
     public double ScaleY { get; set; } = 1;
 
     /// <summary>
-    /// The style of lines to use when connecting points.
+    ///     The style of lines to use when connecting points.
     /// </summary>
     public ConnectStyle ConnectStyle = ConnectStyle.Straight;
 
     /// <summary>
-    /// Controls whether points are connected by smooth or straight lines
+    ///     Controls whether points are connected by smooth or straight lines
     /// </summary>
     public bool Smooth
     {
-        set
-        {
-            PathStrategy = value
-                ? new PathStrategies.CubicSpline()
-                : new PathStrategies.Straight();
-        }
+        set => PathStrategy = value ? new CubicSpline() : new Straight();
     }
 
     /// <summary>
-    /// Setting this value enables <see cref="Smooth"/> and sets the curve tension.
-    /// Low tensions tend to "overshoot" data points.
-    /// High tensions begin to approach connecting points with straight lines.
+    ///     Setting this value enables <see cref="Smooth" /> and sets the curve tension.
+    ///     Low tensions tend to "overshoot" data points.
+    ///     High tensions begin to approach connecting points with straight lines.
     /// </summary>
     public double SmoothTension
     {
-        get
-        {
-            if (PathStrategy is PathStrategies.CubicSpline cs)
-            {
-                return cs.Tension;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        set
-        {
-            PathStrategy = new PathStrategies.CubicSpline() { Tension = value };
-        }
+        get => PathStrategy is CubicSpline cs ? cs.Tension : 0;
+        set => PathStrategy = new CubicSpline { Tension = value };
     }
 
     /// <summary>
-    /// Strategy to use for generating the path used to connect points
+    ///     Strategy to use for generating the path used to connect points
     /// </summary>
-    public IPathStrategy PathStrategy { get; set; } = new PathStrategies.Straight();
+    public IPathStrategy PathStrategy { get; set; } = new Straight();
 
     public Color Color
     {
@@ -112,50 +117,69 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
 
     public AxisLimits GetAxisLimits()
     {
-        ExpandingAxisLimits limits = new(Data.GetLimits());
+        ExpandingAxisLimits limits = new ExpandingAxisLimits(Data.GetLimits());
 
         if (FillY)
+        {
             limits.ExpandY(FillYValue);
+        }
 
-        return new AxisLimits(
-            left: limits.Left * ScaleX + OffsetX,
-            right: limits.Right * ScaleX + OffsetX,
-            bottom: limits.Bottom * ScaleY + OffsetY,
-            top: limits.Top * ScaleY + OffsetY);
+        return new AxisLimits((limits.Left * ScaleX) + OffsetX,
+                              (limits.Right * ScaleX) + OffsetX,
+                              (limits.Bottom * ScaleY) + OffsetY,
+                              (limits.Top * ScaleY) + OffsetY);
     }
 
     public IEnumerable<LegendItem> LegendItems => LegendItem.Single(LegendText, MarkerStyle, LineStyle);
 
     private Gradient CreateXAxisGradient(RenderPack rp)
     {
+        Debug.Assert(Axes.XAxis is not null);
         float xMin = (float)Axes.XAxis.GetCoordinate(rp.DataRect.Left, rp.DataRect);
         float xMax = (float)Axes.XAxis.GetCoordinate(rp.DataRect.Right, rp.DataRect);
 
+        List<double> colorPositions = ColorPositions
+                                      .Select(static x => x.Position)
+                                      .Concat([xMin, xMax])
+                                      .Where(i => i >= xMin && i <= xMax)
+                                      .OrderBy(static i => i).ToList();
+
+        IEnumerable<Color> colors = colorPositions.Select(Interpolate);
+        float[] colorPositionsFrac = colorPositions.Select(GetAxisFractionX).ToArray();
+
+        return new Gradient
+        {
+            GradientType = GradientType.Linear,
+            AlignmentStart = Alignment.MiddleLeft,
+            AlignmentEnd = Alignment.MiddleRight,
+            ColorPositions = colorPositionsFrac,
+            Colors = colors.ToArray(),
+        };
+
         // TODO: move this logic to a positioned color colormap class
-        Color interpolate(double val)
+        Color Interpolate(double val)
         {
             if (ColorPositions.Select(x => x.Position).All(i => val < i))
             {
-                return ColorPositions.First().Color;
+                return ColorPositions[0].Color;
             }
 
             if (ColorPositions.Select(x => x.Position).All(i => val > i))
             {
-                return ColorPositions.Last().Color;
+                return ColorPositions[^1].Color;
             }
 
             int lIdx = -1;
             int rIdx = -1;
+
             for (int i = 0; i < ColorPositions.Count; i++)
             {
-                if (ColorPositions[i].Position <= val &&
-                    (lIdx < 0 || ColorPositions[i].Position > ColorPositions[lIdx].Position))
+                if (ColorPositions[i].Position <= val && (lIdx < 0 || ColorPositions[i].Position > ColorPositions[lIdx].Position))
                 {
                     lIdx = i;
                 }
 
-                if (ColorPositions[i].Position >= val &&
-                    (rIdx < 0 || ColorPositions[i].Position < ColorPositions[rIdx].Position))
+                if (ColorPositions[i].Position >= val && (rIdx < 0 || ColorPositions[i].Position < ColorPositions[rIdx].Position))
                 {
                     rIdx = i;
                 }
@@ -167,6 +191,7 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
             }
 
             double factor = (val - ColorPositions[lIdx].Position) / (ColorPositions[rIdx].Position - ColorPositions[lIdx].Position);
+
             return ColorPositions[lIdx].Color.InterpolateRgb(ColorPositions[rIdx].Color, factor);
         }
 
@@ -174,43 +199,29 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
         {
             double distanceFromLeft = Axes.GetPixelX(x) - Axes.DataRect.Left;
             double width = Axes.DataRect.Right - Axes.DataRect.Left;
+
             return (float)(distanceFromLeft / width);
         }
-
-        IOrderedEnumerable<double> colorPositions = ColorPositions
-            .Select(x => x.Position)
-            .Concat([xMin, xMax])
-            .Where(i => i >= xMin && i <= xMax)
-            .OrderBy(i => i);
-
-        IEnumerable<Color> colors = colorPositions.Select(interpolate);
-        float[] colorPositionsFrac = colorPositions.Select(GetAxisFractionX).ToArray();
-
-        return new Gradient()
-        {
-            GradientType = GradientType.Linear,
-            AlignmentStart = Alignment.MiddleLeft,
-            AlignmentEnd = Alignment.MiddleRight,
-            ColorPositions = colorPositionsFrac,
-            Colors = colors.ToArray(),
-        };
     }
 
     public virtual void Render(RenderPack rp)
     {
         // TODO: can this be done with an iterator to avoid copying?
-        var coordinates = Data.GetScatterPoints();
+        IReadOnlyList<Coordinates> coordinates = Data.GetScatterPoints();
 
         Pixel[] markerPixels = new Pixel[coordinates.Count];
+
         for (int i = 0; i < coordinates.Count; i++)
         {
-            double x = coordinates[i].X * ScaleX + OffsetX;
-            double y = coordinates[i].Y * ScaleY + OffsetY;
-            markerPixels[i] = Axes.GetPixel(new(x, y));
+            double x = (coordinates[i].X * ScaleX) + OffsetX;
+            double y = (coordinates[i].Y * ScaleY) + OffsetY;
+            markerPixels[i] = Axes.GetPixel(new Coordinates(x, y));
         }
 
         if (markerPixels.Length == 0)
+        {
             return;
+        }
 
         Pixel[] linePixels = ConnectStyle switch
         {
@@ -220,27 +231,25 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
             _ => throw new NotImplementedException($"unsupported {nameof(ConnectStyle)}: {ConnectStyle}"),
         };
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         using SKPath path = PathStrategy.GetPath(linePixels);
 
         if (FillY)
         {
-            FillStyle fs = new()
-            {
-                IsVisible = true,
-            };
+            FillStyle fs = new FillStyle { IsVisible = true, };
 
             if (ColorPositions.Count > 0)
             {
                 fs.Hatch = CreateXAxisGradient(rp);
             }
 
-            PixelRect dataPxRect = new(markerPixels);
+            PixelRect dataPxRect = new PixelRect(markerPixels);
 
-            PixelRect rect = new(linePixels);
+            PixelRect rect = new PixelRect(linePixels);
+            Debug.Assert(Axes.YAxis is not null);
             float yValuePixel = Axes.YAxis.GetPixel(FillYValue, rp.DataRect);
 
-            using SKPath fillPath = new(path);
+            using SKPath fillPath = new SKPath(path);
             fillPath.LineTo(rect.Right, yValuePixel);
             fillPath.LineTo(rect.Left, yValuePixel);
 
@@ -250,7 +259,7 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
 
             if (midWay || aboveOnly)
             {
-                PixelRect rectAbove = new(rp.DataRect.Left, rp.DataRect.Right, yValuePixel, rect.Top);
+                PixelRect rectAbove = new PixelRect(rp.DataRect.Left, rp.DataRect.Right, yValuePixel, rect.Top);
                 rp.CanvasState.Save();
                 rp.CanvasState.Clip(rectAbove);
                 fs.Color = ColorPositions.Count > 0 ? Colors.Black : FillYAboveColor;
@@ -260,7 +269,7 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
 
             if (midWay || belowOnly)
             {
-                PixelRect rectBelow = new(rp.DataRect.Left, rp.DataRect.Right, rect.Bottom, yValuePixel);
+                PixelRect rectBelow = new PixelRect(rp.DataRect.Left, rp.DataRect.Right, rect.Bottom, yValuePixel);
                 rp.CanvasState.Save();
                 rp.CanvasState.Clip(rectBelow);
                 fs.Color = ColorPositions.Count > 0 ? Colors.Black : FillYBelowColor;
@@ -274,25 +283,25 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
     }
 
     /// <summary>
-    /// Convert scatter plot points (connected by diagonal lines) to step plot points (connected by right angles)
-    /// by inserting an extra point between each of the original data points to result in L-shaped steps.
+    ///     Convert scatter plot points (connected by diagonal lines) to step plot points (connected by right angles)
+    ///     by inserting an extra point between each of the original data points to result in L-shaped steps.
     /// </summary>
-    /// <param name="points">Array of corner positions</param>
+    /// <param name="pixels">Array of corner positions</param>
     /// <param name="right">Indicates that a line will extend to the right before rising or falling.</param>
     public static Pixel[] GetStepDisplayPixels(Pixel[] pixels, bool right)
     {
-        Pixel[] pixelsStep = new Pixel[pixels.Count() * 2 - 1];
+        Pixel[] pixelsStep = new Pixel[(pixels.Length * 2) - 1];
 
         int offsetX = right ? 1 : 0;
         int offsetY = right ? 0 : 1;
 
-        for (int i = 0; i < pixels.Count() - 1; i++)
+        for (int i = 0; i < pixels.Length - 1; i++)
         {
             pixelsStep[i * 2] = pixels[i];
-            pixelsStep[i * 2 + 1] = new Pixel(pixels[i + offsetX].X, pixels[i + offsetY].Y);
+            pixelsStep[(i * 2) + 1] = new Pixel(pixels[i + offsetX].X, pixels[i + offsetY].Y);
         }
 
-        pixelsStep[pixelsStep.Length - 1] = pixels[pixels.Length - 1];
+        pixelsStep[^1] = pixels[^1];
 
         return pixelsStep;
     }

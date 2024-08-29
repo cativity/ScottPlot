@@ -2,18 +2,13 @@
 
 namespace ScottPlotCookbook.ApiDocs;
 
-public class MethodDocs
+public class MethodDocs(MethodInfo fi, XmlDocsDB docsDb)
 {
-    public string Name { get; }
-    public TypeName ReturnTypeName { get; }
-    public string? Docs { get; private set; }
-    public MethodParameterDocs[] Parameters { get; }
+    public string Name { get; } = fi.Name;
 
-    public MethodDocs(MethodInfo fi, XmlDocsDB docsDb)
-    {
-        Name = fi.Name;
-        ReturnTypeName = new(fi.ReturnType);
-        Docs = docsDb.GetSummary(fi);
-        Parameters = fi.GetParameters().Select(x => new MethodParameterDocs(x, docsDb)).ToArray();
-    }
+    public TypeName ReturnTypeName { get; } = new TypeName(fi.ReturnType);
+
+    public string? Docs { get; } = docsDb.GetSummary(fi);
+
+    public MethodParameterDocs[] Parameters { get; } = fi.GetParameters().Select(static x => new MethodParameterDocs(x)).ToArray();
 }

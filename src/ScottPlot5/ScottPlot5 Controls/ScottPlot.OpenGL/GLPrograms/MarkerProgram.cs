@@ -14,36 +14,34 @@ public abstract class MarkersProgram : GLProgramBase, IMarkersDrawProgram
 
     public void SetTransform(Matrix4d transform)
     {
-        var location = GetUniformLocation("transform");
+        int location = GetUniformLocation("transform");
         GL.UniformMatrix4(location, true, ref transform);
     }
 
     public virtual void SetFillColor(Color4 color)
     {
-        var location = GetUniformLocation("pathColor");
+        int location = GetUniformLocation("pathColor");
         GL.Uniform4(location, color);
     }
 
     public void SetMarkerSize(float size)
     {
-        var location = GetUniformLocation("marker_size");
+        int location = GetUniformLocation("marker_size");
         GL.Uniform1(location, size);
     }
 
     public virtual void SetOutlineColor(Color4 color)
     {
-
     }
 
     public void SetViewPortSize(float width, float height)
     {
         int location = GetUniformLocation("u_viewport_size");
-        Vector2 viewPortSize = new(width, height);
+        Vector2 viewPortSize = new Vector2(width, height);
         GL.Uniform2(location, viewPortSize);
     }
 
     public virtual void SetOpenFactor(float factor)
     {
-
     }
 }

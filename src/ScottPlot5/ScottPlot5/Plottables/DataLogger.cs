@@ -5,39 +5,46 @@ namespace ScottPlot.Plottables;
 
 public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, IHasLegendText
 {
-    public DataLogger(IList<Coordinates> coordinates)
-    {
-        Data = new DataLoggerSource(coordinates);
-    }
+    public DataLogger(IList<Coordinates> coordinates) => Data = new DataLoggerSource(coordinates);
 
-    public DataLogger()
-    {
-        Data = new DataLoggerSource(new List<Coordinates>());
-    }
+    public DataLogger() => Data = new DataLoggerSource([]);
 
     public DataLoggerSource Data { get; }
 
     public bool IsVisible { get; set; } = true;
+
     public IAxes Axes { get; set; } = new Axes();
+
     public IAxisLimitManager AxisManager { get; set; } = new Full();
+
     public bool Rotated { get; set; }
-    public LineStyle LineStyle { get; set; } = new() { Width = 1 };
+
+    public LineStyle LineStyle { get; set; } = new LineStyle { Width = 1 };
+
     public float LineWidth { get => LineStyle.Width; set => LineStyle.Width = value; }
+
     public LinePattern LinePattern { get => LineStyle.Pattern; set => LineStyle.Pattern = value; }
+
     public Color LineColor { get => LineStyle.Color; set => LineStyle.Color = value; }
 
-    public MarkerStyle MarkerStyle { get; set; } = new() { Size = 0, Shape = MarkerShape.FilledCircle };
+    public MarkerStyle MarkerStyle { get; set; } = new MarkerStyle { Size = 0, Shape = MarkerShape.FilledCircle };
+
     public MarkerShape MarkerShape { get => MarkerStyle.Shape; set => MarkerStyle.Shape = value; }
+
     public float MarkerSize { get => MarkerStyle.Size; set => MarkerStyle.Size = value; }
+
     public Color MarkerFillColor { get => MarkerStyle.FillColor; set => MarkerStyle.FillColor = value; }
+
     public Color MarkerLineColor { get => MarkerStyle.LineColor; set => MarkerStyle.LineColor = value; }
+
     public Color MarkerColor { get => MarkerStyle.MarkerColor; set => MarkerStyle.MarkerColor = value; }
+
     public float MarkerLineWidth { get => MarkerStyle.LineWidth; set => MarkerStyle.LineWidth = value; }
 
     public bool HasNewData => Data.HasNewData;
 
     /// <summary>
-    /// The style of lines to use when connecting points.
+    ///     The style of lines to use when connecting points.
     /// </summary>
     public ConnectStyle ConnectStyle { get; set; } = ConnectStyle.Straight;
 
@@ -54,8 +61,9 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
 
     public double Period { get; set; } = 1.0;
 
-    [Obsolete("use LegendText")]
-    public string Label { get => LegendText; set => LegendText = value; }
+    //[Obsolete("use LegendText")]
+    //public string Label { get => LegendText; set => LegendText = value; }
+
     public string LegendText { get; set; } = string.Empty;
 
     public IEnumerable<LegendItem> LegendItems => LegendItem.Single(LegendText, LineStyle, MarkerStyle);
@@ -65,14 +73,11 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
         CoordinateRange rangeX = Data.GetRangeX();
         CoordinateRange rangeY = Data.GetRangeY(rangeX);
 
-        return Rotated
-            ? new AxisLimits(rangeY, rangeX)
-            : new AxisLimits(rangeX, rangeY);
+        return Rotated ? new AxisLimits(rangeY, rangeX) : new AxisLimits(rangeX, rangeY);
     }
 
-
     /// <summary>
-    /// Get the data point nearest to the given mouse location.
+    ///     Get the data point nearest to the given mouse location.
     /// </summary>
     /// <param name="mouseLocation">Mouse location</param>
     /// <param name="dataRect">Data rectangle from RenderDetails</param>
@@ -80,6 +85,8 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
     /// <returns></returns>
     public DataPoint GetNearest(Coordinates mouseLocation, PixelRect dataRect, float maxDistance = 15)
     {
+        Debug.Assert(Axes.XAxis is not null);
+        Debug.Assert(Axes.YAxis is not null);
         double pxPerUnitX = dataRect.Width / Axes.XAxis.GetRange().Span;
         double pxPerUnitY = dataRect.Height / Axes.YAxis.GetRange().Span;
 
@@ -93,14 +100,16 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
         for (int i = 0; i < Data.Coordinates.Count; i++)
         {
             double x = Data.Coordinates[i].X + Data.XOffset;
-            double y = Data.Coordinates[i].Y * Data.YScale + Data.YOffset;
+            double y = (Data.Coordinates[i].Y * Data.YScale) + Data.YOffset;
 
             if (Rotated)
+            {
                 (x, y) = (y, x);
+            }
 
             double dX = (x - mouseLocation.X) * pxPerUnitX;
             double dY = (y - mouseLocation.Y) * pxPerUnitY;
-            double distanceSquared = dX * dX + dY * dY;
+            double distanceSquared = (dX * dX) + (dY * dY);
 
             if (distanceSquared <= closestDistanceSquared)
             {
@@ -112,12 +121,12 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
         }
 
         return closestDistanceSquared <= maxDistanceSquared
-            ? Rotated ? new DataPoint(closestY, closestX, closestIndex) : new DataPoint(closestX, closestY, closestIndex)
-            : DataPoint.None;
+                   ? Rotated ? new DataPoint(closestY, closestX, closestIndex) : new DataPoint(closestX, closestY, closestIndex)
+                   : DataPoint.None;
     }
 
     /// <summary>
-    /// Get the data point nearest to the given mouse location (only considering X values).
+    ///     Get the data point nearest to the given mouse location (only considering X values).
     /// </summary>
     /// <param name="mouseLocation">Mouse location</param>
     /// <param name="dataRect">Data rectangle from RenderDetails</param>
@@ -130,24 +139,24 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
         if (Rotated)
         {
             mouseLocation = mouseLocation.Rotated;
+            Debug.Assert(Axes.YAxis is not null);
             pxPerUnit = dataRect.Height / Axes.YAxis.GetRange().Span;
         }
         else
         {
+            Debug.Assert(Axes.XAxis is not null);
             pxPerUnit = dataRect.Width / Axes.XAxis.GetRange().Span;
         }
 
         int i = Data.GetIndex(mouseLocation.X); // TODO: check the index after too?
         double distance = (Data.Coordinates[i].X + Data.XOffset - mouseLocation.X) * pxPerUnit;
-        return distance <= maxDistance
-            ? new DataPoint(Data.Coordinates[i].X, Data.Coordinates[i].Y, i)
-            : DataPoint.None;
+
+        return distance <= maxDistance ? new DataPoint(Data.Coordinates[i].X, Data.Coordinates[i].Y, i) : DataPoint.None;
     }
 
     public virtual void Render(RenderPack rp)
     {
-        Pixel[] markerPixels = Rotated ? Data.GetPixelsToDrawVertically(rp, Axes, ConnectStyle)
-                                       : Data.GetPixelsToDrawHorizontally(rp, Axes, ConnectStyle);
+        Pixel[] markerPixels = Rotated ? Data.GetPixelsToDrawVertically(rp, Axes, ConnectStyle) : Data.GetPixelsToDrawHorizontally(rp, Axes, ConnectStyle);
 
         Pixel[] linePixels = ConnectStyle switch
         {
@@ -157,7 +166,7 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
             _ => throw new NotSupportedException($"unsupported {nameof(ConnectStyle)}: {ConnectStyle}"),
         };
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         Drawing.DrawLines(rp.Canvas, paint, linePixels, LineStyle);
         Drawing.DrawMarkers(rp.Canvas, paint, markerPixels, MarkerStyle);
 
@@ -186,21 +195,19 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
     {
         bool firstTimeRenderingData = !Data.WasRendered;
 
+        Debug.Assert(Axes.XAxis is not null);
+        Debug.Assert(Axes.YAxis is not null);
         IAxis xAxis = Rotated ? Axes.YAxis : Axes.XAxis;
         IAxis yAxis = Rotated ? Axes.XAxis : Axes.YAxis;
 
         CoordinateRange dataRangeX = Data.GetRangeX();
-        CoordinateRange viewRangeX = firstTimeRenderingData
-            ? dataRangeX
-            : xAxis.GetRange().Rectified();
+        CoordinateRange viewRangeX = firstTimeRenderingData ? dataRangeX : xAxis.GetRange().Rectified();
 
         CoordinateRange newRangeX = AxisManager.GetRangeX(viewRangeX, dataRangeX);
 
         // Get the Y range only for the newly calculated X range
         CoordinateRange dataRangeY = Data.GetRangeY(newRangeX);
-        CoordinateRange viewRangeY = firstTimeRenderingData
-            ? dataRangeY
-            : yAxis.GetRange().Rectified();
+        CoordinateRange viewRangeY = firstTimeRenderingData ? dataRangeY : yAxis.GetRange().Rectified();
 
         CoordinateRange newRangeY = AxisManager.GetRangeY(viewRangeY, dataRangeY);
 
@@ -211,15 +218,15 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
 
         if (Axes.XAxis.IsInverted())
         {
-            newRangeX = new(newRangeX.Max, newRangeX.Min);
+            newRangeX = new CoordinateRange(newRangeX.Max, newRangeX.Min);
         }
 
         if (Axes.YAxis.IsInverted())
         {
-            newRangeY = new(newRangeY.Max, newRangeY.Min);
+            newRangeY = new CoordinateRange(newRangeY.Max, newRangeY.Min);
         }
 
-        AxisLimits newLimits = new(newRangeX, newRangeY);
+        AxisLimits newLimits = new AxisLimits(newRangeX, newRangeY);
 
         plot.Axes.SetLimits(newLimits, Axes.XAxis, Axes.YAxis);
     }
@@ -227,7 +234,7 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
     public bool ManageAxisLimits { get; set; } = true;
 
     /// <summary>
-    /// Automatically expand the axis as needed to ensure the full dataset is visible before each render.
+    ///     Automatically expand the axis as needed to ensure the full dataset is visible before each render.
     /// </summary>
     public void ViewFull()
     {
@@ -237,8 +244,8 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
     }
 
     /// <summary>
-    /// Automatically adjust the axis limits to track the newest data as it comes in.
-    /// The axis limits will appear to "jump" when new data runs off the screen.
+    ///     Automatically adjust the axis limits to track the newest data as it comes in.
+    ///     The axis limits will appear to "jump" when new data runs off the screen.
     /// </summary>
     public void ViewJump(double width = 1000, double paddingFraction = .5)
     {
@@ -248,8 +255,8 @@ public class DataLogger : IPlottable, IManagesAxisLimits, IHasLine, IHasMarker, 
     }
 
     /// <summary>
-    /// Automatically adjust the axis limits to track the newest data as it comes in.
-    /// The axis limits will appear to "slide" continuously as new data is added.
+    ///     Automatically adjust the axis limits to track the newest data as it comes in.
+    ///     The axis limits will appear to "slide" continuously as new data is added.
     /// </summary>
     public void ViewSlide(double width = 1000)
     {

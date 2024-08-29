@@ -1,51 +1,51 @@
 ﻿namespace ScottPlot.DataSources;
 
-public class DataStreamerSource
+public class DataStreamerSource(double[] data)
 {
     /// <summary>
-    /// Fixed-length array used as a circular buffer to shift data in at the position defined by <see cref="NextIndex"/>.
-    /// Values in this array should not be modified externally if <see cref="ManageAxisLimits"/> is enabled.
+    ///     Fixed-length array used as a circular buffer to shift data in at the position defined by <see cref="NextIndex" />.
+    ///     Values in this array should not be modified externally if <see cref="ManageAxisLimits" /> is enabled.
     /// </summary>
-    public double[] Data { get; }
+    public double[] Data { get; } = data;
 
     /// <summary>
-    /// Index in <see cref="Data"/> where the next point will be added
+    ///     Index in <see cref="Data" /> where the next point will be added
     /// </summary>
-    public int NextIndex { get; private set; } = 0;
+    public int NextIndex { get; private set; }
 
     /// <summary>
-    /// Index in <see cref="Data"/> holding the newest data point
+    ///     Index in <see cref="Data" /> holding the newest data point
     /// </summary>
-    public int NewestIndex { get; private set; } = 0;
+    public int NewestIndex { get; private set; }
 
     /// <summary>
-    /// Value of the most recently added data point
+    ///     Value of the most recently added data point
     /// </summary>
     public double NewestPoint => Data[NewestIndex];
 
     /// <summary>
-    /// The number of visible data points to display
+    ///     The number of visible data points to display
     /// </summary>
     public int Length => Data.Length;
 
     /// <summary>
-    /// The total number of data points added
+    ///     The total number of data points added
     /// </summary>
-    public int CountTotal { get; private set; } = 0;
+    public int CountTotal { get; private set; }
 
     /// <summary>
-    /// Total of data points added the last time this plottable was rendered.
-    /// This can be compared with <see cref="CountTotal"/> to determine if a new render is required.
+    ///     Total of data points added the last time this plottable was rendered.
+    ///     This can be compared with <see cref="CountTotal" /> to determine if a new render is required.
     /// </summary>
     public int CountTotalOnLastRender { get; set; } = -1;
 
     /// <summary>
-    /// Minimum value of all known data (not just the data in view)
+    ///     Minimum value of all known data (not just the data in view)
     /// </summary>
     public double DataMin { get; private set; } = double.PositiveInfinity;
 
     /// <summary>
-    /// Maximum value of all known data (not just the data in view)
+    ///     Maximum value of all known data (not just the data in view)
     /// </summary>
     public double DataMax { get; private set; } = double.NegativeInfinity;
 
@@ -55,34 +55,34 @@ public class DataStreamerSource
 
     public double SamplePeriod { get; set; } = 1;
 
-    public DataStreamerSource(double[] data)
-    {
-        Data = data;
-    }
-
     /// <summary>
-    /// Shift in a new Y value
+    ///     Shift in a new Y value
     /// </summary>
     public void Add(double value)
     {
         Data[NextIndex] = value;
-        NextIndex += 1;
+        NextIndex++;
 
         if (NextIndex >= Data.Length)
+        {
             NextIndex = 0;
+        }
 
         NewestIndex = NextIndex - 1;
+
         if (NewestIndex < 0)
+        {
             NewestIndex = Data.Length - 1;
+        }
 
         DataMin = Math.Min(value, DataMin);
         DataMax = Math.Max(value, DataMax);
 
-        CountTotal += 1;
+        CountTotal++;
     }
 
     /// <summary>
-    /// Shift in a collection of new Y values
+    ///     Shift in a collection of new Y values
     /// </summary>
     public void AddRange(IEnumerable<double> values)
     {
@@ -93,12 +93,14 @@ public class DataStreamerSource
     }
 
     /// <summary>
-    /// Clear the buffer by setting all Y points to the given value
+    ///     Clear the buffer by setting all Y points to the given value
     /// </summary>
     public void Clear(double value = 0)
     {
         for (int i = 0; i < Data.Length; i++)
+        {
             Data[i] = 0;
+        }
 
         DataMin = value;
         DataMax = value;
@@ -111,12 +113,15 @@ public class DataStreamerSource
     public AxisLimits GetAxisLimits(bool tight = true)
     {
         if (double.IsInfinity(DataMin) || double.IsInfinity(DataMax))
+        {
             return AxisLimits.NoLimits;
+        }
 
         double xMin = OffsetX;
-        double xMax = xMin + Data.Length * SamplePeriod;
-        CoordinateRange xRange = new(xMin, xMax);
-        CoordinateRange yRange = tight ? CoordinateRange.MinMaxNan(Data) : new(DataMin, DataMax);
+        double xMax = xMin + (Data.Length * SamplePeriod);
+        CoordinateRange xRange = new CoordinateRange(xMin, xMax);
+        CoordinateRange yRange = tight ? CoordinateRange.MinMaxNan(Data) : new CoordinateRange(DataMin, DataMax);
+
         return new AxisLimits(xRange, yRange);
     }
 }

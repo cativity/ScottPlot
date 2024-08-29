@@ -2,9 +2,9 @@
 
 public class MauiPlotMenu(MauiPlot mp) : IPlotMenu
 {
-    private readonly MauiPlot MauiPlot = mp;
+    private readonly MauiPlot _mauiPlot = mp;
 
-    public void Add(string Label, Action<IPlotControl> action)
+    public void Add(string label, Action<IPlotControl> action)
     {
         throw new NotImplementedException();
     }

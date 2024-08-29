@@ -1,4 +1,6 @@
-﻿using SkiaSharp;
+﻿using System.Diagnostics.CodeAnalysis;
+using ScottPlot.Plottables;
+using SkiaSharp;
 
 namespace ScottPlotTests.RenderTests;
 
@@ -7,18 +9,20 @@ internal class LabelTests
     [Test]
     public void Test_Label_Alignment()
     {
-        SKBitmap bmp = new(500, 500);
-        using SKCanvas canvas = new(bmp);
+        SKBitmap bmp = new SKBitmap(500, 500);
+        using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.Navy);
 
-        PixelSize size = new(40, 20);
-        using SKPaint paint = new();
+        //PixelSize size = new PixelSize(40, 20);
+        using SKPaint paint = new SKPaint();
 
         int y = 20;
+
         foreach (Alignment alignment in Enum.GetValues(typeof(Alignment)))
         {
-            Pixel pixel = new(250, 20 + y);
-            LabelStyle lbl = new()
+            Pixel pixel = new Pixel(250, 20 + y);
+
+            LabelStyle lbl = new LabelStyle
             {
                 Text = alignment.ToString(),
                 Alignment = alignment,
@@ -41,21 +45,22 @@ internal class LabelTests
     [Test]
     public void Test_Label_Rotation()
     {
-        SKBitmap bmp = new(500, 500);
-        using SKCanvas canvas = new(bmp);
+        SKBitmap bmp = new SKBitmap(500, 500);
+        using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.Navy);
 
-        PixelSize size = new(40, 20);
-        using SKPaint paint = new();
+        _ = new PixelSize(40, 20);
+        //PixelSize size = new PixelSize(40, 20);
+        using SKPaint paint = new SKPaint();
+        const float radius = 100;
 
         for (int i = 0; i < 360; i += 45)
         {
-            float radius = 100;
             float x = (float)Math.Cos(i * Math.PI / 180) * radius;
             float y = (float)Math.Sin(i * Math.PI / 180) * radius;
-            Pixel center = new(bmp.Width / 2 + x, bmp.Height / 2 + y);
+            Pixel center = new Pixel((bmp.Width / 2D) + x, (bmp.Height / 2D) + y);
 
-            LabelStyle lbl = new()
+            LabelStyle lbl = new LabelStyle
             {
                 Text = $"R{i}",
                 FontSize = 32,
@@ -76,18 +81,21 @@ internal class LabelTests
     [Test]
     public void Test_Label_Alignment_With_Rotation()
     {
-        SKBitmap bmp = new(500, 500);
-        using SKCanvas canvas = new(bmp);
+        SKBitmap bmp = new SKBitmap(500, 500);
+        using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.Navy);
 
-        PixelSize size = new(40, 20);
-        using SKPaint paint = new();
+        _ = new PixelSize(40, 20);
+        //PixelSize size = new PixelSize(40, 20);
+        using SKPaint paint = new SKPaint();
 
         int y = 20;
+
         foreach (Alignment alignment in Enum.GetValues(typeof(Alignment)))
         {
-            Pixel pixel = new(250, 20 + y);
-            LabelStyle lbl = new()
+            Pixel pixel = new Pixel(250, 20 + y);
+
+            LabelStyle lbl = new LabelStyle
             {
                 Text = alignment.ToString(),
                 Alignment = alignment,
@@ -111,12 +119,12 @@ internal class LabelTests
     [Test]
     public void Test_MultilineLabel_AlignmentWithRotation()
     {
-        SKBitmap bmp = new(600, 600);
-        using SKCanvas canvas = new(bmp);
+        SKBitmap bmp = new SKBitmap(600, 600);
+        using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.Navy);
 
-        PixelSize size = new(40, 20);
-        using SKPaint paint = new();
+        //PixelSize size = new PixelSize(40, 20);
+        using SKPaint paint = new SKPaint();
 
         Alignment[,] alignmentMatrix = AlignmentExtensions.AlignmentMatrix;
 
@@ -126,13 +134,11 @@ internal class LabelTests
             {
                 Alignment alignment = alignmentMatrix[y, x];
 
-                Pixel pixel = new(100 + x * 200, 100 + y * 200);
-                LabelStyle label = new()
+                Pixel pixel = new Pixel(100 + (x * 200), 100 + (y * 200));
+
+                LabelStyle label = new LabelStyle
                 {
-                    Text = alignment.ToString()
-                        .Replace("Upper", "Upper\n")
-                        .Replace("Middle", "Middle\n")
-                        .Replace("Lower", "Lower\n"),
+                    Text = alignment.ToString().Replace("Upper", "Upper\n").Replace("Middle", "Middle\n").Replace("Lower", "Lower\n"),
                     Alignment = alignment,
                     FontSize = 32,
                     ForeColor = Colors.White.WithOpacity(.5),
@@ -154,17 +160,18 @@ internal class LabelTests
     [Test]
     public void Test_String_Measurement()
     {
-        SKBitmap bmp = new(500, 500);
-        using SKCanvas canvas = new(bmp);
+        SKBitmap bmp = new SKBitmap(500, 500);
+        using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.Navy);
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         string[] fonts = ["Times New Roman", "Consolas", "Impact", "Arial Narrow", "MiSsInG fOnT"];
 
         float yOffset = 20;
+
         foreach (string font in fonts)
         {
-            LabelStyle lbl = new()
+            LabelStyle lbl = new LabelStyle
             {
                 Text = "Hello, World",
                 FontName = font,
@@ -174,7 +181,7 @@ internal class LabelTests
                 BorderWidth = 1,
             };
 
-            Pixel px = new(20, yOffset);
+            Pixel px = new Pixel(20, yOffset);
             lbl.Render(canvas, px, paint);
 
             yOffset += 100;
@@ -190,9 +197,9 @@ internal class LabelTests
         SKSurface surface = Drawing.CreateSurface(400, 300);
         SKCanvas canvas = surface.Canvas;
         canvas.Clear(SKColors.Navy);
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
-        LabelStyle lbl = new()
+        LabelStyle lbl = new LabelStyle
         {
             Text = "One\nTwo",
             ForeColor = Colors.White.WithAlpha(.5),
@@ -203,11 +210,11 @@ internal class LabelTests
             BorderColor = Colors.Yellow,
         };
 
-        lbl.Render(canvas, new(200, 100), paint);
+        lbl.Render(canvas, new Pixel(200, 100), paint);
 
         lbl.Rotation = 45;
 
-        lbl.Render(canvas, new(200, 200), paint);
+        lbl.Render(canvas, new Pixel(200, 200), paint);
 
         surface.SaveTestImage();
     }
@@ -215,14 +222,14 @@ internal class LabelTests
     [Test]
     public void Test_Label_Rounded()
     {
-        SKBitmap bmp = new(200, 150);
-        using SKCanvas canvas = new(bmp);
+        SKBitmap bmp = new SKBitmap(200, 150);
+        using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.Navy);
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
-        LabelStyle lbl = new()
+        LabelStyle lbl = new LabelStyle
         {
-            Text = $"Hello",
+            Text = "Hello",
             FontSize = 32,
             ForeColor = Colors.White.WithOpacity(.5),
             BorderColor = Colors.Yellow.WithAlpha(.5),
@@ -232,7 +239,7 @@ internal class LabelTests
             BorderRadius = 15,
         };
 
-        lbl.Render(canvas, new(50, 50), paint);
+        lbl.Render(canvas, new Pixel(50, 50), paint);
 
         bmp.SaveTestImage();
     }
@@ -240,58 +247,57 @@ internal class LabelTests
     [Test]
     public void Test_Label_AntiAlias()
     {
-        SKBitmap bmp = new(200, 200);
-        using SKCanvas canvas = new(bmp);
+        SKBitmap bmp = new SKBitmap(200, 200);
+        using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.White);
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
-        LabelStyle lbl1 = new()
+        LabelStyle lbl1 = new LabelStyle
         {
-            Text = $"Default",
+            Text = "Default",
             BorderColor = Colors.Black,
             BorderWidth = 1,
             Padding = 3,
             ShadowColor = Colors.Black.WithAlpha(.5),
-            ShadowOffset = new(5, 5),
+            ShadowOffset = new PixelOffset(5, 5),
             BackgroundColor = Colors.White,
         };
 
-        LabelStyle lbl2 = new()
+        LabelStyle lbl2 = new LabelStyle
         {
-            Text = $"AntiAliasBackground = false",
+            Text = "AntiAliasBackground = false",
             BorderColor = Colors.Black,
             BorderWidth = 1,
             Padding = 3,
             ShadowColor = Colors.Black.WithAlpha(.5),
-            ShadowOffset = new(5, 5),
+            ShadowOffset = new PixelOffset(5, 5),
             BackgroundColor = Colors.White,
             AntiAliasBackground = false,
         };
 
-        LabelStyle lbl3 = new()
+        LabelStyle lbl3 = new LabelStyle
         {
-            Text = $"AntiAliasText = false",
+            Text = "AntiAliasText = false",
             BorderColor = Colors.Black,
             BorderWidth = 1,
             Padding = 3,
             ShadowColor = Colors.Black.WithAlpha(.5),
-            ShadowOffset = new(5, 5),
+            ShadowOffset = new PixelOffset(5, 5),
             BackgroundColor = Colors.White,
             AntiAliasText = false,
         };
 
-        lbl1.Render(canvas, new(25, 50), paint);
-        lbl2.Render(canvas, new(25, 100), paint);
-        lbl3.Render(canvas, new(25, 150), paint);
+        lbl1.Render(canvas, new Pixel(25, 50), paint);
+        lbl2.Render(canvas, new Pixel(25, 100), paint);
+        lbl3.Render(canvas, new Pixel(25, 150), paint);
 
         bmp.SaveTestImage();
     }
 
-
     [Test]
     public void Test_Label_Offset()
     {
-        SKBitmap bmp = new(500, 500);
+        SKBitmap bmp = new SKBitmap(500, 500);
         Test_Label_Offset(bmp, "X:{0}, Y:{1}");
         bmp.SaveTestImage();
     }
@@ -299,20 +305,20 @@ internal class LabelTests
     [Test]
     public void Test_Label_MultiLineOffset()
     {
-        SKBitmap bmp = new(500, 500);
+        SKBitmap bmp = new SKBitmap(500, 500);
         Test_Label_Offset(bmp, "X:{0}\nY:{1}");
         bmp.SaveTestImage();
     }
 
     private static void Test_Label_Offset(SKBitmap bmp, string format)
     {
-        using SKCanvas canvas = new(bmp);
+        using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.Navy);
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
-        Pixel center = new(bmp.Width / 2, bmp.Height / 2);
-        float offset = 150f;
+        Pixel center = new Pixel(bmp.Width / 2D, bmp.Height / 2D);
+        const float offset = 150f;
 
         for (int y = -1; y < 2; y++)
         {
@@ -321,7 +327,7 @@ internal class LabelTests
                 float offsetX = offset * x;
                 float offsetY = offset * y;
 
-                LabelStyle lbl = new()
+                LabelStyle lbl = new LabelStyle
                 {
                     Text = string.Format(format, offsetX, offsetY),
                     Alignment = Alignment.MiddleCenter,
@@ -343,19 +349,17 @@ internal class LabelTests
     [Test]
     public static void Test_Label_MultilineAlignment()
     {
-        Plot plot = new();
+        Plot plot = new Plot();
 
-        var txt1 = plot.Add.Text($"aaa\nbbbbbbbbbbb\nccc", 0, 0);
+        Text txt1 = plot.Add.Text("aaa\nbbbbbbbbbbb\nccc", 0, 0);
         txt1.Alignment = Alignment.MiddleLeft;
         txt1.LabelBackgroundColor = Colors.SkyBlue;
 
-
-        var txt2 = plot.Add.Text($"aaa\nbbbbbbbbbbb\nccc", 1, 1);
+        Text txt2 = plot.Add.Text("aaa\nbbbbbbbbbbb\nccc", 1, 1);
         txt2.Alignment = Alignment.MiddleCenter;
         txt2.LabelBackgroundColor = Colors.SkyBlue;
 
-
-        var txt3 = plot.Add.Text($"aaa\nbbbbbbbbbbb\nccc", 2, 2);
+        Text txt3 = plot.Add.Text("aaa\nbbbbbbbbbbb\nccc", 2, 2);
         txt3.Alignment = Alignment.MiddleRight;
         txt3.LabelBackgroundColor = Colors.SkyBlue;
 

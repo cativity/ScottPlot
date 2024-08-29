@@ -32,7 +32,8 @@ public static class ImageFormatExtensions
             ImageFormat.Png => SKEncodedImageFormat.Png,
             ImageFormat.Bmp => SKEncodedImageFormat.Bmp,
             ImageFormat.Webp => SKEncodedImageFormat.Webp,
-            _ => throw new NotImplementedException($"unsupported format: {fmt}")
+            ImageFormat.Svg => throw new NotImplementedException($"unsupported format: {fmt}"),
+            _ => throw new ArgumentOutOfRangeException(nameof(fmt), fmt, null)
         };
     }
 }
@@ -41,8 +42,10 @@ public static class ImageFormatLookup
 {
     public static ImageFormat FromFileExtension(string ext)
     {
-        if (!ext.StartsWith("."))
+        if (!ext.StartsWith('.'))
+        {
             throw new ArgumentException("extension must start with '.'");
+        }
 
         return ext.ToLowerInvariant() switch
         {
@@ -55,8 +58,5 @@ public static class ImageFormatLookup
         };
     }
 
-    public static ImageFormat FromFilePath(string path)
-    {
-        return FromFileExtension(Path.GetExtension(path));
-    }
+    public static ImageFormat FromFilePath(string path) => FromFileExtension(Path.GetExtension(path));
 }

@@ -1,56 +1,63 @@
 ﻿using System.Text.Json;
+using Version = ScottPlot.Version;
 
 namespace ScottPlotCookbook.Website;
 
 internal static class JsonFile
 {
-    internal static string BuildID = GetBuildID();
+    internal static readonly string BuildID = GetBuildID();
 
     private static string GetBuildID()
     {
         DateTime dt = DateTime.Now;
+
         return $"{dt.Year - 2000:D2}{dt.Month:D2}{dt.Day:D2}{dt.Hour:D2}{dt.Minute:D2}{dt.Second:D2}";
     }
 
     public static string Generate()
     {
-        SourceDatabase db = new();
+        SourceDatabase db = new SourceDatabase();
 
-        using MemoryStream stream = new();
-        JsonWriterOptions options = new() { Indented = true };
-        using Utf8JsonWriter writer = new(stream, options);
+        using MemoryStream stream = new MemoryStream();
+        JsonWriterOptions options = new JsonWriterOptions { Indented = true };
+        using Utf8JsonWriter writer = new Utf8JsonWriter(stream, options);
 
         writer.WriteStartObject();
 
         // library and cookbook metadata
-        writer.WriteString("version", ScottPlot.Version.VersionString);
+        writer.WriteString("version", Version.VersionString);
         writer.WriteString("dateUtc", DateTime.UtcNow.ToString("s"));
         writer.WriteNumber("recipeCount", db.Recipes.Count);
         writer.WriteString("jsonSizeKb", "JSON_SIZE");
 
         // chapters
         writer.WriteStartArray("chapters");
+
         foreach (string chatper in Query.GetChapterNamesInOrder())
         {
             writer.WriteStringValue(chatper);
         }
+
         writer.WriteEndArray();
 
         // categories
         writer.WriteStartArray("categories");
+
         foreach (ICategory category in Query.GetCategories())
         {
             writer.WriteStartObject();
             writer.WriteString("chapter", category.Chapter);
             writer.WriteString("name", category.CategoryName);
             writer.WriteString("description", category.CategoryDescription);
-            writer.WriteString("url", db.Recipes.Where(x => x.Category == category.CategoryName).First().CategoryUrl);
+            writer.WriteString("url", db.Recipes.First(x => x.Category == category.CategoryName).CategoryUrl);
             writer.WriteEndObject();
         }
+
         writer.WriteEndArray();
 
         // recipes
         writer.WriteStartArray("recipes");
+
         foreach (RecipeInfo recipe in db.Recipes)
         {
             writer.WriteStartObject();
@@ -75,12 +82,14 @@ internal static class JsonFile
 
             writer.WriteEndObject();
         }
+
         writer.WriteEndArray();
 
         writer.WriteEndObject();
 
         writer.Flush();
         string json = Encoding.UTF8.GetString(stream.ToArray());
+
         return json.Replace("\"JSON_SIZE\"", (json.Length / 1000).ToString());
     }
 }

@@ -2,41 +2,46 @@
 
 public class MouseDragZoom(MouseButton button) : IUserActionResponse
 {
-    Pixel MouseDownPixel = Pixel.NaN;
+    private Pixel _mouseDownPixel = Pixel.NaN;
 
-    MouseButton MouseButton { get; } = button;
+    private MouseButton MouseButton { get; } = button;
 
     // TODO: re-implement this being more careful about allocations
-    MultiAxisLimits? RememberedLimits = null;
+    private MultiAxisLimits? _rememberedLimits;
 
     public ResponseInfo Execute(Plot plot, IUserAction userInput, KeyboardState keys)
     {
         if (userInput is IMouseButtonAction mouseDownAction && mouseDownAction.Button == MouseButton && mouseDownAction.IsPressed)
         {
-            MouseDownPixel = mouseDownAction.Pixel;
-            RememberedLimits = new(plot);
-            return new ResponseInfo() { IsPrimary = false };
+            _mouseDownPixel = mouseDownAction.Pixel;
+            _rememberedLimits = new MultiAxisLimits(plot);
+
+            return new ResponseInfo { IsPrimary = false };
         }
 
-        if (MouseDownPixel == Pixel.NaN)
+        if (_mouseDownPixel == Pixel.NaN)
+        {
             return ResponseInfo.NoActionRequired;
+        }
 
         if (userInput is IMouseButtonAction mouseUpAction && mouseUpAction.Button == MouseButton && !mouseUpAction.IsPressed)
         {
-            RememberedLimits?.Recall();
-            ApplyToPlot(plot, MouseDownPixel, mouseUpAction.Pixel, keys);
-            MouseDownPixel = Pixel.NaN;
+            _rememberedLimits?.Recall();
+            ApplyToPlot(plot, _mouseDownPixel, mouseUpAction.Pixel, keys);
+            _mouseDownPixel = Pixel.NaN;
+
             return ResponseInfo.Refresh;
         }
 
         if (userInput is IMouseAction mouseMoveAction)
         {
-            RememberedLimits?.Recall();
-            ApplyToPlot(plot, MouseDownPixel, mouseMoveAction.Pixel, keys);
-            return new ResponseInfo() { RefreshNeeded = true, IsPrimary = true };
+            _rememberedLimits?.Recall();
+            ApplyToPlot(plot, _mouseDownPixel, mouseMoveAction.Pixel, keys);
+
+            return new ResponseInfo { RefreshNeeded = true, IsPrimary = true };
         }
 
-        return new ResponseInfo() { IsPrimary = true };
+        return new ResponseInfo { IsPrimary = true };
     }
 
     private static void ApplyToPlot(Plot plot, Pixel px1, Pixel px2, KeyboardState keys)

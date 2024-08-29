@@ -14,19 +14,17 @@ public class NumericFixedInterval(double interval = 1) : ITickGenerator
     {
         List<Tick> ticks = [];
 
-        double lowest = range.TrueMin - range.TrueMin % Interval - Interval;
-        double highest = range.TrueMax - range.TrueMax % Interval + Interval;
+        double lowest = range.TrueMin - (range.TrueMin % Interval) - Interval;
+        double highest = range.TrueMax - (range.TrueMax % Interval) + Interval;
         int tickCount = (int)((highest - lowest) / Interval);
         tickCount = Math.Min(tickCount, MaxTickCount);
 
         for (int i = 0; i < tickCount; i++)
         {
-            double position = range.IsInverted
-                ? lowest + i * Interval
-                : highest - i * Interval;
+            double position = range.IsInverted ? lowest + (i * Interval) : highest - (i * Interval);
 
             string label = LabelFormatter(position);
-            Tick tick = new(position, label, true);
+            Tick tick = new Tick(position, label, true);
             ticks.Add(tick);
         }
 

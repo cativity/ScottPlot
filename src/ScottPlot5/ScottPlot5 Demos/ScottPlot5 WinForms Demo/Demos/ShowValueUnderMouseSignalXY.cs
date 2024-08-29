@@ -1,5 +1,5 @@
 ﻿using ScottPlot;
-using System.Diagnostics;
+using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
@@ -7,11 +7,7 @@ public partial class ShowValueUnderMouseSignalXY : Form, IDemoWindow
 {
     public string Title => "Show Value Under Mouse, SignalXY";
 
-    public string Description => "Demonstrates how to determine where the cursor is " +
-        "in coordinate space and identify the data point closest to it.";
-
-    readonly ScottPlot.Plottables.SignalXY MySignal;
-    ScottPlot.Plottables.Crosshair MyCrosshair;
+    public string Description => "Demonstrates how to determine where the cursor is in coordinate space and identify the data point closest to it.";
 
     public ShowValueUnderMouseSignalXY()
     {
@@ -19,37 +15,38 @@ public partial class ShowValueUnderMouseSignalXY : Form, IDemoWindow
 
         double[] xs = Generate.Consecutive(1000);
         double[] ys = Generate.RandomWalk(1000);
-        MySignal = formsPlot1.Plot.Add.SignalXY(xs, ys);
+        SignalXY mySignal = formsPlot1.Plot.Add.SignalXY(xs, ys);
 
-        MyCrosshair = formsPlot1.Plot.Add.Crosshair(0, 0);
-        MyCrosshair.IsVisible = false;
-        MyCrosshair.MarkerShape = MarkerShape.OpenCircle;
-        MyCrosshair.MarkerSize = 15;
+        Crosshair myCrosshair = formsPlot1.Plot.Add.Crosshair(0, 0);
+        myCrosshair.IsVisible = false;
+        myCrosshair.MarkerShape = MarkerShape.OpenCircle;
+        myCrosshair.MarkerSize = 15;
 
-        formsPlot1.MouseMove += (s, e) =>
+        formsPlot1.MouseMove += (_, e) =>
         {
             // determine where the mouse is and get the nearest point
-            Pixel mousePixel = new(e.Location.X, e.Location.Y);
+            Pixel mousePixel = new Pixel(e.Location.X, e.Location.Y);
             Coordinates mouseLocation = formsPlot1.Plot.GetCoordinates(mousePixel);
+
             DataPoint nearest = rbNearestXY.Checked
-                ? MySignal.Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender)
-                : MySignal.Data.GetNearestX(mouseLocation, formsPlot1.Plot.LastRender);
+                                    ? mySignal.Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender)
+                                    : mySignal.Data.GetNearestX(mouseLocation, formsPlot1.Plot.LastRender);
 
             // place the crosshair over the highlighted point
             if (nearest.IsReal)
             {
-                MyCrosshair.IsVisible = true;
-                MyCrosshair.Position = nearest.Coordinates;
+                myCrosshair.IsVisible = true;
+                myCrosshair.Position = nearest.Coordinates;
                 formsPlot1.Refresh();
                 Text = $"Selected Index={nearest.Index}, X={nearest.X:0.##}, Y={nearest.Y:0.##}";
             }
 
             // hide the crosshair when no point is selected
-            if (!nearest.IsReal && MyCrosshair.IsVisible)
+            if (!nearest.IsReal && myCrosshair.IsVisible)
             {
-                MyCrosshair.IsVisible = false;
+                myCrosshair.IsVisible = false;
                 formsPlot1.Refresh();
-                Text = $"No point selected";
+                Text = "No point selected";
             }
         };
     }

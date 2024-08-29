@@ -1,4 +1,8 @@
-﻿namespace ScottPlotTests.UnitTests;
+﻿using System.Diagnostics.CodeAnalysis;
+using ScottPlot.Plottables;
+using SkiaSharp;
+
+namespace ScottPlotTests.UnitTests;
 
 internal class PlottableManagement
 {
@@ -8,17 +12,17 @@ internal class PlottableManagement
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
 
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
         // add scatter plots
-        var sp1 = myPlot.Add.Scatter(xs, ys);
-        var sp2 = myPlot.Add.Scatter(xs, ys);
-        var sp3 = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
+        Scatter sp2 = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
 
         // add signal plots
-        var sig1 = myPlot.Add.Signal(ys);
-        var sig2 = myPlot.Add.Signal(ys);
-        var sig3 = myPlot.Add.Signal(ys);
+        Signal sig1 = myPlot.Add.Signal(ys);
+        Signal sig2 = myPlot.Add.Signal(ys);
+        _ = myPlot.Add.Signal(ys);
 
         // add duplicates
         myPlot.Add.Plottable(sp2);
@@ -41,17 +45,20 @@ internal class PlottableManagement
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
 
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
         // add scatter plots
-        var sp1 = myPlot.Add.Scatter(xs, ys);
-        var sp2 = myPlot.Add.Scatter(xs, ys);
-        var sp3 = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
+        //Scatter sp1 = myPlot.Add.Scatter(xs, ys);
+        Scatter sp2 = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
+        //Scatter sp3 = myPlot.Add.Scatter(xs, ys);
 
         // add signal plots
-        var sig1 = myPlot.Add.Signal(ys);
-        var sig2 = myPlot.Add.Signal(ys);
-        var sig3 = myPlot.Add.Signal(ys);
+        Signal sig1 = myPlot.Add.Signal(ys);
+        Signal sig2 = myPlot.Add.Signal(ys);
+        _ = myPlot.Add.Signal(ys);
+        //Signal sig3 = myPlot.Add.Signal(ys);
 
         // add duplicates
         myPlot.Add.Plottable(sp2);
@@ -64,7 +71,7 @@ internal class PlottableManagement
         myPlot.Remove(sig1.GetType());
         myPlot.PlottableList.Count.Should().Be(5);
 
-        myPlot.Remove(typeof(ScottPlot.Plottables.Scatter));
+        myPlot.Remove(typeof(Scatter));
         myPlot.PlottableList.Count.Should().Be(0);
     }
 
@@ -74,17 +81,21 @@ internal class PlottableManagement
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
 
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
         // add scatter plots
-        var sp1 = myPlot.Add.Scatter(xs, ys);
-        var sp2 = myPlot.Add.Scatter(xs, ys);
-        var sp3 = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
+        //Scatter sp1 = myPlot.Add.Scatter(xs, ys);
+        Scatter sp2 = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
+        //Scatter sp3 = myPlot.Add.Scatter(xs, ys);
 
         // add signal plots
-        var sig1 = myPlot.Add.Signal(ys);
-        var sig2 = myPlot.Add.Signal(ys);
-        var sig3 = myPlot.Add.Signal(ys);
+        _ = myPlot.Add.Signal(ys);
+        //Signal sig1 = myPlot.Add.Signal(ys);
+        Signal sig2 = myPlot.Add.Signal(ys);
+        _ = myPlot.Add.Signal(ys);
+        //Signal sig3 = myPlot.Add.Signal(ys);
 
         // add duplicates
         myPlot.Add.Plottable(sp2);
@@ -94,10 +105,10 @@ internal class PlottableManagement
 
         myPlot.PlottableList.Count.Should().Be(10);
 
-        myPlot.Remove<ScottPlot.Plottables.Signal>();
+        myPlot.Remove<Signal>();
         myPlot.PlottableList.Count.Should().Be(5);
 
-        myPlot.Remove<ScottPlot.Plottables.Scatter>();
+        myPlot.Remove<Scatter>();
         myPlot.PlottableList.Count.Should().Be(0);
     }
 
@@ -107,29 +118,29 @@ internal class PlottableManagement
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
 
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
-        var sp1 = myPlot.Add.Scatter(xs, ys);
+        Scatter sp1 = myPlot.Add.Scatter(xs, ys);
         sp1.LegendText = "AAA";
 
-        var sp2 = myPlot.Add.Scatter(xs, ys);
+        Scatter sp2 = myPlot.Add.Scatter(xs, ys);
         sp2.LegendText = "ABC";
 
-        var sp3 = myPlot.Add.Scatter(xs, ys);
+        Scatter sp3 = myPlot.Add.Scatter(xs, ys);
         sp3.LegendText = "ABAB";
 
-        var sp4 = myPlot.Add.Scatter(xs, ys);
+        Scatter sp4 = myPlot.Add.Scatter(xs, ys);
         sp4.LegendText = "LOLOLOLOLOLOL";
         sp4.Color = Colors.Magenta;
 
         myPlot.PlottableList.Count.Should().Be(4);
 
         // match label content
-        myPlot.Remove<ScottPlot.Plottables.Scatter>(x => x.LegendText!.Contains('B'));
+        myPlot.Remove<Scatter>(static x => x.LegendText.Contains('B'));
         myPlot.PlottableList.Count.Should().Be(2);
 
         // match style options
-        myPlot.Remove<ScottPlot.Plottables.Scatter>(x => x.Color == Colors.Magenta);
+        myPlot.Remove<Scatter>(static x => x.Color == Colors.Magenta);
         myPlot.PlottableList.Count.Should().Be(1);
     }
 
@@ -139,20 +150,20 @@ internal class PlottableManagement
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
 
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
         // add scatter plots
-        var sp1 = myPlot.Add.Scatter(xs, ys);
-        var sp2 = myPlot.Add.Scatter(xs, ys);
-        var sp3 = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
+        _ = myPlot.Add.Scatter(xs, ys);
 
         // add signal plots
-        var sig1 = myPlot.Add.Signal(ys);
-        var sig2 = myPlot.Add.Signal(ys);
+        _ = myPlot.Add.Signal(ys);
+        _ = myPlot.Add.Signal(ys);
 
         myPlot.GetPlottables().Count().Should().Be(5);
-        myPlot.GetPlottables<ScottPlot.Plottables.Scatter>().Count().Should().Be(3);
-        myPlot.GetPlottables<ScottPlot.Plottables.Signal>().Count().Should().Be(2);
+        myPlot.GetPlottables<Scatter>().Count().Should().Be(3);
+        myPlot.GetPlottables<Signal>().Count().Should().Be(2);
     }
 
     [Test]
@@ -160,7 +171,7 @@ internal class PlottableManagement
     {
         Plot myPlot = new Plot();
         myPlot.Add.Text(null!, new Coordinates());
-        myPlot.RenderManager.Render(new SkiaSharp.SKCanvas(new SkiaSharp.SKBitmap()), new PixelRect());
+        myPlot.RenderManager.Render(new SKCanvas(new SKBitmap()), new PixelRect());
         Assert.Pass();
     }
 }

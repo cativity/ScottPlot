@@ -5,7 +5,7 @@ internal class PixelTests
     [Test]
     public void Test_Pixel_DefaultValues()
     {
-        Pixel pixel = new();
+        Pixel pixel = new Pixel();
         pixel.X.Should().Be(0);
     }
 
@@ -17,7 +17,7 @@ internal class PixelTests
     [TestCase(0, float.PositiveInfinity)] // permitted
     public void Test_Pixel_Construct(float x, float y)
     {
-        Pixel pixel = new(x, y);
+        Pixel pixel = new Pixel(x, y);
         pixel.X.Should().Be(x);
         pixel.Y.Should().Be(y);
     }

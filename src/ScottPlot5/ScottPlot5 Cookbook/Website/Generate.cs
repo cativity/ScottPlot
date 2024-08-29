@@ -6,7 +6,7 @@ internal class Generate
     public void Generate_Website()
     {
         string json = GenerateJsonFile();
-        JsonCookbookInfo cb = new(json);
+        JsonCookbookInfo cb = new JsonCookbookInfo(json);
 
         GenerateHomePage(cb);
         GenerateCategoryPages(cb);
@@ -23,6 +23,7 @@ internal class Generate
         string json = JsonFile.Generate();
         string jsonFile = Path.Combine(Paths.OutputFolder, "recipes.json");
         File.WriteAllText(jsonFile, json);
+
         return json;
     }
 
@@ -33,7 +34,7 @@ internal class Generate
 
     private static void GenerateCategoryPages(JsonCookbookInfo cb)
     {
-        foreach (var category in cb.Categories)
+        foreach (JsonCookbookInfo.JsonCategoryInfo category in cb.Categories)
         {
             new CategoryPage(cb, category).Generate(Paths.OutputFolder);
         }
@@ -41,13 +42,13 @@ internal class Generate
 
     private static void GenerateRecipePages(JsonCookbookInfo cb)
     {
-        foreach (string category in cb.Categories.Select(x => x.Name))
+        //foreach (string category in cb.Categories.Select(static x => x.Name))
+        //{
+        foreach (JsonCookbookInfo.JsonRecipeInfo recipe in cb.Recipes)
         {
-            foreach (var recipe in cb.Recipes)
-            {
-                new RecipePage(recipe).Generate(Paths.OutputFolder);
-            }
+            new RecipePage(recipe).Generate(Paths.OutputFolder);
         }
+        //}
     }
 
     private static void GenerateSearchPage()

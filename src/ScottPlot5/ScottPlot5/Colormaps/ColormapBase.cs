@@ -25,11 +25,7 @@ public abstract class ColormapBase : IColormap
 
     public IColormap Reversed()
     {
-        var colors = Enumerable
-            .Range(0, 255)
-            .Select(x => GetColor(x / 255.0))
-            .Reverse()
-            .ToArray();
+        Color[] colors = Enumerable.Range(0, 255).Select(x => GetColor(x / 255.0)).Reverse().ToArray();
 
         return new Custom(colors, $"{Name} Reversed");
     }

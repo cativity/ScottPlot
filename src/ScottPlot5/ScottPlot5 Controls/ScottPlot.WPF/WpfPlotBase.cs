@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Media;
 using ScottPlot.Control;
+using ScottPlot.Interactivity;
 using SkiaSharp;
 
 namespace ScottPlot.WPF;
@@ -9,20 +10,24 @@ namespace ScottPlot.WPF;
 public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotControl
 {
     public abstract GRContext GRContext { get; }
+
     public abstract void Refresh();
 
     public Plot Plot { get; internal set; }
+
     public IPlotInteraction Interaction { get; set; }
+
     public float DisplayScale { get; set; }
+
     public IPlotMenu Menu { get; set; }
-    public Interactivity.UserInputProcessor UserInputProcessor { get; }
+
+    public UserInputProcessor UserInputProcessor { get; }
 
     protected abstract FrameworkElement PlotFrameworkElement { get; }
+
     static WpfPlotBase()
     {
-        DefaultStyleKeyProperty.OverrideMetadata(
-            forType: typeof(WpfPlotBase),
-            typeMetadata: new FrameworkPropertyMetadata(typeof(WpfPlotBase)));
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfPlotBase), new FrameworkPropertyMetadata(typeof(WpfPlotBase)));
     }
 
     public WpfPlotBase()
@@ -30,7 +35,7 @@ public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotContro
         Plot = new Plot() { PlotControl = this };
         DisplayScale = DetectDisplayScale();
         Interaction = new Interaction(this);
-        UserInputProcessor = new(Plot);
+        UserInputProcessor = new UserInputProcessor(Plot);
         Menu = new WpfPlotMenu(this);
         Focusable = true;
     }
@@ -61,7 +66,9 @@ public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotContro
         (sender as UIElement)?.CaptureMouse();
 
         if (e.ClickCount == 2)
+        {
             Interaction.DoubleClick();
+        }
     }
 
     internal void SKElement_MouseUp(object? sender, MouseButtonEventArgs e)
@@ -109,8 +116,5 @@ public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotContro
         base.OnKeyUp(e);
     }
 
-    public float DetectDisplayScale()
-    {
-        return (float)VisualTreeHelper.GetDpi(this).DpiScaleX;
-    }
+    public float DetectDisplayScale() => (float)VisualTreeHelper.GetDpi(this).DpiScaleX;
 }

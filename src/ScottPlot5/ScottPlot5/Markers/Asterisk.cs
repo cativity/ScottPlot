@@ -7,7 +7,7 @@ internal class Asterisk : IMarker
         float crossOffset = size / 2;
         float eksOffset = (float)(size / 2.828);
 
-        var path = new SKPath();
+        SKPath path = new SKPath();
         // Same as cross marker
         path.MoveTo(center.X + crossOffset, center.Y);
         path.LineTo(center.X - crossOffset, center.Y);

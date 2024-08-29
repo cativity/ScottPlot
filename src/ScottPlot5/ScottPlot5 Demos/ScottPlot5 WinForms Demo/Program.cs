@@ -1,17 +1,18 @@
-﻿
+﻿using WinForms_Demo.Demos;
+
 namespace WinForms_Demo;
 
-static class Program
+internal static class Program
 {
     [STAThread]
-    static void Main()
+    private static void Main()
     {
         Application.EnableVisualStyles();
         ApplicationConfiguration.Initialize();
         Application.EnableVisualStyles();
 
         // CTRL+D opens this window (useful for testing in development)
-        Type testingFormType = typeof(Demos.CustomMouseActions);
+        Type testingFormType = typeof(CustomMouseActions);
 
         Application.Run(new MainMenuForm(testingFormType));
     }

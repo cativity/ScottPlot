@@ -3,8 +3,8 @@
 namespace ScottPlot;
 
 /// <summary>
-/// Standard markers supported by ScottPlot.
-/// See demo app for information about creating custom marker shapes.
+///     Standard markers supported by ScottPlot.
+///     See demo app for information about creating custom marker shapes.
 /// </summary>
 public enum MarkerShape
 {
@@ -32,7 +32,7 @@ public enum MarkerShape
 public static class MarkerShapeExtensions
 {
     /// <summary>
-    /// Get the marker object for a standard marker shape
+    ///     Get the marker object for a standard marker shape
     /// </summary>
     public static IMarker GetMarker(this MarkerShape shape)
     {
@@ -65,11 +65,9 @@ public static class MarkerShapeExtensions
     {
         return shape switch
         {
-            (MarkerShape.OpenCircle or MarkerShape.OpenSquare or MarkerShape.OpenTriangleUp or
-            MarkerShape.OpenTriangleDown or MarkerShape.OpenDiamond or MarkerShape.Eks or
-            MarkerShape.Cross or MarkerShape.VerticalBar or MarkerShape.HorizontalBar or
-            MarkerShape.TriUp or MarkerShape.TriDown or MarkerShape.Asterisk or
-            MarkerShape.HashTag) => true,
+            MarkerShape.OpenCircle or MarkerShape.OpenSquare or MarkerShape.OpenTriangleUp or MarkerShape.OpenTriangleDown or MarkerShape.OpenDiamond
+                or MarkerShape.Eks or MarkerShape.Cross or MarkerShape.VerticalBar or MarkerShape.HorizontalBar or MarkerShape.TriUp or MarkerShape.TriDown
+                or MarkerShape.Asterisk or MarkerShape.HashTag => true,
             _ => false,
         };
     }

@@ -9,8 +9,8 @@ public class ArrowheadLine : IArrowShape
         rp.CanvasState.RotateDegrees(arrowLine.AngleDegrees + 90);
 
         // origin is the tip, base extends to the right
-        PixelLine line1 = new(new(0, 0), new(arrowStyle.ArrowheadLength, arrowStyle.ArrowheadWidth / 2));
-        PixelLine line2 = new(new(0, 0), new(arrowStyle.ArrowheadLength, -arrowStyle.ArrowheadWidth / 2));
+        PixelLine line1 = new PixelLine(new Pixel(0, 0), new Pixel(arrowStyle.ArrowheadLength, arrowStyle.ArrowheadWidth / 2));
+        PixelLine line2 = new PixelLine(new Pixel(0, 0), new Pixel(arrowStyle.ArrowheadLength, -arrowStyle.ArrowheadWidth / 2));
 
         Drawing.DrawLine(rp.Canvas, rp.Paint, line1, arrowStyle.LineStyle);
         Drawing.DrawLine(rp.Canvas, rp.Paint, line2, arrowStyle.LineStyle);

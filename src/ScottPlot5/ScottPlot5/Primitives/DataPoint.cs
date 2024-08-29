@@ -1,14 +1,16 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// Represents a specific point in a DataSource
+///     Represents a specific point in a DataSource
 /// </summary>
 public readonly struct DataPoint
 {
     public readonly double X;
     public readonly double Y;
     public readonly int Index;
-    public Coordinates Coordinates => new(X, Y);
+
+    public Coordinates Coordinates => new Coordinates(X, Y);
+
     public bool IsReal => NumericConversion.IsReal(X) && NumericConversion.IsReal(Y);
 
     public DataPoint(double x, double y, int index)
@@ -25,5 +27,5 @@ public readonly struct DataPoint
         Index = index;
     }
 
-    public static DataPoint None => new(double.NaN, double.NaN, -1);
+    public static DataPoint None => new DataPoint(double.NaN, double.NaN, -1);
 }

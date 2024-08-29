@@ -2,23 +2,27 @@
 
 public class KeyboardState
 {
-    private readonly HashSet<Key> Pressed = new();
+    private readonly HashSet<Key> _pressed = [];
 
-    public IReadOnlyCollection<Key> PressedKeys => Pressed.ToArray();
+    public IReadOnlyCollection<Key> PressedKeys => [.. _pressed];
 
     public void Down(Key key)
     {
         if (key == Key.Unknown)
+        {
             return;
+        }
 
-        Pressed.Add(key);
+        _pressed.Add(key);
     }
 
     public void Up(Key key)
     {
         if (key == Key.Unknown)
+        {
             return;
+        }
 
-        Pressed.Remove(key);
+        _pressed.Remove(key);
     }
 }

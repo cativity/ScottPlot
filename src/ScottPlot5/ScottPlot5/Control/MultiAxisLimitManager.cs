@@ -1,17 +1,16 @@
 ﻿namespace ScottPlot.Control;
 
 /// <summary>
-/// This object remembers limits of all axes so it can restore them later.
-/// It is used for mouse interaction to translate pixel distances 
-/// to coordinate distances based on previous renders.
+///     This object remembers limits of all axes so it can restore them later.
+///     It is used for mouse interaction to translate pixel distances
+///     to coordinate distances based on previous renders.
 /// </summary>
 public class MultiAxisLimitManager
 {
-    private readonly Dictionary<IAxis, CoordinateRange> RememberedLimits = new();
+    private readonly Dictionary<IAxis, CoordinateRange> _rememberedLimits = [];
 
     public MultiAxisLimitManager()
     {
-
     }
 
     public MultiAxisLimitManager(Plot plot)
@@ -25,15 +24,15 @@ public class MultiAxisLimitManager
     }
 
     /// <summary>
-    /// Remember the current limits of the given axis
+    ///     Remember the current limits of the given axis
     /// </summary>
     private void Remember(IAxis axis)
     {
-        RememberedLimits[axis] = new(axis.Min, axis.Max);
+        _rememberedLimits[axis] = new CoordinateRange(axis.Min, axis.Max);
     }
 
     /// <summary>
-    /// Remember the current limits of all given axes
+    ///     Remember the current limits of all given axes
     /// </summary>
     private void Remember(IEnumerable<IAxis> axes)
     {
@@ -44,29 +43,29 @@ public class MultiAxisLimitManager
     }
 
     /// <summary>
-    /// Clear memory of previous axes and remember all the given axis limits
+    ///     Clear memory of previous axes and remember all the given axis limits
     /// </summary>
     public void Remember(MultiAxisLimitManager newMultiLimits)
     {
-        foreach (IAxis axis in newMultiLimits.RememberedLimits.Keys)
+        foreach (IAxis axis in newMultiLimits._rememberedLimits.Keys)
         {
-            CoordinateRange range = newMultiLimits.RememberedLimits[axis];
-            RememberedLimits[axis] = new(range.Min, range.Max);
+            CoordinateRange range = newMultiLimits._rememberedLimits[axis];
+            _rememberedLimits[axis] = new CoordinateRange(range.Min, range.Max);
         }
     }
 
     /// <summary>
-    /// Update all axis limits of the given plot with those previously remembered
+    ///     Update all axis limits of the given plot with those previously remembered
     /// </summary>
     public void Apply(Plot plot)
     {
         foreach (IAxis axis in plot.Axes.GetAxes())
         {
-            if (!RememberedLimits.ContainsKey(axis))
-                continue;
-
-            axis.Range.Min = RememberedLimits[axis].Min;
-            axis.Range.Max = RememberedLimits[axis].Max;
+            if (_rememberedLimits.TryGetValue(axis, out CoordinateRange range))
+            {
+                axis.Range.Min = range.Min;
+                axis.Range.Max = range.Max;
+            }
         }
     }
 }

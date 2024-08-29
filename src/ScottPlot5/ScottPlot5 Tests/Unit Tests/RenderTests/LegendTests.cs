@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using ScottPlot.Panels;
+using ScottPlot.Plottables;
 
 namespace ScottPlotTests.RenderTests;
 
@@ -7,9 +8,9 @@ internal class LegendTests
     [Test]
     public void Test_Legend_Toggle()
     {
-        Plot plt = new();
-        var sig1 = plt.Add.Signal(Generate.Sin());
-        var sig2 = plt.Add.Signal(Generate.Cos());
+        Plot plt = new Plot();
+        Signal sig1 = plt.Add.Signal(Generate.Sin());
+        Signal sig2 = plt.Add.Signal(Generate.Cos());
 
         sig1.LegendText = "Sine";
         sig2.LegendText = "Cosine";
@@ -26,10 +27,10 @@ internal class LegendTests
     [Test]
     public void Test_Legend_FontStyle()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
 
-        var sig1 = plt.Add.Signal(Generate.Sin());
-        var sig2 = plt.Add.Signal(Generate.Cos());
+        Signal sig1 = plt.Add.Signal(Generate.Sin());
+        Signal sig2 = plt.Add.Signal(Generate.Cos());
 
         sig1.LegendText = "Sine";
         sig2.LegendText = "Cosine";
@@ -44,10 +45,10 @@ internal class LegendTests
     [Test]
     public void Test_Legend_Image()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
 
-        var sig1 = plt.Add.Signal(Generate.Sin());
-        var sig2 = plt.Add.Signal(Generate.Cos());
+        Signal sig1 = plt.Add.Signal(Generate.Sin());
+        Signal sig2 = plt.Add.Signal(Generate.Cos());
 
         sig1.LegendText = "Sine";
         sig2.LegendText = "Cosine";
@@ -59,10 +60,10 @@ internal class LegendTests
     [Test]
     public void Test_Legend_SvgImage()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
 
-        var sig1 = plt.Add.Signal(Generate.Sin());
-        var sig2 = plt.Add.Signal(Generate.Cos());
+        Signal sig1 = plt.Add.Signal(Generate.Sin());
+        Signal sig2 = plt.Add.Signal(Generate.Cos());
 
         sig1.LegendText = "Sine";
         sig2.LegendText = "Cosine";
@@ -76,7 +77,7 @@ internal class LegendTests
     [Test]
     public void Test_Legend_EmptyWithoutEnabling()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.GetImage(300, 200);
         plt.GetLegendImage();
         plt.GetLegendSvgXml();
@@ -85,7 +86,7 @@ internal class LegendTests
     [Test]
     public void Test_Legend_EmptyWithEnabling()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.ShowLegend();
         plt.GetImage(300, 200);
         plt.GetLegendImage();
@@ -95,25 +96,25 @@ internal class LegendTests
     [Test]
     public void Test_Legend_Basic()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
-        var leg2 = plt.Add.Legend();
+        Legend leg2 = plt.Add.Legend();
         leg2.Alignment = Alignment.LowerCenter;
 
         for (int i = 0; i < 5; i++)
         {
-            LegendItem item1 = new()
+            LegendItem item1 = new LegendItem
             {
-                LabelText = $"ASDFgj",
+                LabelText = "ASDFgj",
                 LabelFontColor = Colors.Category10[i],
                 LabelFontSize = 22,
                 LineColor = Colors.Category10[i],
                 LineWidth = 3,
             };
 
-            LegendItem item2 = new()
+            LegendItem item2 = new LegendItem
             {
-                LabelText = $"ASDF",
+                LabelText = "ASDF",
                 LabelFontColor = Colors.Category10[i],
                 LabelFontSize = 22,
                 LineColor = Colors.Category10[i],
@@ -132,11 +133,11 @@ internal class LegendTests
     [Test]
     public void Test_Legend_FontOverride()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
         for (int i = 0; i < 5; i++)
         {
-            LegendItem item = new()
+            LegendItem item = new LegendItem
             {
                 LabelText = $"AgAgAg Item #{i + 1}",
                 LabelFontColor = Colors.Category10[i],
@@ -144,6 +145,7 @@ internal class LegendTests
                 LineColor = Colors.Category10[i],
                 LineWidth = 3,
             };
+
             plt.Legend.ManualItems.Add(item);
         }
 
@@ -155,76 +157,76 @@ internal class LegendTests
         plt.SaveTestImage();
     }
 
-    private LegendItem[] GetSampleLegendItems(int fontSize = 16) =>
-    [
-        new LegendItem()
-        {
-            LabelText = $"Default",
-            LabelFontSize = fontSize,
-        },
-        new LegendItem()
-        {
-            LabelText = $"Line",
-            LabelFontSize = fontSize,
-            LineWidth = 2,
-            LineColor = Colors.Blue,
-            LinePattern = LinePattern.Dotted,
-        },
-        new LegendItem()
-        {
-            LabelText = $"Fill",
-            LabelFontSize = fontSize,
-            FillColor = Colors.Green.WithAlpha(.5),
-        },
-        new LegendItem()
-        {
-            LabelText = $"Outline",
-            LabelFontSize = fontSize,
-            OutlineColor = Colors.Blue,
-            OutlineWidth = 2,
-        },
-        new LegendItem()
-        {
-            LabelText = $"Fill+Outline",
-            LabelFontSize = fontSize,
-            FillColor = Colors.Green.WithAlpha(.5),
-            OutlineColor = Colors.Blue,
-            OutlineWidth = 2,
-        },
-        new LegendItem()
-        {
-            LabelText = $"Marker",
-            LabelFontSize = fontSize,
-            MarkerShape = MarkerShape.FilledDiamond,
-            MarkerFillColor = Colors.Green.WithAlpha(.5),
-            MarkerLineColor = Colors.Blue,
-            MarkerLineWidth = 2,
-            MarkerSize = 15,
-        },
-        new LegendItem()
-        {
-            LabelText = $"Marker+Line",
-            LabelFontSize = fontSize,
-            MarkerShape = MarkerShape.FilledCircle,
-            MarkerFillColor = Colors.Green.WithAlpha(.5),
-            MarkerSize = 10,
-            LineWidth = 2,
-            LineColor = Colors.Blue,
-        },
-        new LegendItem()
-        {
-            LabelText = $"Arrow",
-            LabelFontSize = fontSize,
-            ArrowLineWidth = 2,
-            ArrowFillColor = Colors.Blue,
-            ArrowLineColor = Colors.Transparent,
-        },
-    ];
+    private LegendItem[] GetSampleLegendItems(int fontSize = 16)
+        => [
+            new LegendItem
+            {
+                LabelText = "Default",
+                LabelFontSize = fontSize,
+            },
+            new LegendItem
+            {
+                LabelText = "Line",
+                LabelFontSize = fontSize,
+                LineWidth = 2,
+                LineColor = Colors.Blue,
+                LinePattern = LinePattern.Dotted,
+            },
+            new LegendItem
+            {
+                LabelText = "Fill",
+                LabelFontSize = fontSize,
+                FillColor = Colors.Green.WithAlpha(.5),
+            },
+            new LegendItem
+            {
+                LabelText = "Outline",
+                LabelFontSize = fontSize,
+                OutlineColor = Colors.Blue,
+                OutlineWidth = 2,
+            },
+            new LegendItem
+            {
+                LabelText = "Fill+Outline",
+                LabelFontSize = fontSize,
+                FillColor = Colors.Green.WithAlpha(.5),
+                OutlineColor = Colors.Blue,
+                OutlineWidth = 2,
+            },
+            new LegendItem
+            {
+                LabelText = "Marker",
+                LabelFontSize = fontSize,
+                MarkerShape = MarkerShape.FilledDiamond,
+                MarkerFillColor = Colors.Green.WithAlpha(.5),
+                MarkerLineColor = Colors.Blue,
+                MarkerLineWidth = 2,
+                MarkerSize = 15,
+            },
+            new LegendItem
+            {
+                LabelText = "Marker+Line",
+                LabelFontSize = fontSize,
+                MarkerShape = MarkerShape.FilledCircle,
+                MarkerFillColor = Colors.Green.WithAlpha(.5),
+                MarkerSize = 10,
+                LineWidth = 2,
+                LineColor = Colors.Blue,
+            },
+            new LegendItem
+            {
+                LabelText = "Arrow",
+                LabelFontSize = fontSize,
+                ArrowLineWidth = 2,
+                ArrowFillColor = Colors.Blue,
+                ArrowLineColor = Colors.Transparent,
+            },
+        ];
 
     [Test]
     public void Test_Legend_Symbols()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         GetSampleLegendItems().ToList().ForEach(plt.Legend.ManualItems.Add);
         plt.ShowLegend();
         plt.SaveTestImage();
@@ -233,7 +235,7 @@ internal class LegendTests
     [Test]
     public void Test_LegendImage_Symbols()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
         GetSampleLegendItems().ToList().ForEach(plt.Legend.ManualItems.Add);
         plt.GetLegendImage().SaveTestImage();
     }
@@ -241,13 +243,13 @@ internal class LegendTests
     [Test]
     public void Test_Legend_MultiLine()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
         for (int i = 0; i < 5; i++)
         {
-            var sig = plt.Add.Signal(Generate.Sin(phase: i / 20.0));
+            Signal sig = plt.Add.Signal(Generate.Sin(phase: i / 20.0));
             sig.LineWidth = 2;
-            sig.LegendText = i % 2 == 0 ? $"Single Line" : "Multi\nLine";
+            sig.LegendText = i % 2 == 0 ? "Single Line" : "Multi\nLine";
         }
 
         plt.ShowLegend();
@@ -257,19 +259,12 @@ internal class LegendTests
     [Test]
     public void Test_Legend_WrappingHorizontal()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
         for (int i = 0; i < 13; i++)
         {
             Color color = Color.RandomHue();
-            LegendItem item = new()
-            {
-                LabelText = $"Item #{i + 1}",
-                LabelFontColor = color,
-                LabelFontSize = 16,
-                LineColor = color,
-                LineWidth = 3,
-            };
+            LegendItem item = new LegendItem { LabelText = $"Item #{i + 1}", LabelFontColor = color, LabelFontSize = 16, LineColor = color, LineWidth = 3, };
             plt.Legend.ManualItems.Add(item);
         }
 
@@ -282,16 +277,11 @@ internal class LegendTests
     [Test]
     public void Test_Legend_WrappingHorizontalTightWrap()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
         for (int i = 0; i < 5; i++)
         {
-            LegendItem item = new()
-            {
-                LabelText = new string('A', count: i * 5 + 1),
-                LineColor = Colors.Blue,
-                LineWidth = 3,
-            };
+            LegendItem item = new LegendItem { LabelText = new string('A', (i * 5) + 1), LineColor = Colors.Blue, LineWidth = 3, };
             plt.Legend.TightHorizontalWrapping = true;
             plt.Legend.ManualItems.Add(item);
         }
@@ -302,23 +292,15 @@ internal class LegendTests
         plt.SaveTestImage();
     }
 
-
     [Test]
     public void Test_Legend_WrappingVertical()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
         for (int i = 0; i < 33; i++)
         {
             Color color = Color.RandomHue();
-            LegendItem item = new()
-            {
-                LabelText = $"Item #{i + 1}",
-                LabelFontColor = color,
-                LabelFontSize = 16,
-                LineColor = color,
-                LineWidth = 3,
-            };
+            LegendItem item = new LegendItem { LabelText = $"Item #{i + 1}", LabelFontColor = color, LabelFontSize = 16, LineColor = color, LineWidth = 3, };
             plt.Legend.ManualItems.Add(item);
         }
 
@@ -335,8 +317,7 @@ internal class LegendTests
         double[] ys = [1, 2, 3];
         double[] err = [1, 2, 3];
 
-
-        Plot plt = new();
+        Plot plt = new Plot();
 
         plt.Add.Arrow(1, 2, 3, 4);
         plt.Add.VerticalLine(0);
@@ -359,7 +340,7 @@ internal class LegendTests
         plt.Add.SignalConst(ys);
         plt.Add.SignalXY(xs, ys);
 
-        foreach (var plottable in plt.GetPlottables())
+        foreach (IPlottable? plottable in plt.GetPlottables())
         {
             if (plottable is IHasLegendText h)
             {
@@ -372,9 +353,12 @@ internal class LegendTests
         }
 
         // special cases of plottables with child legend items
-        var pie = plt.Add.Pie(xs);
-        foreach (var slice in pie.Slices)
+        Pie pie = plt.Add.Pie(xs);
+
+        foreach (PieSlice? slice in pie.Slices)
+        {
             slice.LegendText = "pie slice";
+        }
 
         plt.GetLegendImage().SaveTestImage();
     }
@@ -382,21 +366,17 @@ internal class LegendTests
     [Test]
     public void Test_Legend_Panel()
     {
-        ScottPlot.Plot plt = new();
+        Plot plt = new Plot();
 
-        var sig1 = plt.Add.Signal(Generate.Sin());
-        var sig2 = plt.Add.Signal(Generate.Cos());
+        Signal sig1 = plt.Add.Signal(Generate.Sin());
+        Signal sig2 = plt.Add.Signal(Generate.Cos());
 
         sig1.LegendText = "Sine";
         sig2.LegendText = "Cosine";
 
         plt.HideLegend(); // hide the default legend
 
-        ScottPlot.Panels.LegendPanel pan = new(plt.Legend)
-        {
-            Edge = Edge.Right,
-            Alignment = Alignment.UpperCenter,
-        };
+        LegendPanel pan = new LegendPanel(plt.Legend) { Edge = Edge.Right, Alignment = Alignment.UpperCenter, };
 
         plt.Axes.AddPanel(pan);
 
@@ -407,11 +387,11 @@ internal class LegendTests
     public void Test_CustomFont_InLegend()
     {
         string ttfFilePath = Paths.GetTtfFilePaths().First();
-        Fonts.AddFontFile("Font Name", ttfFilePath, bold: false, italic: false);
+        Fonts.AddFontFile("Font Name", ttfFilePath, false, false);
 
         // create a plot with data
-        Plot plot = new();
-        var sig = plot.Add.Signal(Generate.Sin());
+        Plot plot = new Plot();
+        Signal sig = plot.Add.Signal(Generate.Sin());
         sig.LegendText = "Sine Wave";
 
         // axis label custom font
@@ -426,7 +406,7 @@ internal class LegendTests
         //plot.Legend.FontName= "Font Name";
 
         // manual legend items custom font
-        plot.Legend.ManualItems.Add(new LegendItem()
+        plot.Legend.ManualItems.Add(new LegendItem
         {
             LabelText = "Manual Item",
             LabelFontColor = Colors.Blue,

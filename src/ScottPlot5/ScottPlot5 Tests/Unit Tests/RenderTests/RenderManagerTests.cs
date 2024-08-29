@@ -5,12 +5,12 @@ internal class RenderManagerTests
     [Test]
     public void Test_RenderManager_Output()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));
         plt.Add.Signal(Generate.Cos(51));
         _ = plt.GetImageBytes(400, 300);
 
-        var timedActions = plt.RenderManager.LastRender.TimedActions;
+        (string, TimeSpan)[] timedActions = plt.RenderManager.LastRender.TimedActions;
         timedActions.Should().NotBeNull();
         timedActions.Should().NotBeEmpty();
 

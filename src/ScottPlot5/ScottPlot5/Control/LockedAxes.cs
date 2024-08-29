@@ -1,13 +1,8 @@
 ﻿namespace ScottPlot.Control;
 
-public struct LockedAxes
+public struct LockedAxes(bool lockedX, bool lockedY)
 {
-    public bool X = false;
-    public bool Y = false;
+    public bool X { get; set; } = lockedX;
 
-    public LockedAxes(bool lockedX, bool lockedY)
-    {
-        X = lockedX;
-        Y = lockedY;
-    }
+    public bool Y { get; set; } = lockedY;
 }

@@ -3,57 +3,53 @@
 public class MouseDragPan(MouseButton button) : IUserActionResponse
 {
     /// <summary>
-    /// Which mouse button to watch for click-drag events
+    ///     Which mouse button to watch for click-drag events
     /// </summary>
     public MouseButton MouseButton { get; } = button;
 
-    private Pixel MouseDownPixel;
+    private Pixel _mouseDownPixel;
 
-    private MultiAxisLimits? RememberedLimits = null;
+    private MultiAxisLimits? _rememberedLimits;
 
     public ResponseInfo Execute(Plot plot, IUserAction userInput, KeyboardState keys)
     {
         // mouse down starts drag
-        if (userInput is IMouseButtonAction mouseDownAction
-            && mouseDownAction.Button == MouseButton
-            && mouseDownAction.IsPressed)
+        if (userInput is IMouseButtonAction mouseDownAction && mouseDownAction.Button == MouseButton && mouseDownAction.IsPressed)
         {
-            MouseDownPixel = mouseDownAction.Pixel;
-            RememberedLimits = new(plot);
+            _mouseDownPixel = mouseDownAction.Pixel;
+            _rememberedLimits = new MultiAxisLimits(plot);
 
             return ResponseInfo.NoActionRequired;
         }
 
         // mouse up ends drag
-        if (userInput is IMouseButtonAction mouseUpAction
-            && mouseUpAction.Button == MouseButton
-            && !mouseUpAction.IsPressed
-            && RememberedLimits is not null)
+        if (userInput is IMouseButtonAction mouseUpAction && mouseUpAction.Button == MouseButton && !mouseUpAction.IsPressed && _rememberedLimits is not null)
         {
-            RememberedLimits.Recall();
-            RememberedLimits = null;
-            ApplyToPlot(plot, MouseDownPixel, mouseUpAction.Pixel, keys);
+            _rememberedLimits.Recall();
+            _rememberedLimits = null;
+            ApplyToPlot(plot, _mouseDownPixel, mouseUpAction.Pixel, keys);
 
             return ResponseInfo.Refresh;
         }
 
         // mouse move while dragging
-        if (userInput is IMouseAction mouseAction
-            && RememberedLimits is not null)
+        if (userInput is IMouseAction mouseAction && _rememberedLimits is not null)
         {
             // Ignore dragging if it's only a few pixels. This leaves room for
             // single- and double-click events that may drag by a few pixels accidentally.
-            double dX = Math.Abs(mouseAction.Pixel.X - MouseDownPixel.X);
-            double dY = Math.Abs(mouseAction.Pixel.Y - MouseDownPixel.Y);
+            double dX = Math.Abs(mouseAction.Pixel.X - _mouseDownPixel.X);
+            double dY = Math.Abs(mouseAction.Pixel.Y - _mouseDownPixel.Y);
             double maxDragDistance = Math.Max(dX, dY);
+
             if (maxDragDistance < 5)
             {
                 return ResponseInfo.NoActionRequired;
             }
 
-            RememberedLimits.Recall();
-            ApplyToPlot(plot, MouseDownPixel, mouseAction.Pixel, keys);
-            return new ResponseInfo() { RefreshNeeded = true, IsPrimary = true };
+            _rememberedLimits.Recall();
+            ApplyToPlot(plot, _mouseDownPixel, mouseAction.Pixel, keys);
+
+            return new ResponseInfo { RefreshNeeded = true, IsPrimary = true };
         }
 
         return ResponseInfo.NoActionRequired;

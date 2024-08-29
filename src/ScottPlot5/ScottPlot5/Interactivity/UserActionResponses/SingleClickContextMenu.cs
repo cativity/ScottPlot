@@ -7,4 +7,3 @@ public class SingleClickContextMenu(MouseButton button) : SingleClickResponse(bu
         plot.PlotControl?.ShowContextMenu(pixel);
     }
 }
-

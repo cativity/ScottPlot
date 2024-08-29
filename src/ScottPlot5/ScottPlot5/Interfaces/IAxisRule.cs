@@ -1,7 +1,7 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// These rules are applied just before each render
+///     These rules are applied just before each render
 /// </summary>
 public interface IAxisRule
 {

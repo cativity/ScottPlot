@@ -2,16 +2,13 @@
 
 public readonly struct LegendLayout
 {
-    required public LegendItem[] LegendItems { get; init; }
-    required public PixelRect LegendRect { get; init; }
-    required public PixelRect[] LabelRects { get; init; }
-    required public PixelRect[] SymbolRects { get; init; }
+    public required LegendItem[] LegendItems { get; init; }
 
-    public static LegendLayout NoLegend => new()
-    {
-        LegendItems = [],
-        LegendRect = PixelRect.NaN,
-        LabelRects = [],
-        SymbolRects = [],
-    };
+    public required PixelRect LegendRect { get; init; }
+
+    public required PixelRect[] LabelRects { get; init; }
+
+    public required PixelRect[] SymbolRects { get; init; }
+
+    public static LegendLayout NoLegend => new LegendLayout { LegendItems = [], LegendRect = PixelRect.NaN, LabelRects = [], SymbolRects = [], };
 }

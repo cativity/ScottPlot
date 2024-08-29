@@ -1,6 +1,4 @@
-﻿using NUnit.Framework.Internal;
-
-namespace ScottPlotTests;
+﻿namespace ScottPlotTests;
 
 internal static class SourceCodeParsing
 {
@@ -9,18 +7,18 @@ internal static class SourceCodeParsing
 
     private static string GetRepoFolder()
     {
-        string defaultFolder = Path.GetFullPath(TestContext.CurrentContext.TestDirectory); ;
+        string defaultFolder = Path.GetFullPath(TestContext.CurrentContext.TestDirectory);
+        ;
         string? repoFolder = defaultFolder;
+
         while (repoFolder is not null)
         {
             if (File.Exists(Path.Combine(repoFolder, "LICENSE")))
             {
                 return repoFolder;
             }
-            else
-            {
-                repoFolder = Path.GetDirectoryName(repoFolder);
-            }
+
+            repoFolder = Path.GetDirectoryName(repoFolder);
         }
 
         throw new InvalidOperationException($"repository folder not found in any folder above {defaultFolder}");
@@ -42,44 +40,34 @@ internal static class SourceCodeParsing
 
     public static string ReadSourceFile(string path)
     {
-        return File.ReadAllText(Path.Combine(SourceFolder, path));
+        string s = Path.Combine(SourceFolder, path);
+
+        return File.ReadAllText(s);
     }
 
     public static List<string> GetMethodNames(string path)
     {
         List<string> methodNames = [];
 
-        string[] lines = SourceCodeParsing
-            .ReadSourceFile(path)
-            .Replace("\r", "")
-            .Split("\n");
+        string[] lines = ReadSourceFile(path).Replace("\r", "").Split("\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        foreach (string line in lines)
+        foreach (string line in lines.Where(static line => line.StartsWith("public ") && !line.Contains("class") && !line.Contains("{ get;")))
         {
-            string trimmed = line.Trim();
+            //if (!line.StartsWith("public ") || line.Contains("class") || line.Replace(" ", "").Contains("{get"))
+            //if (!line.StartsWith("public ") || line.Contains("class") || line.Contains("{ get;"))
+            //{
+            //    continue;
+            //}
 
-            if (!trimmed.StartsWith("public "))
-                continue;
-
-            if (line.Contains("class"))
-                continue;
-
-            if (line.Replace(" ", "").Contains("{get"))
-                continue;
-
-            string[] parts = trimmed.Split(" ", 3);
-            string returnType = parts[1];
-            string methodSignature = parts[2];
-            string methodName = methodSignature.Split("(")[0].Split("<")[0];
-            methodNames.Add(methodName);
+            string[] parts = line.Split(" ", 3);
+            //string returnType = parts[1];
+            //string methodSignature = parts[2];
+            methodNames.Add(parts[2].Split("(")[0].Split("<")[0]);
         }
 
         return methodNames;
     }
 
     // TODO: cache source file paths and their contents for quicker searching by multiple tests
-    public static string[] GetSourceFilePaths()
-    {
-        return Directory.GetFiles(SourceFolder, "*.cs", SearchOption.AllDirectories);
-    }
+    public static string[] GetSourceFilePaths() => Directory.GetFiles(SourceFolder, "*.cs", SearchOption.AllDirectories);
 }

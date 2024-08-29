@@ -1,4 +1,5 @@
 ﻿using ScottPlot;
+using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
@@ -16,19 +17,19 @@ public partial class OpenGL : Form, IDemoWindow
         cbDataType.Items.Add("Sine Wave");
         cbDataType.Items.Add("Random Values");
         cbDataType.SelectedIndex = 0;
-        cbDataType.SelectedIndexChanged += (s, e) => UpdatePlots();
+        cbDataType.SelectedIndexChanged += (_, _) => UpdatePlots();
 
         cbPointCount.Items.Add("1k");
         cbPointCount.Items.Add("10k");
         cbPointCount.Items.Add("100k");
         cbPointCount.Items.Add("1M");
         cbPointCount.SelectedIndex = 1;
-        cbPointCount.SelectedIndexChanged += (s, e) => UpdatePlots();
+        cbPointCount.SelectedIndexChanged += (_, _) => UpdatePlots();
 
         cbPlotType.Items.Add("Signal Plot");
         cbPlotType.Items.Add("Scatter Plot");
         cbPlotType.SelectedIndex = 0;
-        cbPlotType.SelectedIndexChanged += (s, e) => UpdatePlots();
+        cbPlotType.SelectedIndexChanged += (_, _) => UpdatePlots();
 
         formsPlot1.Plot.Title("FormsPlot");
         formsPlot1.Plot.Benchmark.IsVisible = true;
@@ -64,10 +65,10 @@ public partial class OpenGL : Form, IDemoWindow
         {
             double[] xs = Generate.Consecutive(count);
 
-            var sp1 = formsPlot1.Plot.Add.Scatter(xs, data);
+            Scatter sp1 = formsPlot1.Plot.Add.Scatter(xs, data);
             sp1.MarkerStyle.IsVisible = false;
 
-            var sp2 = formsPlotgl1.Plot.Add.Scatter(xs, data);
+            Scatter sp2 = formsPlotgl1.Plot.Add.Scatter(xs, data);
             sp2.MarkerStyle.IsVisible = false;
         }
 

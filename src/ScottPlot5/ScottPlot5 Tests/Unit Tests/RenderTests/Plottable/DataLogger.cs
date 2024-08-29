@@ -5,9 +5,9 @@ internal class DataLogger
     [Test]
     public void Test_EmptyDataLogger_WithDateTimeAxis()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
 
-        var logger = plt.Add.DataLogger();
+        ScottPlot.Plottables.DataLogger logger = plt.Add.DataLogger();
         plt.Axes.DateTimeTicksBottom();
         plt.Should().SavePngWithoutThrowing("empty");
 

@@ -14,7 +14,7 @@ public class FormsPlotGL : FormsPlotBase
 
     public FormsPlotGL()
     {
-        SKElement = new() { Dock = DockStyle.Fill, VSync = true };
+        SKElement = new SKGLControl { Dock = DockStyle.Fill, VSync = true };
         SKElement.PaintSurface += SKControl_PaintSurface;
         SKElement.MouseDown += SKElement_MouseDown;
         SKElement.MouseUp += SKElement_MouseUp;
@@ -26,7 +26,7 @@ public class FormsPlotGL : FormsPlotBase
 
         Controls.Add(SKElement);
 
-        HandleDestroyed += (s, e) => SKElement.Dispose();
+        HandleDestroyed += (_, _) => SKElement.Dispose();
     }
 
     private void SKControl_PaintSurface(object? sender, SKPaintGLSurfaceEventArgs e)

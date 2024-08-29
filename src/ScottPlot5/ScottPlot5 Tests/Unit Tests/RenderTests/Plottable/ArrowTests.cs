@@ -1,22 +1,24 @@
-﻿namespace ScottPlotTests.RenderTests.Plottable;
+﻿using ScottPlot.Plottables;
+
+namespace ScottPlotTests.RenderTests.Plottable;
 
 internal class ArrowTests
 {
     [Test]
     public void Test_Arrow_Shapes()
     {
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
-        ArrowShape[] arrowShapes = Enum.GetValues<ArrowShape>().ToArray();
+        ArrowShape[] arrowShapes = [.. Enum.GetValues<ArrowShape>()];
 
         for (int i = 0; i < arrowShapes.Length; i++)
         {
-            Coordinates arrowTip = new(0, -i);
+            Coordinates arrowTip = new Coordinates(0, -i);
             Coordinates arrowBase = arrowTip.WithDelta(1, 0);
-            var arrow = myPlot.Add.Arrow(arrowBase, arrowTip);
+            Arrow arrow = myPlot.Add.Arrow(arrowBase, arrowTip);
             arrow.ArrowShape = arrowShapes[i].GetShape();
 
-            var txt = myPlot.Add.Text(arrowShapes[i].ToString(), arrowBase.WithDelta(.1, 0));
+            Text txt = myPlot.Add.Text(arrowShapes[i].ToString(), arrowBase.WithDelta(.1, 0));
             txt.LabelFontColor = arrow.ArrowLineColor;
             txt.LabelAlignment = Alignment.MiddleLeft;
             txt.LabelFontSize = 26;
@@ -30,13 +32,13 @@ internal class ArrowTests
     [Test]
     public void Test_Arrow_Directions()
     {
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
 
         {
             // up
-            Coordinates p1 = new(0, 1);
-            Coordinates p2 = new(0, 2);
-            CoordinateLine line = new(p1, p2);
+            Coordinates p1 = new Coordinates(0, 1);
+            Coordinates p2 = new Coordinates(0, 2);
+            CoordinateLine line = new CoordinateLine(p1, p2);
             myPlot.Add.Arrow(line);
             myPlot.Add.Line(line);
             myPlot.Add.Marker(p2);
@@ -45,9 +47,9 @@ internal class ArrowTests
 
         {
             // upper right
-            Coordinates p1 = new(1, 1);
-            Coordinates p2 = new(2, 2);
-            CoordinateLine line = new(p1, p2);
+            Coordinates p1 = new Coordinates(1, 1);
+            Coordinates p2 = new Coordinates(2, 2);
+            CoordinateLine line = new CoordinateLine(p1, p2);
             myPlot.Add.Arrow(line);
             myPlot.Add.Line(line);
             myPlot.Add.Marker(p2);
@@ -56,9 +58,9 @@ internal class ArrowTests
 
         {
             // right
-            Coordinates p1 = new(1, 0);
-            Coordinates p2 = new(2, 0);
-            CoordinateLine line = new(p1, p2);
+            Coordinates p1 = new Coordinates(1, 0);
+            Coordinates p2 = new Coordinates(2, 0);
+            CoordinateLine line = new CoordinateLine(p1, p2);
             myPlot.Add.Arrow(line);
             myPlot.Add.Line(line);
             myPlot.Add.Marker(p2);
@@ -67,9 +69,9 @@ internal class ArrowTests
 
         {
             // lower right
-            Coordinates p1 = new(1, -1);
-            Coordinates p2 = new(2, -2);
-            CoordinateLine line = new(p1, p2);
+            Coordinates p1 = new Coordinates(1, -1);
+            Coordinates p2 = new Coordinates(2, -2);
+            CoordinateLine line = new CoordinateLine(p1, p2);
             myPlot.Add.Arrow(line);
             myPlot.Add.Line(line);
             myPlot.Add.Marker(p2);
@@ -78,9 +80,9 @@ internal class ArrowTests
 
         {
             // lower
-            Coordinates p1 = new(0, -1);
-            Coordinates p2 = new(0, -2);
-            CoordinateLine line = new(p1, p2);
+            Coordinates p1 = new Coordinates(0, -1);
+            Coordinates p2 = new Coordinates(0, -2);
+            CoordinateLine line = new CoordinateLine(p1, p2);
             myPlot.Add.Arrow(line);
             myPlot.Add.Line(line);
             myPlot.Add.Marker(p2);
@@ -89,9 +91,9 @@ internal class ArrowTests
 
         {
             // lower left
-            Coordinates p1 = new(-1, -1);
-            Coordinates p2 = new(-2, -2);
-            CoordinateLine line = new(p1, p2);
+            Coordinates p1 = new Coordinates(-1, -1);
+            Coordinates p2 = new Coordinates(-2, -2);
+            CoordinateLine line = new CoordinateLine(p1, p2);
             myPlot.Add.Arrow(line);
             myPlot.Add.Line(line);
             myPlot.Add.Marker(p2);
@@ -100,9 +102,9 @@ internal class ArrowTests
 
         {
             // left
-            Coordinates p1 = new(-1, 0);
-            Coordinates p2 = new(-2, 0);
-            CoordinateLine line = new(p1, p2);
+            Coordinates p1 = new Coordinates(-1, 0);
+            Coordinates p2 = new Coordinates(-2, 0);
+            CoordinateLine line = new CoordinateLine(p1, p2);
             myPlot.Add.Arrow(line);
             myPlot.Add.Line(line);
             myPlot.Add.Marker(p2);
@@ -111,9 +113,9 @@ internal class ArrowTests
 
         {
             // upper left
-            Coordinates p1 = new(-1, 1);
-            Coordinates p2 = new(-2, 2);
-            CoordinateLine line = new(p1, p2);
+            Coordinates p1 = new Coordinates(-1, 1);
+            Coordinates p2 = new Coordinates(-2, 2);
+            CoordinateLine line = new CoordinateLine(p1, p2);
             myPlot.Add.Arrow(line);
             myPlot.Add.Line(line);
             myPlot.Add.Marker(p2);

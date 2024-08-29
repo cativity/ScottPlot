@@ -10,25 +10,26 @@ public class BollingerBands
     public readonly DateTime[] DateTimes;
     public readonly double[] Dates;
 
-    public BollingerBands(List<OHLC> ohlcs, int N, double sdCoeff = 2)
+    public BollingerBands(List<OHLC> ohlcs, int n, double sdCoeff = 2)
     {
-        double[] prices = ohlcs.Select(x => x.Close).ToArray();
-        double[] sma = Series.MovingAverage(prices, N, preserveLength: true);
-        double[] smstd = Series.SimpleMovingStandardDeviation(prices, N, preserveLength: true);
+        double[] prices = ohlcs.Select(static x => x.Close).ToArray();
+        double[] sma = Series.MovingAverage(prices, n, true);
+        double[] smstd = Series.SimpleMovingStandardDeviation(prices, n, true);
 
         UpperValues = new double[prices.Length];
         LowerValues = new double[prices.Length];
+
         for (int i = 0; i < prices.Length; i++)
         {
-            LowerValues[i] = sma[i] - sdCoeff * smstd[i];
-            UpperValues[i] = sma[i] + sdCoeff * smstd[i];
+            LowerValues[i] = sma[i] - (sdCoeff * smstd[i]);
+            UpperValues[i] = sma[i] + (sdCoeff * smstd[i]);
         }
 
         // skip the first points which all contain NaN
-        Means = sma.Skip(N).ToArray();
-        LowerValues = LowerValues.Skip(N).ToArray();
-        UpperValues = UpperValues.Skip(N).ToArray();
-        DateTimes = ohlcs.Skip(N).Select(x => x.DateTime).ToArray();
-        Dates = DateTimes.Select(x => x.ToOADate()).ToArray();
+        Means = sma.Skip(n).ToArray();
+        LowerValues = LowerValues.Skip(n).ToArray();
+        UpperValues = UpperValues.Skip(n).ToArray();
+        DateTimes = ohlcs.Skip(n).Select(static x => x.DateTime).ToArray();
+        Dates = DateTimes.Select(static x => x.ToOADate()).ToArray();
     }
 }

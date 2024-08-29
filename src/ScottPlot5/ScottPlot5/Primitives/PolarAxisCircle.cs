@@ -1,17 +1,13 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// A circle centered at the origin
+///     A circle centered at the origin
 /// </summary>
 public class PolarAxisCircle(double radius) : IHasLine
 {
     public double Radius { get; set; } = radius;
 
-    public LineStyle LineStyle { get; set; } = new()
-    {
-        Width = 1,
-        Color = Colors.Black.WithAlpha(.5),
-    };
+    public LineStyle LineStyle { get; set; } = new LineStyle { Width = 1, Color = Colors.Black.WithAlpha(.5), };
 
     public float LineWidth
     {
@@ -33,9 +29,12 @@ public class PolarAxisCircle(double radius) : IHasLine
 
     public void Render(RenderPack rp, IAxes axes, SKPaint paint)
     {
+        Debug.Assert(axes.XAxis is not null);
+        Debug.Assert(axes.YAxis is not null);
+
         float pixelX = axes.GetPixelX(Radius) - axes.XAxis.GetPixel(0, rp.DataRect);
         float pixelY = axes.GetPixelY(Radius) - axes.YAxis.GetPixel(0, rp.DataRect);
-        PixelRect circleRect = new(-pixelX, pixelX, pixelY, -pixelY);
+        PixelRect circleRect = new PixelRect(-pixelX, pixelX, pixelY, -pixelY);
         Drawing.DrawOval(rp.Canvas, paint, LineStyle, circleRect);
     }
 }

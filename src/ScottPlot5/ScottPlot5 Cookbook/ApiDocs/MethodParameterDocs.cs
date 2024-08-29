@@ -2,14 +2,9 @@
 
 namespace ScottPlotCookbook.ApiDocs;
 
-public class MethodParameterDocs
+public class MethodParameterDocs(ParameterInfo pi)
 {
-    public string Name { get; }
-    public TypeName TypeName { get; }
+    public string Name { get; } = pi.Name ?? "ANONYMOUS";
 
-    public MethodParameterDocs(ParameterInfo pi, XmlDocsDB docsDb)
-    {
-        Name = pi.Name ?? "ANONYMOUS";
-        TypeName = new(pi.ParameterType);
-    }
+    public TypeName TypeName { get; } = new TypeName(pi.ParameterType);
 }

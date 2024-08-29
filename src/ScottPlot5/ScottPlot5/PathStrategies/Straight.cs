@@ -1,18 +1,18 @@
 ﻿namespace ScottPlot.PathStrategies;
 
 /// <summary>
-/// Connect points with straight lines.
-/// NaN values will be skipped, producing a gap in the path.
+///     Connect points with straight lines.
+///     NaN values will be skipped, producing a gap in the path.
 /// </summary>
 internal class Straight : IPathStrategy
 {
     public SKPath GetPath(IEnumerable<Pixel> pixels)
     {
-        SKPath path = new();
+        SKPath path = new SKPath();
 
         bool move = true;
 
-        foreach (var pixel in pixels)
+        foreach (Pixel pixel in pixels)
         {
             if (float.IsNaN(pixel.X) || float.IsNaN(pixel.Y))
             {

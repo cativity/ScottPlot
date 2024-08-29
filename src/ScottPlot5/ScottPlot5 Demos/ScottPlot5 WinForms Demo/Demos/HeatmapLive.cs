@@ -1,45 +1,49 @@
-﻿namespace WinForms_Demo.Demos;
+﻿using ScottPlot;
+using ScottPlot.Plottables;
+using Timer = System.Windows.Forms.Timer;
+
+namespace WinForms_Demo.Demos;
 
 public partial class HeatmapLive : Form, IDemoWindow
 {
-    readonly ScottPlot.Plottables.Heatmap HMap;
-    readonly System.Windows.Forms.Timer Timer;
-    readonly double[,] HeatmapData;
-    int UpdateCount = 0;
+    private readonly Heatmap _hMap;
+    private readonly Timer _timer;
+    private readonly double[,] _heatmapData;
+    private int _updateCount;
 
     public string Title => "Live Heatmap";
 
     public string Description => "Demonstrates how to display a heatmap with data that changes over time";
 
-
     public HeatmapLive()
     {
         InitializeComponent();
 
-        HeatmapData = ScottPlot.Generate.Sin2D(23, 13, multiple: 3);
-        HMap = new ScottPlot.Plottables.Heatmap(HeatmapData);
-        formsPlot1.Plot.PlottableList.Add(HMap);
+        _heatmapData = Generate.Sin2D(23, 13, multiple: 3);
+        _hMap = new Heatmap(_heatmapData);
+        formsPlot1.Plot.PlottableList.Add(_hMap);
 
-        Timer = new() { Enabled = true, Interval = 100 };
-        Timer.Tick += (s, e) => ChangeData();
+        _timer = new Timer { Enabled = true, Interval = 100 };
+        _timer.Tick += (_, _) => ChangeData();
 
         formsPlot1.Refresh();
     }
 
     private void ChangeData()
     {
-        Text = $"Updated {++UpdateCount} times";
+        Text = $"Updated {++_updateCount} times";
 
-        Random rand = new();
-        for (int y = 0; y < HeatmapData.GetLength(0); y++)
+        Random rand = new Random();
+
+        for (int y = 0; y < _heatmapData.GetLength(0); y++)
         {
-            for (int x = 0; x < HeatmapData.GetLength(1); x++)
+            for (int x = 0; x < _heatmapData.GetLength(1); x++)
             {
-                HeatmapData[y, x] += rand.NextDouble() - .5;
+                _heatmapData[y, x] += rand.NextDouble() - .5;
             }
         }
 
-        HMap.Update();
+        _hMap.Update();
         formsPlot1.Refresh();
     }
 }

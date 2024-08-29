@@ -5,20 +5,20 @@ internal class PlotAxisManipulation
     [Test]
     public void Test_Plot_Pan()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.Axes.SetLimits(-7, 42, -13, 69);
         plt.Axes.Pan(new CoordinateOffset(1, 2));
 
-        AxisLimits expectedLimits = new(-6, 43, -11, 71);
+        AxisLimits expectedLimits = new AxisLimits(-6, 43, -11, 71);
         plt.Axes.GetLimits().Should().Be(expectedLimits);
     }
 
     [Test]
     public void Test_Plot_Pan_Pixels()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
 
-        AxisLimits initialLimits = new(-7, 42, -13, 69);
+        AxisLimits initialLimits = new AxisLimits(-7, 42, -13, 69);
         plt.Axes.SetLimits(initialLimits);
 
         Pixel px1 = Pixel.Zero;
@@ -37,7 +37,7 @@ internal class PlotAxisManipulation
     [Test]
     public void Test_Plot_Zoom()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
 
         plt.Axes.SetLimits(-7, 42, -13, 69);
         plt.Axes.GetLimits().Left.Should().Be(-7);

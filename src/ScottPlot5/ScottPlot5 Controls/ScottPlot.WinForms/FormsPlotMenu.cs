@@ -10,64 +10,44 @@ namespace ScottPlot.WinForms;
 public class FormsPlotMenu : IPlotMenu
 {
     public string DefaultSaveImageFilename { get; set; } = "Plot.png";
-    public List<ContextMenuItem> ContextMenuItems { get; set; } = new();
-    readonly FormsPlotBase ThisControl;
+
+    public List<ContextMenuItem> ContextMenuItems { get; set; } = new List<ContextMenuItem>();
+
+    private readonly FormsPlotBase _thisControl;
 
     public FormsPlotMenu(FormsPlotBase control)
     {
-        ThisControl = control;
+        _thisControl = control;
         Reset();
     }
 
     public List<ContextMenuItem> StandardContextMenuItems()
     {
-        ContextMenuItem saveImage = new()
-        {
-            Label = "Save Image",
-            OnInvoke = OpenSaveImageDialog,
-        };
+        ContextMenuItem saveImage = new ContextMenuItem { Label = "Save Image", OnInvoke = OpenSaveImageDialog, };
 
-        ContextMenuItem copyImage = new()
-        {
-            Label = "Copy to Clipboard",
-            OnInvoke = CopyImageToClipboard,
-        };
+        ContextMenuItem copyImage = new ContextMenuItem { Label = "Copy to Clipboard", OnInvoke = CopyImageToClipboard, };
 
-        ContextMenuItem autoscale = new()
-        {
-            Label = "Autoscale",
-            OnInvoke = Autoscale,
-        };
+        ContextMenuItem autoscale = new ContextMenuItem { Label = "Autoscale", OnInvoke = Autoscale, };
 
-        ContextMenuItem newWindow = new()
-        {
-            Label = "Open in New Window",
-            OnInvoke = OpenInNewWindow,
-        };
+        ContextMenuItem newWindow = new ContextMenuItem { Label = "Open in New Window", OnInvoke = OpenInNewWindow, };
 
-        return new List<ContextMenuItem>()
-        {
-            saveImage,
-            copyImage,
-            autoscale,
-            newWindow,
-        };
+        return new List<ContextMenuItem> { saveImage, copyImage, autoscale, newWindow, };
     }
 
-    public void CopyImageToClipboard(IPlotControl plotControl)
+    public static void CopyImageToClipboard(IPlotControl plotControl)
     {
         PixelSize lastRenderSize = plotControl.Plot.RenderManager.LastRender.FigureRect.Size;
         Bitmap bmp = plotControl.Plot.GetBitmap((int)lastRenderSize.Width, (int)lastRenderSize.Height);
         Clipboard.SetImage(bmp);
     }
 
-    public void OpenInNewWindow(IPlotControl plotControl)
+    public static void OpenInNewWindow(IPlotControl plotControl)
     {
         FormsPlotViewer.Launch(plotControl.Plot, "Interactive Plot");
         plotControl.Refresh();
     }
 
-    public void Autoscale(IPlotControl plotControl)
+    public static void Autoscale(IPlotControl plotControl)
     {
         plotControl.Plot.Axes.AutoScale();
         plotControl.Refresh();
@@ -75,7 +55,7 @@ public class FormsPlotMenu : IPlotMenu
 
     public ContextMenuStrip GetContextMenu()
     {
-        ContextMenuStrip menu = new();
+        ContextMenuStrip menu = new ContextMenuStrip();
 
         foreach (ContextMenuItem item in ContextMenuItems)
         {
@@ -85,8 +65,8 @@ public class FormsPlotMenu : IPlotMenu
             }
             else
             {
-                ToolStripMenuItem menuItem = new(item.Label);
-                menuItem.Click += (s, e) => item.OnInvoke(ThisControl);
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(item.Label);
+                menuItem.Click += (_, _) => item.OnInvoke(_thisControl);
 
                 menu.Items.Add(menuItem);
             }
@@ -97,21 +77,23 @@ public class FormsPlotMenu : IPlotMenu
 
     public void OpenSaveImageDialog(IPlotControl plotControl)
     {
-        SaveFileDialog dialog = new()
+        SaveFileDialog dialog = new SaveFileDialog
         {
             FileName = DefaultSaveImageFilename,
-            Filter = "PNG Files (*.png)|*.png" +
-                     "|JPEG Files (*.jpg, *.jpeg)|*.jpg;*.jpeg" +
-                     "|BMP Files (*.bmp)|*.bmp" +
-                     "|WebP Files (*.webp)|*.webp" +
-                     "|SVG Files (*.svg)|*.svg" +
-                     "|All files (*.*)|*.*"
+            Filter = "PNG Files (*.png)|*.png"
+                     + "|JPEG Files (*.jpg, *.jpeg)|*.jpg;*.jpeg"
+                     + "|BMP Files (*.bmp)|*.bmp"
+                     + "|WebP Files (*.webp)|*.webp"
+                     + "|SVG Files (*.svg)|*.svg"
+                     + "|All files (*.*)|*.*"
         };
 
         if (dialog.ShowDialog() == DialogResult.OK)
         {
             if (string.IsNullOrEmpty(dialog.FileName))
+            {
                 return;
+            }
 
             ImageFormat format;
 
@@ -122,6 +104,7 @@ public class FormsPlotMenu : IPlotMenu
             catch (ArgumentException)
             {
                 MessageBox.Show("Unsupported image file format", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 return;
             }
 
@@ -133,7 +116,6 @@ public class FormsPlotMenu : IPlotMenu
             catch (Exception)
             {
                 MessageBox.Show("Image save failed", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
         }
     }
@@ -142,7 +124,7 @@ public class FormsPlotMenu : IPlotMenu
     {
         Debug.WriteLine("Showing Context Menu");
         ContextMenuStrip menu = GetContextMenu();
-        menu.Show(ThisControl, new Point((int)pixel.X, (int)pixel.Y));
+        menu.Show(_thisControl, new Point((int)pixel.X, (int)pixel.Y));
     }
 
     public void Reset()
@@ -156,13 +138,13 @@ public class FormsPlotMenu : IPlotMenu
         ContextMenuItems.Clear();
     }
 
-    public void Add(string Label, Action<IPlotControl> action)
+    public void Add(string label, Action<IPlotControl> action)
     {
-        ContextMenuItems.Add(new ContextMenuItem() { Label = Label, OnInvoke = action });
+        ContextMenuItems.Add(new ContextMenuItem { Label = label, OnInvoke = action });
     }
 
     public void AddSeparator()
     {
-        ContextMenuItems.Add(new ContextMenuItem() { IsSeparator = true });
+        ContextMenuItems.Add(new ContextMenuItem { IsSeparator = true });
     }
 }

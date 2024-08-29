@@ -3,124 +3,123 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ScottPlot.Interactivity;
+using ScottPlot.Interactivity.UserActions;
+using Key = ScottPlot.Control.Key;
+using MouseButton = ScottPlot.Control.MouseButton;
 
 namespace ScottPlot.WPF;
 
 internal static class WpfPlotExtensions
 {
-    internal static Pixel ToPixel(this MouseEventArgs e, FrameworkElement fe)
-    {
-        return fe.ToPixel(e.GetPosition(fe));
-    }
+    internal static Pixel ToPixel(this MouseEventArgs e, FrameworkElement fe) => fe.ToPixel(e.GetPosition(fe));
 
     internal static Pixel ToPixel(this FrameworkElement fe, Point position)
     {
         DpiScale dpiScale = VisualTreeHelper.GetDpi(fe);
+
         return new Pixel((float)(position.X * dpiScale.DpiScaleX), (float)(position.Y * dpiScale.DpiScaleY));
     }
 
-    internal static void ProcessMouseDown(this Interactivity.UserInputProcessor processor, FrameworkElement fe, MouseButtonEventArgs e)
+    internal static void ProcessMouseDown(this UserInputProcessor processor, FrameworkElement fe, MouseButtonEventArgs e)
     {
         Pixel pixel = e.ToPixel(fe);
 
-        Interactivity.IUserAction action = e.ChangedButton switch
+        IUserAction action = e.ChangedButton switch
         {
-            MouseButton.Left => new Interactivity.UserActions.LeftMouseDown(pixel),
-            MouseButton.Middle => new Interactivity.UserActions.MiddleMouseDown(pixel),
-            MouseButton.Right => new Interactivity.UserActions.RightMouseDown(pixel),
-            _ => new Interactivity.UserActions.Unknown(e.ChangedButton.ToString(), "pressed"),
+            System.Windows.Input.MouseButton.Left => new LeftMouseDown(pixel),
+            System.Windows.Input.MouseButton.Middle => new MiddleMouseDown(pixel),
+            System.Windows.Input.MouseButton.Right => new RightMouseDown(pixel),
+            _ => new Unknown(e.ChangedButton.ToString(), "pressed"),
         };
 
         processor.Process(action);
     }
 
-    internal static void ProcessMouseUp(this Interactivity.UserInputProcessor processor, FrameworkElement fe, MouseButtonEventArgs e)
+    internal static void ProcessMouseUp(this UserInputProcessor processor, FrameworkElement fe, MouseButtonEventArgs e)
     {
         Pixel pixel = e.ToPixel(fe);
 
-        Interactivity.IUserAction action = e.ChangedButton switch
+        IUserAction action = e.ChangedButton switch
         {
-            MouseButton.Left => new Interactivity.UserActions.LeftMouseUp(pixel),
-            MouseButton.Middle => new Interactivity.UserActions.MiddleMouseUp(pixel),
-            MouseButton.Right => new Interactivity.UserActions.RightMouseUp(pixel),
-            _ => new Interactivity.UserActions.Unknown(e.ChangedButton.ToString(), "released"),
+            System.Windows.Input.MouseButton.Left => new LeftMouseUp(pixel),
+            System.Windows.Input.MouseButton.Middle => new MiddleMouseUp(pixel),
+            System.Windows.Input.MouseButton.Right => new RightMouseUp(pixel),
+            _ => new Unknown(e.ChangedButton.ToString(), "released"),
         };
 
         processor.Process(action);
     }
 
-    internal static void ProcessMouseMove(this Interactivity.UserInputProcessor processor, FrameworkElement fe, MouseEventArgs e)
+    internal static void ProcessMouseMove(this UserInputProcessor processor, FrameworkElement fe, MouseEventArgs e)
     {
         Pixel pixel = e.ToPixel(fe);
-        Interactivity.IUserAction action = new Interactivity.UserActions.MouseMove(pixel);
+        IUserAction action = new MouseMove(pixel);
         processor.Process(action);
     }
 
-    internal static void ProcessMouseWheel(this Interactivity.UserInputProcessor processor, FrameworkElement fe, MouseWheelEventArgs e)
+    internal static void ProcessMouseWheel(this UserInputProcessor processor, FrameworkElement fe, MouseWheelEventArgs e)
     {
         Pixel pixel = e.ToPixel(fe);
 
-        Interactivity.IUserAction action = e.Delta > 0
-            ? new Interactivity.UserActions.MouseWheelUp(pixel)
-            : new Interactivity.UserActions.MouseWheelDown(pixel);
+        IUserAction action = e.Delta > 0 ? new MouseWheelUp(pixel) : new MouseWheelDown(pixel);
 
         processor.Process(action);
     }
 
-    internal static void ProcessKeyDown(this Interactivity.UserInputProcessor processor, KeyEventArgs e)
+    internal static void ProcessKeyDown(this UserInputProcessor processor, KeyEventArgs e)
     {
         Interactivity.Key key = e.ToKey();
-        Interactivity.IUserAction action = new Interactivity.UserActions.KeyDown(key);
+        IUserAction action = new KeyDown(key);
         processor.Process(action);
     }
 
-    internal static void ProcessKeyUp(this Interactivity.UserInputProcessor processor, KeyEventArgs e)
+    internal static void ProcessKeyUp(this UserInputProcessor processor, KeyEventArgs e)
     {
         Interactivity.Key key = e.ToKey();
-        Interactivity.IUserAction action = new Interactivity.UserActions.KeyUp(key);
+        IUserAction action = new KeyUp(key);
         processor.Process(action);
     }
 
-    internal static Control.MouseButton OldToButton(this MouseButtonEventArgs e)
+    internal static MouseButton OldToButton(this MouseButtonEventArgs e)
     {
-        if (e.ChangedButton == MouseButton.Middle)
-            return Control.MouseButton.Middle;
-        else if (e.ChangedButton == MouseButton.Left)
-            return Control.MouseButton.Left;
-        else if (e.ChangedButton == MouseButton.Right)
-            return Control.MouseButton.Right;
-        else
-            return Control.MouseButton.Unknown;
+        return e.ChangedButton switch
+        {
+            System.Windows.Input.MouseButton.Middle => MouseButton.Middle,
+            System.Windows.Input.MouseButton.Left => MouseButton.Left,
+            System.Windows.Input.MouseButton.Right => MouseButton.Right,
+            _ => MouseButton.Unknown
+        };
     }
 
-    internal static Control.Key OldToKey(this KeyEventArgs e)
+    internal static Key OldToKey(this KeyEventArgs e)
     {
-        Key key = e.Key == Key.System ? e.SystemKey : e.Key; // required to capture Alt
+        System.Windows.Input.Key key = e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key; // required to capture Alt
 
         return key switch
         {
-            Key.LeftCtrl => Control.Key.Ctrl,
-            Key.RightCtrl => Control.Key.Ctrl,
-            Key.LeftAlt => Control.Key.Alt,
-            Key.RightAlt => Control.Key.Alt,
-            Key.LeftShift => Control.Key.Shift,
-            Key.RightShift => Control.Key.Shift,
-            _ => Control.Key.Unknown,
+            System.Windows.Input.Key.LeftCtrl => Key.Ctrl,
+            System.Windows.Input.Key.RightCtrl => Key.Ctrl,
+            System.Windows.Input.Key.LeftAlt => Key.Alt,
+            System.Windows.Input.Key.RightAlt => Key.Alt,
+            System.Windows.Input.Key.LeftShift => Key.Shift,
+            System.Windows.Input.Key.RightShift => Key.Shift,
+            _ => Key.Unknown,
         };
     }
 
     internal static Interactivity.Key ToKey(this KeyEventArgs e)
     {
-        Key key = e.Key == Key.System ? e.SystemKey : e.Key; // required to capture Alt
+        System.Windows.Input.Key key = e.Key == System.Windows.Input.Key.System ? e.SystemKey : e.Key; // required to capture Alt
 
         return key switch
         {
-            Key.LeftCtrl => Interactivity.StandardKeys.Control,
-            Key.RightCtrl => Interactivity.StandardKeys.Control,
-            Key.LeftAlt => Interactivity.StandardKeys.Alt,
-            Key.RightAlt => Interactivity.StandardKeys.Alt,
-            Key.LeftShift => Interactivity.StandardKeys.Shift,
-            Key.RightShift => Interactivity.StandardKeys.Shift,
+            System.Windows.Input.Key.LeftCtrl => StandardKeys.Control,
+            System.Windows.Input.Key.RightCtrl => StandardKeys.Control,
+            System.Windows.Input.Key.LeftAlt => StandardKeys.Alt,
+            System.Windows.Input.Key.RightAlt => StandardKeys.Alt,
+            System.Windows.Input.Key.LeftShift => StandardKeys.Shift,
+            System.Windows.Input.Key.RightShift => StandardKeys.Shift,
             _ => new Interactivity.Key(key.ToString()),
         };
     }
@@ -128,9 +127,9 @@ internal static class WpfPlotExtensions
     internal static BitmapImage GetBitmapImage(this Plot plot, int width, int height)
     {
         byte[] bytes = plot.GetImageBytes(width, height);
-        using MemoryStream ms = new(bytes);
+        using MemoryStream ms = new MemoryStream(bytes);
 
-        BitmapImage bmp = new();
+        BitmapImage bmp = new BitmapImage();
         bmp.BeginInit();
         bmp.StreamSource = ms;
         bmp.EndInit();
@@ -139,4 +138,3 @@ internal static class WpfPlotExtensions
         return bmp;
     }
 }
-

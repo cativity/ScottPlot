@@ -1,5 +1,4 @@
-﻿using ScottPlotCookbook.Recipes;
-using ScottPlotCookbook.Website;
+﻿using ScottPlotCookbook.Website;
 
 namespace ScottPlotCookbook;
 
@@ -10,18 +9,18 @@ internal class JsonCookbookInfoTests
     {
         string json = JsonFile.Generate();
 
-        JsonCookbookInfo cb = new(json);
+        JsonCookbookInfo cb = new JsonCookbookInfo(json);
         cb.Version.Should().NotBeNullOrWhiteSpace();
 
         cb.Chapters.Should().NotBeEmpty();
         cb.Chapters.Should().OnlyHaveUniqueItems();
 
         cb.Categories.Should().NotBeEmpty();
-        cb.Categories.Select(x => x.Name).Should().OnlyHaveUniqueItems();
-        cb.Categories.Select(x => x.Description).Should().OnlyHaveUniqueItems();
-        cb.Categories.Select(x => x.Url).Should().OnlyHaveUniqueItems();
+        cb.Categories.Select(static x => x.Name).Should().OnlyHaveUniqueItems();
+        cb.Categories.Select(static x => x.Description).Should().OnlyHaveUniqueItems();
+        cb.Categories.Select(static x => x.Url).Should().OnlyHaveUniqueItems();
 
         cb.Recipes.Should().NotBeEmpty();
-        cb.Recipes.Select(x => x.RecipeUrl).Should().OnlyHaveUniqueItems();
+        cb.Recipes.Select(static x => x.RecipeUrl).Should().OnlyHaveUniqueItems();
     }
 }

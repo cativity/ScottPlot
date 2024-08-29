@@ -3,46 +3,60 @@
 public class FunctionPlot(IFunctionSource source) : IPlottable, IHasLine, IHasLegendText
 {
     public bool IsVisible { get; set; } = true;
+
     public IAxes Axes { get; set; } = new Axes();
-    [Obsolete("use LegendText")]
-    public string Label { get => LegendText; set => LegendText = value; }
+
+    //[Obsolete("use LegendText")]
+    //public string Label { get => LegendText; set => LegendText = value; }
+
     public string LegendText { get; set; } = string.Empty;
+
     private IFunctionSource Source { get; set; } = source;
+
     private CoordinateRange MaxObservedRangeY { get; set; } = CoordinateRange.NotSet;
-    private CoordinateRange LastRenderHorizontalSpan { get; set; } = new(-10, 10);
+
+    private CoordinateRange LastRenderHorizontalSpan { get; set; } = new CoordinateRange(-10, 10);
+
     public double GetY(double x) => Source.Get(x);
 
-    public LineStyle LineStyle { get; set; } = new() { Width = 1 };
+    public LineStyle LineStyle { get; set; } = new LineStyle { Width = 1 };
+
     public float LineWidth { get => LineStyle.Width; set => LineStyle.Width = value; }
+
     public LinePattern LinePattern { get => LineStyle.Pattern; set => LineStyle.Pattern = value; }
+
     public Color LineColor { get => LineStyle.Color; set => LineStyle.Color = value; }
 
     public double MinX
     {
         get
         {
-            return double.IsInfinity(Source.RangeX.Min)
-                ? Axes.XAxis.Min
-                : Source.RangeX.Min;
+            if (double.IsInfinity(Source.RangeX.Min))
+            {
+                Debug.Assert(Axes.XAxis is not null);
+
+                return Axes.XAxis.Min;
+            }
+
+            return Source.RangeX.Min;
         }
-        set
-        {
-            Source.RangeX = new CoordinateRange(value, Source.RangeX.Max);
-        }
+        set => Source.RangeX = Source.RangeX with { Min = value };
     }
 
     public double MaxX
     {
         get
         {
-            return double.IsInfinity(Source.RangeX.Max)
-                ? Axes.XAxis.Max
-                : Source.RangeX.Max;
+            if (double.IsInfinity(Source.RangeX.Max))
+            {
+                Debug.Assert(Axes.XAxis is not null);
+
+                return Axes.XAxis.Max;
+            }
+
+            return Source.RangeX.Max;
         }
-        set
-        {
-            Source.RangeX = new CoordinateRange(Source.RangeX.Min, value);
-        }
+        set => Source.RangeX = Source.RangeX with { Max = value };
     }
 
     public IEnumerable<LegendItem> LegendItems => LegendItem.Single(LegendText, LineStyle);
@@ -50,10 +64,13 @@ public class FunctionPlot(IFunctionSource source) : IPlottable, IHasLine, IHasLe
     public AxisLimits GetAxisLimits()
     {
         if (MaxObservedRangeY == CoordinateRange.NotSet)
+        {
             return new AxisLimits(-10, 10, -10, 10);
+        }
 
         bool sourceRangeIsFinite = !(double.IsInfinity(Source.RangeX.Min) || double.IsInfinity(Source.RangeX.Max));
         CoordinateRange xRange = sourceRangeIsFinite ? Source.RangeX : LastRenderHorizontalSpan;
+
         return new AxisLimits(xRange, MaxObservedRangeY);
     }
 
@@ -61,12 +78,13 @@ public class FunctionPlot(IFunctionSource source) : IPlottable, IHasLine, IHasLe
 
     public virtual void Render(RenderPack rp)
     {
-        var unitsPerPixel = Axes.XAxis.GetCoordinateDistance(1, rp.DataRect);
+        Debug.Assert(Axes.XAxis is not null);
+        double unitsPerPixel = Axes.XAxis.GetCoordinateDistance(1, rp.DataRect);
 
         double max = double.MinValue;
         double min = double.MaxValue;
 
-        using SKPath path = new();
+        using SKPath path = new SKPath();
         bool penIsDown = false;
 
         double minX = Math.Max(MinX, Axes.XAxis.Min);
@@ -79,13 +97,14 @@ public class FunctionPlot(IFunctionSource source) : IPlottable, IHasLine, IHasLe
             if (!IsFinite(y))
             {
                 penIsDown = false; // Picking up pen allows us to skip over regions where the function is undefined
+
                 continue;
             }
 
             max = Math.Max(max, y);
             min = Math.Min(min, y);
 
-            Pixel px = Axes.GetPixel(new(x, y));
+            Pixel px = Axes.GetPixel(new Coordinates(x, y));
 
             if (penIsDown)
             {
@@ -98,19 +117,24 @@ public class FunctionPlot(IFunctionSource source) : IPlottable, IHasLine, IHasLe
             }
         }
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         LineStyle.ApplyToPaint(paint);
 
         rp.Canvas.DrawPath(path, paint);
 
         bool somethingWasRendered = min <= max;
+
         if (somethingWasRendered)
         {
             if (min < MaxObservedRangeY.Min)
+            {
                 MaxObservedRangeY = MaxObservedRangeY.Expanded(min);
+            }
 
             if (max > MaxObservedRangeY.Max)
+            {
                 MaxObservedRangeY = MaxObservedRangeY.Expanded(max);
+            }
         }
 
         LastRenderHorizontalSpan = Axes.XAxis.Range.ToCoordinateRange;

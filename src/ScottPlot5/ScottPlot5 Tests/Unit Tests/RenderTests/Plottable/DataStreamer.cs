@@ -5,9 +5,9 @@ internal class DataStreamer
     [Test]
     public void Test_DataStreamer_ExpandToFitData()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
 
-        var streamer = plt.Add.DataStreamer(10);
+        ScottPlot.Plottables.DataStreamer streamer = plt.Add.DataStreamer(10);
         plt.RenderInMemory();
         streamer.GetAxisLimits().Top.Should().Be(double.NaN);
 

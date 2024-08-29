@@ -4,7 +4,7 @@ public class AutoScaleUnsetAxes : IRenderAction
 {
     public void Render(RenderPack rp)
     {
-        IEnumerable<IPlottable> visiblePlottables = rp.Plot.PlottableList.Where(x => x.IsVisible);
+        IEnumerable<IPlottable> visiblePlottables = rp.Plot.PlottableList.Where(static x => x.IsVisible);
 
         if (visiblePlottables.Any())
         {
@@ -16,24 +16,23 @@ public class AutoScaleUnsetAxes : IRenderAction
         }
     }
 
-    private void AutoscaleUnsetAxesToData(Plot plot)
+    private static void AutoscaleUnsetAxesToData(Plot plot)
     {
         foreach (IPlottable plottable in plot.PlottableList)
         {
+            Debug.Assert(plottable.Axes.XAxis is not null);
+            Debug.Assert(plottable.Axes.YAxis is not null);
             bool xAxisNeedsScaling = !plottable.Axes.XAxis.Range.HasBeenSet;
             bool yAxisNeedsScaling = !plottable.Axes.YAxis.Range.HasBeenSet;
+
             if (xAxisNeedsScaling || yAxisNeedsScaling)
             {
-                plot.Axes.AutoScale(
-                    xAxis: plottable.Axes.XAxis,
-                    yAxis: plottable.Axes.YAxis,
-                    horizontal: xAxisNeedsScaling,
-                    vertical: yAxisNeedsScaling);
+                plot.Axes.AutoScale(plottable.Axes.XAxis, plottable.Axes.YAxis, xAxisNeedsScaling, yAxisNeedsScaling);
             }
         }
     }
 
-    private void ApplyDefaultLimitsToUnsetAxes(Plot plot)
+    private static void ApplyDefaultLimitsToUnsetAxes(Plot plot)
     {
         if (!plot.Axes.Bottom.Range.HasBeenSet)
         {

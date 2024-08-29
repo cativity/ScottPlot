@@ -77,7 +77,7 @@ partial class CookbookViewer
         listView1.TabIndex = 1;
         listView1.UseCompatibleStateImageBehavior = false;
         listView1.View = View.SmallIcon;
-        listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
+        listView1.SelectedIndexChanged += ListView1_SelectedIndexChanged;
         // 
         // tableLayoutPanel1
         // 
@@ -158,7 +158,7 @@ partial class CookbookViewer
         tbFilter.Name = "tbFilter";
         tbFilter.Size = new Size(180, 23);
         tbFilter.TabIndex = 0;
-        tbFilter.TextChanged += tbFilter_TextChanged;
+        tbFilter.TextChanged += TbFilter_TextChanged;
         // 
         // CookbookViewer
         // 

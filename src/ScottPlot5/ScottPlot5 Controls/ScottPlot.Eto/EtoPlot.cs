@@ -1,27 +1,32 @@
 ﻿using Eto.Forms;
-using System;
 using ScottPlot.Control;
 using SkiaSharp;
 using Eto.Drawing;
 using System.Runtime.InteropServices;
+using ScottPlot.Interactivity;
 
 namespace ScottPlot.Eto;
 
 public class EtoPlot : Drawable, IPlotControl
 {
     public Plot Plot { get; internal set; }
+
     public GRContext? GRContext => null;
+
     public IPlotInteraction Interaction { get; set; }
-    public Interactivity.UserInputProcessor UserInputProcessor { get; }
+
+    public UserInputProcessor UserInputProcessor { get; }
+
     public IPlotMenu Menu { get; set; }
+
     public float DisplayScale { get; set; }
 
     public EtoPlot()
     {
-        Plot = new() { PlotControl = this };
+        Plot = new Plot { PlotControl = this };
         DisplayScale = DetectDisplayScale();
         Interaction = new Interaction(this);
-        UserInputProcessor = new(Plot);
+        UserInputProcessor = new UserInputProcessor(Plot);
         Menu = new EtoPlotMenu(this);
 
         MouseDown += OnMouseDown;
@@ -36,7 +41,7 @@ public class EtoPlot : Drawable, IPlotControl
 
     public void Reset()
     {
-        Plot plot = new() { PlotControl = this };
+        Plot plot = new Plot { PlotControl = this };
         Reset(plot);
     }
 
@@ -61,11 +66,14 @@ public class EtoPlot : Drawable, IPlotControl
     {
         base.OnPaint(args);
 
-        SKImageInfo imageInfo = new((int)Bounds.Width, (int)Bounds.Height);
+        SKImageInfo imageInfo = new SKImageInfo(Bounds.Width, Bounds.Height);
 
-        using var surface = SKSurface.Create(imageInfo);
+        using SKSurface? surface = SKSurface.Create(imageInfo);
+
         if (surface is null)
+        {
             return;
+        }
 
         Plot.Render(surface.Canvas, (int)surface.Canvas.LocalClipBounds.Width, (int)surface.Canvas.LocalClipBounds.Height);
 
@@ -73,9 +81,9 @@ public class EtoPlot : Drawable, IPlotControl
         SKPixmap pixels = img.ToRasterImage().PeekPixels();
         byte[] bytes = pixels.GetPixelSpan().ToArray();
 
-        var bmp = new Bitmap((int)Bounds.Width, (int)Bounds.Height, PixelFormat.Format32bppRgba);
+        Bitmap? bmp = new Bitmap(Bounds.Width, Bounds.Height, PixelFormat.Format32bppRgba);
 
-        using (var data = bmp.Lock())
+        using (BitmapData? data = bmp.Lock())
         {
             Marshal.Copy(bytes, 0, data.Data, bytes.Length);
         }
@@ -125,10 +133,7 @@ public class EtoPlot : Drawable, IPlotControl
         Interaction.DoubleClick();
     }
 
-    public float DetectDisplayScale()
-    {
-        // TODO: improve support for DPI scale detection
-        // https://github.com/ScottPlot/ScottPlot/issues/2760
-        return 1.0f;
-    }
+    public float DetectDisplayScale() => 1.0f;
+    // TODO: improve support for DPI scale detection
+    // https://github.com/ScottPlot/ScottPlot/issues/2760
 }

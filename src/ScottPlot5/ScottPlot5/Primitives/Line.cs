@@ -4,12 +4,15 @@
 public class Line
 {
     public Coordinates Start { get; set; }
+
     public Coordinates End { get; set; }
-    public static Line Default => new(0, 0, 1, 1);
+
+    public static Line Default => new Line(0, 0, 1, 1);
+
     public LineStyle Style { get; set; } = new LineStyle();
 
     /// <summary>
-    /// Create a default line using x and y values
+    ///     Create a default line using x and y values
     /// </summary>
     public Line(double x1, double y1, double x2, double y2)
     {
@@ -18,7 +21,7 @@ public class Line
     }
 
     /// <summary>
-    /// Create a default line using coordinates
+    ///     Create a default line using coordinates
     /// </summary>
     public Line(Coordinates start, Coordinates end)
     {
@@ -27,7 +30,7 @@ public class Line
     }
 
     /// <summary>
-    /// Create a styled line using x and y values, LinePattern, and LineStyle information
+    ///     Create a styled line using x and y values, LinePattern, and LineStyle information
     /// </summary>
     public Line(double x1, double y1, double x2, double y2, LineStyle style)
     {
@@ -37,7 +40,7 @@ public class Line
     }
 
     /// <summary>
-    /// Create a styled line using coordinates, LinePattern, and LineStyle information
+    ///     Create a styled line using coordinates, LinePattern, and LineStyle information
     /// </summary>
     public Line(Coordinates start, Coordinates end, LineStyle style)
     {
@@ -46,8 +49,5 @@ public class Line
         Style = style;
     }
 
-    public override string ToString()
-    {
-        return $"Line {{ X1 = {Start.X}, Y1 = {Start.Y}, X2 = {End.X}, Y2 = {End.Y} }}";
-    }
+    public override string ToString() => $"Line {{ X1 = {Start.X}, Y1 = {Start.Y}, X2 = {End.X}, Y2 = {End.Y} }}";
 }

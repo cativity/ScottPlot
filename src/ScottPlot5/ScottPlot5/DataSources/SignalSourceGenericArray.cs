@@ -2,32 +2,27 @@
 
 public class SignalSourceGenericArray<T> : SignalSourceBase, ISignalSource
 {
-    private readonly T[] Ys;
-    public override int Length => Ys.Length;
+    private readonly T[] _ys;
+
+    public override int Length => _ys.Length;
 
     public SignalSourceGenericArray(T[] ys, double period)
     {
-        Ys = ys;
+        _ys = ys;
         Period = period;
     }
 
-    public IReadOnlyList<double> GetYs()
-    {
-        return NumericConversion.GenericToDoubleArray(Ys);
-    }
+    public IReadOnlyList<double> GetYs() => NumericConversion.GenericToDoubleArray(_ys);
 
     public IEnumerable<double> GetYs(int i1, int i2)
     {
         for (int i = i1; i <= i2; i++)
         {
-            yield return NumericConversion.GenericToDouble(ref Ys[i]);
+            yield return NumericConversion.GenericToDouble(ref _ys[i]);
         }
     }
 
-    public double GetY(int index)
-    {
-        return NumericConversion.GenericToDouble(ref Ys[index]);
-    }
+    public double GetY(int index) => NumericConversion.GenericToDouble(ref _ys[index]);
 
     public override SignalRangeY GetLimitsY(int firstIndex, int lastIndex)
     {
@@ -36,7 +31,7 @@ public class SignalSourceGenericArray<T> : SignalSourceBase, ISignalSource
 
         for (int i = firstIndex; i <= lastIndex; i++)
         {
-            double value = NumericConversion.GenericToDouble(ref Ys[i]);
+            double value = NumericConversion.GenericToDouble(ref _ys[i]);
             min = Math.Min(min, value);
             max = Math.Max(max, value);
         }
@@ -48,6 +43,7 @@ public class SignalSourceGenericArray<T> : SignalSourceBase, ISignalSource
     {
         float xPixel = axes.DataRect.Left + xPixelIndex;
         double xRangeMin = axes.GetCoordinateX(xPixel);
+        Debug.Assert(axes.XAxis is not null);
         float xUnitsPerPixel = (float)(axes.XAxis.Width / axes.DataRect.Width);
         double xRangeMax = xRangeMin + xUnitsPerPixel;
 
@@ -55,26 +51,30 @@ public class SignalSourceGenericArray<T> : SignalSourceBase, ISignalSource
         // https://github.com/ScottPlot/ScottPlot/issues/3665
         xRangeMax += xUnitsPerPixel * .01;
 
-        if (RangeContainsSignal(xRangeMin, xRangeMax) == false)
+        if (!RangeContainsSignal(xRangeMin, xRangeMax))
+        {
             return PixelColumn.WithoutData(xPixel);
+        }
 
         // determine column limits horizontally
         int i1 = GetIndex(xRangeMin, true);
         int i2 = GetIndex(xRangeMax, true);
-        float yEnter = axes.GetPixelY(NumericConversion.GenericToDouble(Ys, i1) * YScale + YOffset);
-        float yExit = axes.GetPixelY(NumericConversion.GenericToDouble(Ys, i2) * YScale + YOffset);
+        float yEnter = axes.GetPixelY((NumericConversion.GenericToDouble(_ys, i1) * YScale) + YOffset);
+        float yExit = axes.GetPixelY((NumericConversion.GenericToDouble(_ys, i2) * YScale) + YOffset);
 
         // determine column span vertically
         double yMin = double.PositiveInfinity;
         double yMax = double.NegativeInfinity;
+
         for (int i = i1; i <= i2; i++)
         {
-            double value = NumericConversion.GenericToDouble(Ys, i);
+            double value = NumericConversion.GenericToDouble(_ys, i);
             yMin = Math.Min(yMin, value);
             yMax = Math.Max(yMax, value);
         }
-        yMin = yMin * YScale + YOffset;
-        yMax = yMax * YScale + YOffset;
+
+        yMin = (yMin * YScale) + YOffset;
+        yMax = (yMax * YScale) + YOffset;
 
         float yBottom = axes.GetPixelY(yMin);
         float yTop = axes.GetPixelY(yMax);

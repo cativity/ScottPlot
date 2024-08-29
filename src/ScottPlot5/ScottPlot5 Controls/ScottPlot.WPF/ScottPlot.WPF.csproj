@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+        <TargetFrameworks>net8.0-windows</TargetFrameworks>
+        <!--<TargetFrameworks>net462;net6.0-windows</TargetFrameworks>-->
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <ImplicitUsings>disable</ImplicitUsings>
@@ -37,24 +38,35 @@
 
     <!-- Include additional files for the NuGet package -->
     <ItemGroup>
-        <None Include="../../../../dev/icon/v5/scottplot-icon-rounded-border-128.png" Pack="true"
-            PackagePath="icon.png" />
+        <None Include="../../../../dev/icon/v5/scottplot-icon-rounded-border-128.png" Pack="true" PackagePath="icon.png" />
         <None Include="nuget-readme.md" Pack="true" PackagePath="readme.md" />
     </ItemGroup>
 
     <!-- Package dependencies -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+	<!--<ItemGroup Condition="'$(TargetFramework)' == 'net462'">
 		<PackageReference Include="OpenTK" Version="3.3.1" NoWarn="NU1701" />
 		<PackageReference Include="OpenTK.GLWpfControl" Version="3.3.0" NoWarn="NU1701" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' != 'net462'">
 		<PackageReference Include="OpenTK" Version="4.3.0" NoWarn="NU1701" />
 		<PackageReference Include="OpenTK.GLWpfControl" Version="4.2.3" />
-	</ItemGroup>
+	</ItemGroup>-->
     <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="OpenTK" Version="4.8.2" />
+        <PackageReference Include="OpenTK.GLWpfControl" Version="4.3.2" />
+        <PackageReference Include="Roslynator.Analyzers" Version="4.12.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SkiaSharp.Views.WPF" Version="2.*" />
         <ProjectReference Include="..\..\ScottPlot5\ScottPlot.csproj" />

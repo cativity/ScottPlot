@@ -1,68 +1,49 @@
-﻿using System.Data;
-using System.Reflection;
+﻿using System.Reflection;
+using Version = ScottPlot.Version;
 
 namespace ScottPlotCookbook.ApiDocs;
 
-internal class ApiDocs
+internal class ApiDocs(Type typeInAssembly, string xmlFilePath)
 {
-    readonly XmlDocsDB XmlDocsDB;
-    private Type[] AssemblyTypes = [];
+    private const string _scottPlotPrefix = nameof(ScottPlot) + ".";
+    private const string _namedColorsPrefix = $"{_scottPlotPrefix}{nameof(ScottPlot.NamedColors)}.";
 
-    public ApiDocs(Type typeInAssembly, string xmlFilePath)
-    {
-        // TODO: improve appearance of delegates and List<T>
+    private readonly XmlDocsDB _xmlDocsDB = new XmlDocsDB(xmlFilePath);
+    private readonly Type[] _assemblyTypes = Assembly.GetAssembly(typeInAssembly)
+                                                     ?.GetTypes()
+                                                     .Where(static x => x.FullName is string name
+                                                                        && name.StartsWith(_scottPlotPrefix)
+                                                                        && !name.StartsWith(_namedColorsPrefix))
+                                                     .ToArray()
+                                             ?? [];
 
-        XmlDocsDB = new(xmlFilePath);
-        AssemblyTypes = Assembly.GetAssembly(typeInAssembly)!
-            .GetTypes()
-            .Where(x => x.FullName is not null && x.FullName.StartsWith("ScottPlot."))
-            .Where(x => x.FullName is not null && !x.FullName.StartsWith("ScottPlot.NamedColors."))
-            .ToArray();
-    }
+    //private static string GetTypeName(Type type) => GetName(type.FullName ?? type.Name);
 
-    static string GetTypeName(Type type)
-    {
-        return GetName(type.FullName ?? type.Name);
-    }
+    //private static string GetParameterTypeName(ParameterInfo pi)
+    //{
+    //    return Nullable.GetUnderlyingType(pi.ParameterType) is Type nullableType ? GetName(nullableType.Name) + "?" : GetName(pi.Name);
+    //}
 
-    static string GetParameterTypeName(ParameterInfo pi)
-    {
-        Type? nullableType = Nullable.GetUnderlyingType(pi.ParameterType);
-        if (nullableType is not null)
-        {
-            return GetName(nullableType.Name) + "?";
-        }
+    //private static string GetParameterName(ParameterInfo pi) => GetName(pi.Name ?? "unknown");
 
-        return GetName(pi.Name!);
-    }
-
-    static string GetParameterName(ParameterInfo pi)
-    {
-        return GetName(pi.Name ?? "unknown");
-    }
-
-    static string GetName(string name)
-    {
-        return name switch
-        {
-            "System.Void" => "void",
-            "System.Int32" => "int",
-            "System.Double" => "double",
-            "System.Float" => "float",
-            "System.Boolean" => "bool",
-            "System.String" => "string",
-            "System.Object" => "object",
-            _ => name
-                .Replace("`1", "&lt;T&gt;").Split("+")[0]
-                .Replace("`2", "&lt;T1, T2&gt;").Split("+")[0]
-                .Replace("`3", "&lt;T1, T2, T3&gt;").Split("+")[0],
-        };
-    }
+    //private static string GetName(string? name)
+    //{
+    //    return name switch
+    //    {
+    //        null => "unknown",
+    //        "System.Void" => "void",
+    //        "System.Int32" => "int",
+    //        "System.Double" => "double",
+    //        "System.Float" => "float",
+    //        "System.Boolean" => "bool",
+    //        "System.String" => "string",
+    //        "System.Object" => "object",
+    //        _ => name.Replace("`1", "&lt;T&gt;").Split("+")[0].Replace("`2", "&lt;T1, T2&gt;").Split("+")[0].Replace("`3", "&lt;T1, T2, T3&gt;").Split("+")[0],
+    //    };
+    //}
 
     public string GetMarkdown()
-    {
-        return
-            $"""
+        => $"""
             ---
             Title: ScottPlot 5.0 API
             Description: All classes, fields, properties, and methods provided by the ScottPlot package
@@ -70,8 +51,8 @@ internal class ApiDocs
             Date: {DateTime.Now.Year:0000}-{DateTime.Now.Month:00}-{DateTime.Now.Day:00}
             ShowEditLink: false
             ---
-            
-            # ScottPlot {ScottPlot.Version.VersionString} API
+
+            # ScottPlot {Version.VersionString} API
 
             _Generated {DateTime.Now}_
 
@@ -79,72 +60,76 @@ internal class ApiDocs
 
             {GetHtml()}
             """;
-    }
 
     public string GetHtml()
     {
-        StringBuilder sb = new();
+        StringBuilder sb = new StringBuilder();
+
         sb.AppendLine("""
-            <style>
-            body {font-family: sans-serif;}
-            .title{font-family: monospace; font-size: 1.5em; font-weight: 600;}
-            .otherType{color: blue; font-family: monospace;}
-            .scottPlotType{color: blue; font-family: monospace;}
-            .name{color: black; font-family: monospace;}
-            .docs{color: green; font-family: monospace;}
-            a {text-decoration: none;}
-            a:hover {text-decoration: underline;}
-            .break-container{width:95vw;position:relative;left:calc(-1 * (95vw - 95%)/2);}
-            </style>
-            """);
+                      <style>
+                      body {font-family: sans-serif;}
+                      .title{font-family: monospace; font-size: 1.5em; font-weight: 600;}
+                      .otherType{color: blue; font-family: monospace;}
+                      .scottPlotType{color: blue; font-family: monospace;}
+                      .name{color: black; font-family: monospace;}
+                      .docs{color: green; font-family: monospace;}
+                      a {text-decoration: none;}
+                      a:hover {text-decoration: underline;}
+                      .break-container{width:95vw;position:relative;left:calc(-1 * (95vw - 95%)/2);}
+                      </style>
+                      """);
 
         sb.AppendLine("<div class='break-container'>");
 
-        foreach (Type type in AssemblyTypes)
+        foreach (ClassDocs classDocs in _assemblyTypes.Select(type => new ClassDocs(type, _xmlDocsDB)))
         {
-            // the type itself
-            ClassDocs classDocs = new(type, XmlDocsDB);
-            sb.AppendLine($"<div style='margin-top: 2em'>");
-            sb.AppendLine($"<div class='title' id='{classDocs.TypeName.CleanNameHtml}'>" +
-                $"<a style='color: black;' href='#{classDocs.TypeName.CleanNameHtml}'>" +
-                $"{classDocs.TypeName.CleanNameHtml}" +
-                $"</a>" +
-                $"</div>");
-            sb.AppendLine($"<div class='docs'>{classDocs.Docs}</div>");
-            sb.AppendLine($"</div>");
+            sb.AppendLine("<div style='margin-top: 2em'>");
 
-            foreach (PropertyDocs propDocs in classDocs.GetPropertyDocs(XmlDocsDB))
+            sb.AppendLine($"<div class='title' id='{classDocs.TypeName.CleanNameHtml}'>"
+                          + $"<a style='color: black;' href='#{classDocs.TypeName.CleanNameHtml}'>"
+                          + $"{classDocs.TypeName.CleanNameHtml}</a></div>");
+
+            sb.AppendLine($"<div class='docs'>{classDocs.Docs}</div>");
+            sb.AppendLine("</div>");
+
+            foreach (PropertyDocs propDocs in classDocs.GetPropertyDocs(_xmlDocsDB))
             {
-                string typeHtml = propDocs.TypeName.CleanNameHtml.StartsWith("ScottPlot.")
-                    ? $"<a class='scottPlotType' href='#{propDocs.TypeName.CleanNameHtml}'>{propDocs.TypeName.CleanNameHtml}</a>"
-                    : $"<span class='otherType'>{propDocs.TypeName.CleanNameHtml}</span>";
-                string nameHtml = $"<span class='name'>{propDocs.Name}</span>";
-                string docsHtml = $"<span class='docs'>{propDocs.Docs}</span>";
-                sb.AppendLine($"<div>{typeHtml} {nameHtml} {docsHtml}</div>");
+                if (propDocs.TypeName.CleanNameHtml.StartsWith(_scottPlotPrefix))
+                {
+                    sb.AppendLine($"<div><a class='scottPlotType' href='#{propDocs.TypeName.CleanNameHtml}'>{propDocs.TypeName.CleanNameHtml}</a> <span class='name'>{propDocs.Name}</span> <span class='docs'>{propDocs.Docs}</span></div>");
+                }
+                else
+                {
+                    sb.AppendLine($"<div><span class='otherType'>{propDocs.TypeName.CleanNameHtml}</span> <span class='name'>{propDocs.Name}</span> <span class='docs'>{propDocs.Docs}</span></div>");
+                }
             }
 
-            foreach (MethodDocs methodDocs in classDocs.GetMethodDocs(XmlDocsDB))
+            foreach (MethodDocs methodDocs in classDocs.GetMethodDocs(_xmlDocsDB))
             {
                 List<string> argsHtml = [];
 
-                foreach (var p in methodDocs.Parameters)
+                foreach (MethodParameterDocs p in methodDocs.Parameters)
                 {
-                    string typeHtml2 = p.TypeName.CleanNameHtml.StartsWith("ScottPlot.")
-                        ? $"<a class='scottPlotType' href='#{p.TypeName.CleanNameHtml}'>{p.TypeName.CleanNameHtml}</a>"
-                        : $"<span class='otherType'>{p.TypeName.CleanNameHtml}</span>";
-                    string argHtml = $"<span class='name'>{p.Name}</span>";
-                    argsHtml.Add($"{typeHtml2} {argHtml}");
+                    if (p.TypeName.CleanNameHtml.StartsWith(_scottPlotPrefix))
+                    {
+                        argsHtml.Add($"<a class='scottPlotType' href='#{p.TypeName.CleanNameHtml}'>{p.TypeName.CleanNameHtml}</a> <span class='name'>{p.Name}</span>");
+                    }
+                    else
+                    {
+                        argsHtml.Add($"<span class='otherType'>{p.TypeName.CleanNameHtml}</span> <span class='name'>{p.Name}</span>");
+                    }
                 }
 
                 string argLine = string.Join(", ", argsHtml);
 
-                string typeHtml = methodDocs.ReturnTypeName.CleanNameHtml.StartsWith("ScottPlot.")
-                    ? $"<a class='scottPlotType' href='#{methodDocs.ReturnTypeName.CleanNameHtml}'>{methodDocs.ReturnTypeName.CleanNameHtml}</a>"
-                    : $"<span class='otherType'>{methodDocs.ReturnTypeName.CleanNameHtml}</span>";
-                string nameHtml = $"<span class='name'>{methodDocs.Name}({argLine})</span>";
-                string docsHtml = $"<span class='docs'>{methodDocs.Docs}</span>";
-
-                sb.AppendLine($"<div>{typeHtml} {nameHtml} {docsHtml}</div>");
+                if (methodDocs.ReturnTypeName.CleanNameHtml.StartsWith(_scottPlotPrefix))
+                {
+                    sb.AppendLine($"<div><a class='scottPlotType' href='#{methodDocs.ReturnTypeName.CleanNameHtml}'>{methodDocs.ReturnTypeName.CleanNameHtml}</a> <span class='name'>{methodDocs.Name}({argLine})</span> <span class='docs'>{methodDocs.Docs}</span></div>");
+                }
+                else
+                {
+                    sb.AppendLine($"<div><span class='otherType'>{methodDocs.ReturnTypeName.CleanNameHtml}</span> <span class='name'>{methodDocs.Name}({argLine})</span> <span class='docs'>{methodDocs.Docs}</span></div>");
+                }
             }
         }
 

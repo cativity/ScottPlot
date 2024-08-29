@@ -10,12 +10,12 @@ public class Benchmark : LabelStyleProperties, IPlottable
 
     public AxisLimits GetAxisLimits() => AxisLimits.NoLimits;
 
-    public override LabelStyle LabelStyle { get; set; } = new()
+    public override LabelStyle LabelStyle { get; set; } = new LabelStyle
     {
         FontName = Fonts.Monospace,
         Alignment = Alignment.LowerLeft,
         BackgroundColor = Colors.Yellow,
-        PixelPadding = new(3, 3, 3, 3),
+        PixelPadding = new PixelPadding(3, 3, 3, 3),
         BorderWidth = 1,
         BorderColor = Colors.Black,
     };
@@ -23,13 +23,13 @@ public class Benchmark : LabelStyleProperties, IPlottable
     public virtual void Render(RenderPack rp)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
-        LabelStyle.Text = $"Rendered in " +
-            $"{rp.Elapsed.TotalMilliseconds:0.000} ms " +
-            $"({1e3 / rp.Elapsed.TotalMilliseconds:N0} FPS)";
+        LabelStyle.Text = $"Rendered in {rp.Elapsed.TotalMilliseconds:0.000} ms ({1e3 / rp.Elapsed.TotalMilliseconds:N0} FPS)";
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         LabelStyle.Render(rp.Canvas, rp.DataRect.BottomLeft.WithOffset(10, -13), paint);
     }
 }

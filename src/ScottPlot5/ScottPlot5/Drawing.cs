@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using ScottPlot.PathStrategies;
 
 namespace ScottPlot;
 
@@ -7,7 +8,7 @@ namespace ScottPlot;
 // TODO: obsolete methods that don't take Style objects
 
 /// <summary>
-/// Common operations using the default rendering system.
+///     Common operations using the default rendering system.
 /// </summary>
 public static class Drawing
 {
@@ -36,19 +37,34 @@ public static class Drawing
 
     public static void DrawLine(SKCanvas canvas, SKPaint paint, Pixel pt1, Pixel pt2, LineStyle lineStyle)
     {
-        if (!lineStyle.CanBeRendered) return;
+        if (!lineStyle.CanBeRendered)
+        {
+            return;
+        }
 
         lineStyle.ApplyToPaint(paint);
+
         if (lineStyle.Hairline)
+        {
             paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
+        }
 
         canvas.DrawLine(pt1.ToSKPoint(), pt2.ToSKPoint(), paint);
     }
 
-    public static void DrawLine(SKCanvas canvas, SKPaint paint, Pixel pt1, Pixel pt2, Color color, float width = 1, bool antiAlias = true, LinePattern pattern = LinePattern.Solid)
+    public static void DrawLine(SKCanvas canvas,
+                                SKPaint paint,
+                                Pixel pt1,
+                                Pixel pt2,
+                                Color color,
+                                float width = 1,
+                                bool antiAlias = true,
+                                LinePattern pattern = LinePattern.Solid)
     {
         if (width == 0)
+        {
             return;
+        }
 
         paint.Color = color.ToSKColor();
         paint.IsStroke = true;
@@ -59,31 +75,39 @@ public static class Drawing
         canvas.DrawLine(pt1.ToSKPoint(), pt2.ToSKPoint(), paint);
     }
 
-    public static void DrawPath(SKCanvas canvas, SKPaint paint, IEnumerable<Pixel> pixels, LineStyle lineStyle)
+    public static void DrawPath(SKCanvas canvas, SKPaint paint, IList<Pixel> pixels, LineStyle lineStyle)
     {
-        if (!lineStyle.CanBeRendered) return;
+        if (!lineStyle.CanBeRendered)
+        {
+            return;
+        }
 
-        using SKPath path = new();
-        path.MoveTo(pixels.First().ToSKPoint());
+        using SKPath path = new SKPath();
+        path.MoveTo(pixels[0].ToSKPoint());
+
         foreach (Pixel px in pixels.Skip(1))
         {
             path.LineTo(px.ToSKPoint());
         }
+
         DrawPath(canvas, paint, path, lineStyle);
     }
 
-    public static void DrawPath(SKCanvas canvas, SKPaint paint, IEnumerable<Pixel> pixels, FillStyle fillStyle)
+    public static void DrawPath(SKCanvas canvas, SKPaint paint, IList<Pixel> pixels, FillStyle fillStyle)
     {
-        if (fillStyle.IsVisible == false || fillStyle.Color == Colors.Transparent)
+        if (!fillStyle.IsVisible || fillStyle.Color == Colors.Transparent)
+        {
             return;
+        }
 
-        float xMin = pixels.First().X;
-        float xMax = pixels.First().X;
-        float yMin = pixels.First().Y;
-        float yMax = pixels.First().Y;
+        float xMin = pixels[0].X;
+        float xMax = pixels[0].X;
+        float yMin = pixels[0].Y;
+        float yMax = pixels[0].Y;
 
-        using SKPath path = new();
-        path.MoveTo(pixels.First().ToSKPoint());
+        using SKPath path = new SKPath();
+        path.MoveTo(pixels[0].ToSKPoint());
+
         foreach (Pixel px in pixels.Skip(1))
         {
             path.LineTo(px.ToSKPoint());
@@ -93,52 +117,76 @@ public static class Drawing
             yMax = Math.Max(yMax, px.Y);
         }
 
-        PixelRect rect = new(xMin, xMax, yMax, yMin);
+        PixelRect rect = new PixelRect(xMin, xMax, yMax, yMin);
         DrawPath(canvas, paint, path, fillStyle, rect);
     }
 
     public static void DrawPath(SKCanvas canvas, SKPaint paint, SKPath path, LineStyle lineStyle)
     {
-        if (!lineStyle.CanBeRendered) return;
+        if (!lineStyle.CanBeRendered)
+        {
+            return;
+        }
 
         lineStyle.ApplyToPaint(paint);
+
         if (lineStyle.Hairline)
+        {
             paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
+        }
 
         canvas.DrawPath(path, paint);
     }
 
     public static void DrawPath(SKCanvas canvas, SKPaint paint, SKPath path, FillStyle fillStyle, PixelRect rect)
     {
-        if (fillStyle.IsVisible == false || fillStyle.Color == Colors.Transparent)
+        if (!fillStyle.IsVisible || fillStyle.Color == Colors.Transparent)
+        {
             return;
+        }
 
         fillStyle.ApplyToPaint(paint, rect);
         canvas.DrawPath(path, paint);
     }
 
-    private static readonly IPathStrategy StraightLineStrategy = new PathStrategies.Straight();
+    private static readonly IPathStrategy _straightLineStrategy = new Straight();
 
-    public static void DrawLines(SKCanvas canvas, SKPaint paint, IEnumerable<Pixel> pixels, LineStyle lineStyle)
+    public static void DrawLines(SKCanvas canvas, SKPaint paint, IList<Pixel> pixels, LineStyle lineStyle)
     {
-        if (!lineStyle.CanBeRendered) return;
-        if (pixels.Take(2).Count() < 2) return;
+        if (!lineStyle.CanBeRendered)
+        {
+            return;
+        }
+
+        if (pixels.Take(2).Count() < 2)
+        {
+            return;
+        }
 
         lineStyle.ApplyToPaint(paint);
-        if (lineStyle.Hairline)
-            paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
 
-        using SKPath path = StraightLineStrategy.GetPath(pixels);
+        if (lineStyle.Hairline)
+        {
+            paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
+        }
+
+        using SKPath path = _straightLineStrategy.GetPath(pixels);
         canvas.DrawPath(path, paint);
     }
 
     public static void DrawLines(SKCanvas canvas, SKPaint paint, SKPath path, LineStyle lineStyle)
     {
-        if (!lineStyle.CanBeRendered) return;
+        if (!lineStyle.CanBeRendered)
+        {
+            return;
+        }
 
         lineStyle.ApplyToPaint(paint);
+
         if (lineStyle.Hairline)
+        {
             paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
+        }
 
         canvas.DrawPath(path, paint);
     }
@@ -157,33 +205,46 @@ public static class Drawing
     public static void FillRectangle(SKCanvas canvas, PixelRect rect, Color color)
     {
         if (color == Colors.Transparent)
-            return;
-
-        using SKPaint paint = new()
         {
-            Color = color.ToSKColor(),
-            IsStroke = false,
-            IsAntialias = true,
-        };
+            return;
+        }
+
+        using SKPaint paint = new SKPaint();
+        paint.Color = color.ToSKColor();
+        paint.IsStroke = false;
+        paint.IsAntialias = true;
 
         canvas.DrawRect(rect.ToSKRect(), paint);
     }
 
     public static void DrawRectangle(SKCanvas canvas, PixelRect rect, SKPaint paint, LineStyle lineStyle)
     {
-        if (!lineStyle.CanBeRendered) return;
+        if (!lineStyle.CanBeRendered)
+        {
+            return;
+        }
 
         lineStyle.ApplyToPaint(paint);
+
         if (lineStyle.Hairline)
+        {
             paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
+        }
 
         canvas.DrawRect(rect.ToSKRect(), paint);
     }
 
     public static void DrawRectangle(SKCanvas canvas, PixelRect rect, SKPaint paint, FillStyle fillStyle)
     {
-        if (!fillStyle.IsVisible) return;
-        if (fillStyle.Color == Colors.Transparent) return;
+        if (!fillStyle.IsVisible)
+        {
+            return;
+        }
+
+        if (fillStyle.Color == Colors.Transparent)
+        {
+            return;
+        }
 
         fillStyle.ApplyToPaint(paint, rect);
         canvas.DrawRect(rect.ToSKRect(), paint);
@@ -197,15 +258,15 @@ public static class Drawing
     public static void DrawRectangle(SKCanvas canvas, PixelRect rect, Color color, float lineWidth = 1)
     {
         if (color == Colors.Transparent || lineWidth == 0)
-            return;
-
-        using SKPaint paint = new()
         {
-            Color = color.ToSKColor(),
-            IsStroke = true,
-            StrokeWidth = lineWidth,
-            IsAntialias = true,
-        };
+            return;
+        }
+
+        using SKPaint paint = new SKPaint();
+        paint.Color = color.ToSKColor();
+        paint.IsStroke = true;
+        paint.StrokeWidth = lineWidth;
+        paint.IsAntialias = true;
 
         DrawRectangle(canvas, rect, paint);
     }
@@ -215,13 +276,11 @@ public static class Drawing
         point ??= Pixel.NaN;
         color ??= Colors.Magenta;
 
-        using SKPaint paint = new()
-        {
-            Color = color.Value.ToSKColor(),
-            IsStroke = true,
-            StrokeWidth = lineWidth,
-            IsAntialias = true,
-        };
+        using SKPaint paint = new SKPaint();
+        paint.Color = color.Value.ToSKColor();
+        paint.IsStroke = true;
+        paint.StrokeWidth = lineWidth;
+        paint.IsAntialias = true;
 
         canvas.DrawRect(rect.ToSKRect(), paint);
         canvas.DrawLine(rect.BottomLeft.ToSKPoint(), rect.TopRight.ToSKPoint(), paint);
@@ -236,40 +295,66 @@ public static class Drawing
 
     public static void DrawCircle(SKCanvas canvas, Pixel center, float radius, LineStyle lineStyle, SKPaint paint)
     {
-        if (!lineStyle.CanBeRendered) return;
+        if (!lineStyle.CanBeRendered)
+        {
+            return;
+        }
 
         lineStyle.ApplyToPaint(paint);
+
         if (lineStyle.Hairline)
+        {
             paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
+        }
 
         canvas.DrawCircle(center.ToSKPoint(), radius, paint);
     }
 
     public static void DrawCircle(SKCanvas canvas, Pixel center, float radius, FillStyle fillStyle, SKPaint paint)
     {
-        if (!fillStyle.IsVisible) return;
-        if (fillStyle.Color == Colors.Transparent) return;
+        if (!fillStyle.IsVisible)
+        {
+            return;
+        }
 
-        PixelRect rect = new(center, radius);
+        if (fillStyle.Color == Colors.Transparent)
+        {
+            return;
+        }
+
+        PixelRect rect = new PixelRect(center, radius);
         fillStyle.ApplyToPaint(paint, rect);
         canvas.DrawCircle(center.ToSKPoint(), radius, paint);
     }
 
     public static void DrawOval(SKCanvas canvas, SKPaint paint, LineStyle lineStyle, PixelRect rect)
     {
-        if (!lineStyle.CanBeRendered) return;
+        if (!lineStyle.CanBeRendered)
+        {
+            return;
+        }
 
         lineStyle.ApplyToPaint(paint);
+
         if (lineStyle.Hairline)
+        {
             paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
+        }
 
         canvas.DrawOval(rect.ToSKRect(), paint);
     }
 
     public static void FillOval(SKCanvas canvas, SKPaint paint, FillStyle fillStyle, PixelRect rect)
     {
-        if (!fillStyle.IsVisible) return;
-        if (fillStyle.Color == Colors.Transparent) return;
+        if (!fillStyle.IsVisible)
+        {
+            return;
+        }
+
+        if (fillStyle.Color == Colors.Transparent)
+        {
+            return;
+        }
 
         fillStyle.ApplyToPaint(paint, rect);
         canvas.DrawOval(rect.ToSKRect(), paint);
@@ -278,7 +363,9 @@ public static class Drawing
     public static void DrawMarker(SKCanvas canvas, SKPaint paint, Pixel pixel, MarkerStyle style)
     {
         if (!style.IsVisible)
+        {
             return;
+        }
 
         IMarker marker = style.CustomRenderer ?? style.Shape.GetMarker();
 
@@ -288,7 +375,9 @@ public static class Drawing
     public static void DrawMarkers(SKCanvas canvas, SKPaint paint, IEnumerable<Pixel> pixels, MarkerStyle style)
     {
         if (!style.IsVisible)
+        {
             return;
+        }
 
         IMarker marker = style.CustomRenderer ?? style.Shape.GetMarker();
 
@@ -302,13 +391,9 @@ public static class Drawing
     {
         GCHandle handle = GCHandle.Alloc(argbs, GCHandleType.Pinned);
 
-        var imageInfo = new SKImageInfo(width, height);
-        var bmp = new SKBitmap(imageInfo);
-        bmp.InstallPixels(
-            info: imageInfo,
-            pixels: handle.AddrOfPinnedObject(),
-            rowBytes: imageInfo.RowBytes,
-            releaseProc: (IntPtr _, object _) => handle.Free());
+        SKImageInfo imageInfo = new SKImageInfo(width, height);
+        SKBitmap bmp = new SKBitmap(imageInfo);
+        bmp.InstallPixels(imageInfo, handle.AddrOfPinnedObject(), imageInfo.RowBytes, (_, _) => handle.Free());
 
         return bmp;
     }
@@ -328,26 +413,20 @@ public static class Drawing
         // for an explanation of this matrix
         // 
         // Essentially, this matrix maps all gray colors to a line from `background.Value` to `foreground`.
-        // Black and white are at the extremes on this line, 
+        // Black and white are at the extremes on this line,
         // so they get mapped to `background.Value` and `foreground` respectively
-        var mat = new float[] {
-                redDifference / 255, 0, 0, 0, background.Value.Red / 255.0f,
-                0, greenDifference / 255, 0, 0, background.Value.Green / 255.0f,
-                0, 0, blueDifference / 255, 0, background.Value.Blue / 255.0f,
-                alphaDifference / 255, 0, 0, 0, background.Value.Alpha / 255.0f,
-            };
+        float[] mat =
+        [
+            redDifference / 255, 0, 0, 0, background.Value.Red / 255.0f, 0, greenDifference / 255, 0, 0, background.Value.Green / 255.0f, 0, 0,
+            blueDifference / 255, 0, background.Value.Blue / 255.0f, alphaDifference / 255, 0, 0, 0, background.Value.Alpha / 255.0f
+        ];
 
-        var filter = SKColorFilter.CreateColorMatrix(mat);
-        return filter;
+        return SKColorFilter.CreateColorMatrix(mat);
     }
 
     public static SKSurface CreateSurface(int width, int height)
     {
-        SKImageInfo imageInfo = new(
-            width: width,
-            height: height,
-            colorType: SKColorType.Rgba8888,
-            alphaType: SKAlphaType.Premul);
+        SKImageInfo imageInfo = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
 
         return SKSurface.Create(imageInfo);
     }

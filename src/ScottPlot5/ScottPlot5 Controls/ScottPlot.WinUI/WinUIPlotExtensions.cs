@@ -2,6 +2,10 @@
 using Windows.Foundation;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using ScottPlot.Interactivity;
+using ScottPlot.Interactivity.UserActions;
+using Key = ScottPlot.Control.Key;
+using MouseButton = ScottPlot.Control.MouseButton;
 
 namespace ScottPlot.WinUI;
 
@@ -12,109 +16,102 @@ internal static class WinUIPlotExtensions
         Point position = e.GetCurrentPoint(plotControl).Position;
         position.X *= plotControl.DisplayScale;
         position.Y *= plotControl.DisplayScale;
+
         return position.ToPixel();
     }
 
-    internal static Pixel ToPixel(this Point p)
-    {
-        return new Pixel((float)p.X, (float)p.Y);
-    }
+    internal static Pixel ToPixel(this Point p) => new((float)p.X, (float)p.Y);
 
-    internal static void ProcessMouseDown(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
+    internal static void ProcessMouseDown(this UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
     {
         Pixel pixel = e.Pixel(plotControl);
         PointerUpdateKind kind = e.GetCurrentPoint(plotControl).Properties.PointerUpdateKind;
-        Interactivity.IUserAction action = kind switch
+
+        IUserAction action = kind switch
         {
-            PointerUpdateKind.LeftButtonPressed => new Interactivity.UserActions.LeftMouseDown(pixel),
-            PointerUpdateKind.MiddleButtonPressed => new Interactivity.UserActions.MiddleMouseDown(pixel),
-            PointerUpdateKind.RightButtonPressed => new Interactivity.UserActions.RightMouseDown(pixel),
-            _ => new Interactivity.UserActions.Unknown(kind.ToString(), "pressed"),
+            PointerUpdateKind.LeftButtonPressed => new LeftMouseDown(pixel),
+            PointerUpdateKind.MiddleButtonPressed => new MiddleMouseDown(pixel),
+            PointerUpdateKind.RightButtonPressed => new RightMouseDown(pixel),
+            _ => new Unknown(kind.ToString(), "pressed"),
         };
+
         processor.Process(action);
     }
 
-    internal static void ProcessMouseUp(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
+    internal static void ProcessMouseUp(this UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
     {
         Pixel pixel = e.Pixel(plotControl);
         PointerUpdateKind kind = e.GetCurrentPoint(plotControl).Properties.PointerUpdateKind;
-        Interactivity.IUserAction action = kind switch
+
+        IUserAction action = kind switch
         {
-            PointerUpdateKind.LeftButtonReleased => new Interactivity.UserActions.LeftMouseUp(pixel),
-            PointerUpdateKind.MiddleButtonReleased => new Interactivity.UserActions.MiddleMouseUp(pixel),
-            PointerUpdateKind.RightButtonReleased => new Interactivity.UserActions.RightMouseUp(pixel),
-            _ => new Interactivity.UserActions.Unknown(kind.ToString(), "released"),
+            PointerUpdateKind.LeftButtonReleased => new LeftMouseUp(pixel),
+            PointerUpdateKind.MiddleButtonReleased => new MiddleMouseUp(pixel),
+            PointerUpdateKind.RightButtonReleased => new RightMouseUp(pixel),
+            _ => new Unknown(kind.ToString(), "released"),
         };
+
         processor.Process(action);
     }
 
-    internal static void ProcessMouseMove(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
+    internal static void ProcessMouseMove(this UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
     {
         Pixel pixel = e.Pixel(plotControl);
-        Interactivity.IUserAction action = new Interactivity.UserActions.MouseMove(pixel);
+        IUserAction action = new MouseMove(pixel);
         processor.Process(action);
     }
 
-    internal static void ProcessMouseWheel(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
+    internal static void ProcessMouseWheel(this UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
     {
         Pixel pixel = e.Pixel(plotControl);
 
-        Interactivity.IUserAction action = e.GetCurrentPoint(plotControl).Properties.MouseWheelDelta > 0
-            ? new Interactivity.UserActions.MouseWheelUp(pixel)
-            : new Interactivity.UserActions.MouseWheelDown(pixel);
+        IUserAction action = e.GetCurrentPoint(plotControl).Properties.MouseWheelDelta > 0 ? new MouseWheelUp(pixel) : new MouseWheelDown(pixel);
 
         processor.Process(action);
     }
 
-    internal static void ProcessKeyDown(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, KeyRoutedEventArgs e)
+    internal static void ProcessKeyDown(this UserInputProcessor processor, WinUIPlot plotControl, KeyRoutedEventArgs e)
     {
         Interactivity.Key key = e.ToKey();
-        Interactivity.IUserAction action = new Interactivity.UserActions.KeyDown(key);
+        IUserAction action = new KeyDown(key);
         processor.Process(action);
     }
 
-    internal static void ProcessKeyUp(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, KeyRoutedEventArgs e)
+    internal static void ProcessKeyUp(this UserInputProcessor processor, WinUIPlot plotControl, KeyRoutedEventArgs e)
     {
         Interactivity.Key key = e.ToKey();
-        Interactivity.IUserAction action = new Interactivity.UserActions.KeyUp(key);
+        IUserAction action = new KeyUp(key);
         processor.Process(action);
     }
 
-    internal static Control.MouseButton OldToButton(this PointerRoutedEventArgs e, WinUIPlot plotControl)
+    internal static MouseButton OldToButton(this PointerRoutedEventArgs e, WinUIPlot plotControl)
     {
-        switch (e.GetCurrentPoint(plotControl).Properties.PointerUpdateKind)
+        return e.GetCurrentPoint(plotControl).Properties.PointerUpdateKind switch
         {
-            case PointerUpdateKind.MiddleButtonPressed:
-            case PointerUpdateKind.MiddleButtonReleased:
-                return Control.MouseButton.Middle;
-            case PointerUpdateKind.LeftButtonPressed:
-            case PointerUpdateKind.LeftButtonReleased:
-                return Control.MouseButton.Left;
-            case PointerUpdateKind.RightButtonPressed:
-            case PointerUpdateKind.RightButtonReleased:
-                return Control.MouseButton.Right;
-            default:
-                return Control.MouseButton.Unknown;
-        }
+            PointerUpdateKind.MiddleButtonPressed or PointerUpdateKind.MiddleButtonReleased => MouseButton.Middle,
+            PointerUpdateKind.LeftButtonPressed or PointerUpdateKind.LeftButtonReleased => MouseButton.Left,
+            PointerUpdateKind.RightButtonPressed or PointerUpdateKind.RightButtonReleased => MouseButton.Right,
+            _ => MouseButton.Unknown,
+        };
     }
 
-    internal static Control.Key OldToKey(this KeyRoutedEventArgs e)
+    internal static Key OldToKey(this KeyRoutedEventArgs e)
     {
         return e.Key switch
         {
-            VirtualKey.Control => Control.Key.Ctrl,
-            VirtualKey.LeftControl => Control.Key.Ctrl,
-            VirtualKey.RightControl => Control.Key.Ctrl,
+            VirtualKey.Control => Key.Ctrl,
+            VirtualKey.LeftControl => Key.Ctrl,
+            VirtualKey.RightControl => Key.Ctrl,
 
-            VirtualKey.Menu => Control.Key.Alt,
-            VirtualKey.LeftMenu => Control.Key.Alt,
-            VirtualKey.RightMenu => Control.Key.Alt,
+            VirtualKey.Menu => Key.Alt,
+            VirtualKey.LeftMenu => Key.Alt,
+            VirtualKey.RightMenu => Key.Alt,
 
-            VirtualKey.Shift => Control.Key.Shift,
-            VirtualKey.LeftShift => Control.Key.Shift,
-            VirtualKey.RightShift => Control.Key.Shift,
+            VirtualKey.Shift => Key.Shift,
+            VirtualKey.LeftShift => Key.Shift,
+            VirtualKey.RightShift => Key.Shift,
 
-            _ => Control.Key.Unknown,
+            _ => Key.Unknown,
         };
     }
 
@@ -122,19 +119,18 @@ internal static class WinUIPlotExtensions
     {
         return e.Key switch
         {
-            VirtualKey.Control => Interactivity.StandardKeys.Control,
-            VirtualKey.LeftControl => Interactivity.StandardKeys.Control,
-            VirtualKey.RightControl => Interactivity.StandardKeys.Control,
+            VirtualKey.Control => StandardKeys.Control,
+            VirtualKey.LeftControl => StandardKeys.Control,
+            VirtualKey.RightControl => StandardKeys.Control,
 
-            VirtualKey.Menu => Interactivity.StandardKeys.Alt,
-            VirtualKey.LeftMenu => Interactivity.StandardKeys.Alt,
-            VirtualKey.RightMenu => Interactivity.StandardKeys.Alt,
+            VirtualKey.Menu => StandardKeys.Alt,
+            VirtualKey.LeftMenu => StandardKeys.Alt,
+            VirtualKey.RightMenu => StandardKeys.Alt,
 
-            VirtualKey.Shift => Interactivity.StandardKeys.Shift,
-            VirtualKey.LeftShift => Interactivity.StandardKeys.Shift,
-            VirtualKey.RightShift => Interactivity.StandardKeys.Shift,
+            VirtualKey.Shift => StandardKeys.Shift,
+            VirtualKey.LeftShift => StandardKeys.Shift,
+            VirtualKey.RightShift => StandardKeys.Shift,
             _ => new Interactivity.Key(e.Key.ToString()),
         };
     }
 }
-

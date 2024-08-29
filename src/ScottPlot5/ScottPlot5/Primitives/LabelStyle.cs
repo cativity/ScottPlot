@@ -1,7 +1,9 @@
 ﻿namespace ScottPlot;
 
-[Obsolete("Label has been renamed to LabelStyle", true)]
-public class Label : LabelStyle { }
+//[Obsolete("Label has been renamed to LabelStyle", true)]
+//public class Label : LabelStyle
+//{
+//}
 
 public class LabelStyle
 {
@@ -13,15 +15,16 @@ public class LabelStyle
     public Alignment Alignment { get; set; } = Alignment.UpperLeft;
 
     /// <summary>
-    /// Rotation in degrees clockwise from 0 (horizontal text)
+    ///     Rotation in degrees clockwise from 0 (horizontal text)
     /// </summary>
     public float Rotation { get; set; } = 0;
 
     public Color ForeColor { get; set; } = Colors.Black;
 
-    [Obsolete("use BackgroundColor", true)]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public Color BackColor { get; set; }
+    //[Obsolete("use BackgroundColor", true)]
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //public Color BackColor { get; set; }
+
     public Color BackgroundColor { get; set; } = Colors.Transparent;
 
     public Color BorderColor { get; set; } = Colors.Transparent;
@@ -32,51 +35,66 @@ public class LabelStyle
 
     public Color ShadowColor { get; set; } = Colors.Transparent;
 
-    public PixelOffset ShadowOffset { get; set; } = new(3, 3);
+    public PixelOffset ShadowOffset { get; set; } = new PixelOffset(3, 3);
 
     public bool AntiAliasBackground { get; set; } = true;
+
     public bool AntiAliasText { get; set; } = true;
+
     public bool SubpixelText { get; set; } = true;
 
     public string FontName { get; set; } = Fonts.Default;
+
     public float FontSize { get; set; } = 12;
-    public bool Bold { get; set; } = false;
+
+    public bool Bold { get; set; }
 
     /// <summary>
-    /// Manually defined line height in pixels.
-    /// If not defined, the default line spacing will be used (according to the typeface, size, etc.)
+    ///     Manually defined line height in pixels.
+    ///     If not defined, the default line spacing will be used (according to the typeface, size, etc.)
     /// </summary>
-    public float? LineSpacing { get; set; } = null;
+    public float? LineSpacing { get; set; }
 
     public bool Italic = false;
 
-    [Obsolete("use AntiAliasBackground and AntiAliasText", true)]
-    public bool AntiAlias = true;
+    //[Obsolete("use AntiAliasBackground and AntiAliasText", true)]
+    //public bool AntiAlias = true;
 
     public float Padding
     {
-        [Obsolete("Get PixelPadding instead", true)]
-        get => 0;
-        set => PixelPadding = new(value);
+        //[Obsolete("Get PixelPadding instead", true)]
+        //get => 0;
+        set => PixelPadding = new PixelPadding(value);
     }
 
     // TODO: should add padding and margin
-    public PixelPadding PixelPadding { get; set; } = new(0, 0, 0, 0);
+    public PixelPadding PixelPadding { get; set; } = new PixelPadding(0, 0, 0, 0);
 
     public float PointSize = 0;
-    public bool PointFilled = false;
+
+    public bool PointFilled { get; set; }
+
     public Color PointColor = Colors.Magenta;
 
     public float OffsetX = 0; // TODO: automatic padding support for arbitrary rotations
     public float OffsetY = 0; // TODO: automatic padding support for arbitrary rotations
 
-    public float BorderRadius { get => BorderRadiusX; set { BorderRadiusX = value; BorderRadiusY = value; } }
-    public float BorderRadiusX = 0;
-    public float BorderRadiusY = 0;
+    public float BorderRadius
+    {
+        get => BorderRadiusX;
+        set
+        {
+            BorderRadiusX = value;
+            BorderRadiusY = value;
+        }
+    }
+
+    public float BorderRadiusX;
+    public float BorderRadiusY;
 
     /// <summary>
-    /// Use the characters in <see cref="Text"/> to determine an installed
-    /// system font most likely to support this character set.
+    ///     Use the characters in <see cref="Text" /> to determine an installed
+    ///     system font most likely to support this character set.
     /// </summary>
     public void SetBestFont()
     {
@@ -135,19 +153,18 @@ public class LabelStyle
     }
 
     /// <summary>
-    /// Return size information for the contents of the <see cref="Text"/> property
+    ///     Return size information for the contents of the <see cref="Text" /> property
     /// </summary>
     public MeasuredText Measure() // NOTE: This should never be called internally
-    {
-        return Measure(Text);
-    }
+        => Measure(Text);
 
     /// <summary>
-    /// Return size information for the given text
+    ///     Return size information for the given text
     /// </summary>
     public MeasuredText Measure(string text) // NOTE: This should never be called internally
     {
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
+
         return Measure(text, paint);
     }
 
@@ -158,24 +175,17 @@ public class LabelStyle
         float lineHeight = paint.GetFontMetrics(out SKFontMetrics metrics);
         float[] lineWidths = lines.Select(paint.MeasureText).ToArray();
         float maxWidth = lineWidths.Length == 0 ? 0 : lineWidths.Max();
-        PixelSize size = new(maxWidth, lineHeight * lines.Length);
+        PixelSize size = new PixelSize(maxWidth, lineHeight * lines.Length);
 
         // https://github.com/ScottPlot/ScottPlot/issues/3700
-        float verticalOffset = metrics.Top + metrics.CapHeight - metrics.Bottom / 2;
+        float verticalOffset = metrics.Top + metrics.CapHeight - (metrics.Bottom / 2);
 
-        return new MeasuredText()
-        {
-            Size = size,
-            LineHeight = lineHeight,
-            LineWidths = lineWidths,
-            VerticalOffset = verticalOffset,
-            Bottom = metrics.Bottom,
-        };
+        return new MeasuredText { Size = size, LineHeight = lineHeight, LineWidths = lineWidths, VerticalOffset = verticalOffset, Bottom = metrics.Bottom, };
     }
 
     /// <summary>
-    /// Use the Label's size and <see cref="Alignment"/> to determine where it should be drawn
-    /// relative to the given rectangle (aligned to the rectangle according to <paramref name="rectAlignment"/>).
+    ///     Use the Label's size and <see cref="Alignment" /> to determine where it should be drawn
+    ///     relative to the given rectangle (aligned to the rectangle according to <paramref name="rectAlignment" />).
     /// </summary>
     public Pixel GetRenderLocation(PixelRect rect, Alignment rectAlignment, float offsetX, float offsetY, SKPaint paint)
     {
@@ -184,18 +194,20 @@ public class LabelStyle
         float textHeight = textSize.Height;
 
         if (Alignment != Alignment.UpperLeft)
+        {
             throw new NotImplementedException("This method only works for labels with upper-left aligned text");
+        }
 
         float x = rectAlignment switch
         {
             Alignment.UpperLeft => rect.Left + offsetX,
-            Alignment.UpperCenter => rect.TopCenter.X - 0.5f * textWidth,
+            Alignment.UpperCenter => rect.TopCenter.X - (0.5f * textWidth),
             Alignment.UpperRight => rect.Right - textWidth - offsetX,
             Alignment.MiddleLeft => rect.Left + offsetX,
-            Alignment.MiddleCenter => rect.BottomCenter.X - 0.5f * textWidth,
+            Alignment.MiddleCenter => rect.BottomCenter.X - (0.5f * textWidth),
             Alignment.MiddleRight => rect.Right - textWidth - offsetX,
             Alignment.LowerLeft => rect.Left + offsetX,
-            Alignment.LowerCenter => rect.BottomCenter.X - 0.5f * textWidth,
+            Alignment.LowerCenter => rect.BottomCenter.X - (0.5f * textWidth),
             Alignment.LowerRight => rect.Right - textWidth - offsetX,
             _ => throw new NotImplementedException()
         };
@@ -205,9 +217,9 @@ public class LabelStyle
             Alignment.UpperLeft => rect.Top + offsetY,
             Alignment.UpperCenter => rect.Top + offsetY,
             Alignment.UpperRight => rect.Top + offsetY,
-            Alignment.MiddleLeft => rect.LeftCenter.Y - 0.5f * textHeight,
-            Alignment.MiddleCenter => rect.LeftCenter.Y - 0.5f * textHeight,
-            Alignment.MiddleRight => rect.LeftCenter.Y - 0.5f * textHeight,
+            Alignment.MiddleLeft => rect.LeftCenter.Y - (0.5f * textHeight),
+            Alignment.MiddleCenter => rect.LeftCenter.Y - (0.5f * textHeight),
+            Alignment.MiddleRight => rect.LeftCenter.Y - (0.5f * textHeight),
             Alignment.LowerLeft => rect.Bottom - textHeight - offsetY,
             Alignment.LowerCenter => rect.Bottom - textHeight - offsetY,
             Alignment.LowerRight => rect.Bottom - textHeight - offsetY,
@@ -221,12 +233,14 @@ public class LabelStyle
     public void Render(SKCanvas canvas, Pixel px, SKPaint paint, bool bottom = true)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
         MeasuredText measured = Measure(Text, paint);
         PixelRect textRect = measured.Rect(Alignment);
 
-        CanvasState canvasState = new(canvas);
+        CanvasState canvasState = new CanvasState(canvas);
         canvasState.Save();
 
         canvas.Translate(px.X + OffsetX, px.Y + OffsetY);
@@ -243,7 +257,9 @@ public class LabelStyle
     private void DrawBorder(SKCanvas canvas, Pixel px, SKPaint paint, PixelRect textRect)
     {
         if (BorderWidth == 0)
+        {
             return;
+        }
 
         PixelRect backgroundRect = textRect.Expand(PixelPadding);
         ApplyBorderPaint(paint);
@@ -255,6 +271,7 @@ public class LabelStyle
         ApplyTextPaint(paint);
 
         float dY = bottom ? -measured.Bottom : measured.VerticalOffset;
+
         if (Text.Contains('\n'))
         {
             string[] lines = Text.Split('\n');
@@ -265,13 +282,13 @@ public class LabelStyle
                 float dX = Alignment.HorizontalFraction() switch
                 {
                     0 => 0,
-                    0.5f => textRect.Width / 2 - measured.LineWidths[i] / 2,
+                    0.5f => (textRect.Width / 2) - (measured.LineWidths[i] / 2),
                     1 => textRect.Width - measured.LineWidths[i],
                     _ => throw new NotImplementedException(paint.TextAlign.ToString()),
                 };
 
                 float xPx = textRect.Left + dX;
-                float yPx = textRect.Top + (1 + i) * lineHeight + dY;
+                float yPx = textRect.Top + ((1 + i) * lineHeight) + dY;
                 canvas.DrawText(lines[i], xPx, yPx, paint);
             }
         }
@@ -319,13 +336,14 @@ public class LabelStyle
         float maxHeight = 0;
         string maxText = string.Empty;
 
-        for (int i = 0; i < strings.Length; i++)
+        foreach (string t in strings)
         {
-            PixelSize size = Measure(strings[i], paint).Size;
+            PixelSize size = Measure(t, paint).Size;
+
             if (size.Height > maxHeight)
             {
                 maxHeight = size.Height;
-                maxText = strings[i];
+                maxText = t;
             }
         }
 
@@ -337,13 +355,14 @@ public class LabelStyle
         float maxWidth = 0;
         string maxText = string.Empty;
 
-        for (int i = 0; i < strings.Length; i++)
+        foreach (string t in strings)
         {
-            PixelSize size = Measure(strings[i], paint).Size;
+            PixelSize size = Measure(t, paint).Size;
+
             if (size.Width > maxWidth)
             {
                 maxWidth = size.Width;
-                maxText = strings[i];
+                maxText = t;
             }
         }
 

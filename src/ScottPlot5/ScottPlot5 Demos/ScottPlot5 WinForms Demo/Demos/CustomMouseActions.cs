@@ -1,4 +1,8 @@
-﻿using ScottPlot.WinForms;
+﻿using ScottPlot;
+using ScottPlot.Interactivity;
+using ScottPlot.Interactivity.UserActionResponses;
+using ScottPlot.Interactivity.UserActions;
+using ScottPlot.WinForms;
 
 namespace WinForms_Demo.Demos;
 
@@ -17,30 +21,30 @@ public partial class CustomMouseActions : Form, IDemoWindow
         formsPlot1.Interaction.IsEnabled = false;
         formsPlot1.UserInputProcessor.IsEnabled = true;
 
-        formsPlot1.Plot.Add.Signal(ScottPlot.Generate.Sin());
-        formsPlot1.Plot.Add.Signal(ScottPlot.Generate.Cos());
+        formsPlot1.Plot.Add.Signal(Generate.Sin());
+        formsPlot1.Plot.Add.Signal(Generate.Cos());
 
-        btnDefault.Click += (s, e) =>
+        btnDefault.Click += (_, _) =>
         {
-            richTextBox1.Text = "left-click-drag pan, right-click-drag zoom, middle-click autoscale, " +
-                "middle-click-drag zoom rectangle, alt+left-click-drag zoom rectangle, right-click menu, " +
-                "double-click benchmark, scroll wheel zoom, arrow keys pan, " +
-                "shift or alt with arrow keys pans more or less, ctrl+arrow keys zoom";
+            richTextBox1.Text = "left-click-drag pan, right-click-drag zoom, middle-click autoscale, "
+                                + "middle-click-drag zoom rectangle, alt+left-click-drag zoom rectangle, right-click menu, "
+                                + "double-click benchmark, scroll wheel zoom, arrow keys pan, "
+                                + "shift or alt with arrow keys pans more or less, ctrl+arrow keys zoom";
 
             formsPlot1.UserInputProcessor.IsEnabled = true;
             formsPlot1.UserInputProcessor.Reset();
         };
 
-        btnDisable.Click += (s, e) =>
+        btnDisable.Click += (_, _) =>
         {
             richTextBox1.Text = "Mouse and keyboard events are disabled";
             formsPlot1.UserInputProcessor.IsEnabled = false;
         };
 
-        btnCustom.Click += (s, e) =>
+        btnCustom.Click += (_, _) =>
         {
-            richTextBox1.Text = "middle-click-drag pan, right-click-drag zoom rectangle, " +
-                "right-click autoscale, left-click menu, Q key autoscale, WASD keys pan";
+            richTextBox1.Text = "middle-click-drag pan, right-click-drag zoom rectangle, "
+                                + "right-click autoscale, left-click menu, Q key autoscale, WASD keys pan";
 
             formsPlot1.UserInputProcessor.IsEnabled = true;
 
@@ -48,55 +52,61 @@ public partial class CustomMouseActions : Form, IDemoWindow
             formsPlot1.UserInputProcessor.UserActionResponses.Clear();
 
             // middle-click-drag pan
-            var panButton = ScottPlot.Interactivity.StandardMouseButtons.Middle;
-            var panResponse = new ScottPlot.Interactivity.UserActionResponses.MouseDragPan(panButton);
+            MouseButton panButton = StandardMouseButtons.Middle;
+            MouseDragPan panResponse = new MouseDragPan(panButton);
             formsPlot1.UserInputProcessor.UserActionResponses.Add(panResponse);
 
             // right-click-drag zoom rectangle
-            var zoomRectangleButton = ScottPlot.Interactivity.StandardMouseButtons.Right;
-            var zoomRectangleResponse = new ScottPlot.Interactivity.UserActionResponses.MouseDragZoomRectangle(zoomRectangleButton);
+            MouseButton zoomRectangleButton = StandardMouseButtons.Right;
+            MouseDragZoomRectangle zoomRectangleResponse = new MouseDragZoomRectangle(zoomRectangleButton);
             formsPlot1.UserInputProcessor.UserActionResponses.Add(zoomRectangleResponse);
 
             // right-click autoscale
-            var autoscaleButton = ScottPlot.Interactivity.StandardMouseButtons.Right;
-            var autoscaleResponse = new ScottPlot.Interactivity.UserActionResponses.SingleClickAutoscale(autoscaleButton);
+            MouseButton autoscaleButton = StandardMouseButtons.Right;
+            SingleClickAutoscale autoscaleResponse = new SingleClickAutoscale(autoscaleButton);
             formsPlot1.UserInputProcessor.UserActionResponses.Add(autoscaleResponse);
 
             // left-click menu
-            var menuButton = ScottPlot.Interactivity.StandardMouseButtons.Left;
-            var menuResponse = new ScottPlot.Interactivity.UserActionResponses.SingleClickContextMenu(menuButton);
+            MouseButton menuButton = StandardMouseButtons.Left;
+            SingleClickContextMenu menuResponse = new SingleClickContextMenu(menuButton);
             formsPlot1.UserInputProcessor.UserActionResponses.Add(menuResponse);
 
             // Q key autoscale too
-            var autoscaleKey = new ScottPlot.Interactivity.Key("Q");
-            Action<ScottPlot.Plot, ScottPlot.Pixel> autoscaleAction = (plot, pixel) => plot.Axes.AutoScale();
-            var autoscaleKeyResponse = new ScottPlot.Interactivity.UserActionResponses.KeyPressResponse(autoscaleKey, autoscaleAction);
+            Key autoscaleKey = new Key("Q");
+            KeyPressResponse autoscaleKeyResponse = new KeyPressResponse(autoscaleKey, AutoscaleAction);
             formsPlot1.UserInputProcessor.UserActionResponses.Add(autoscaleKeyResponse);
 
             // WASD keys pan
-            var keyPanResponse = new ScottPlot.Interactivity.UserActionResponses.KeyboardPanAndZoom()
+            KeyboardPanAndZoom keyPanResponse = new KeyboardPanAndZoom
             {
-                PanUpKey = new ScottPlot.Interactivity.Key("W"),
-                PanLeftKey = new ScottPlot.Interactivity.Key("A"),
-                PanDownKey = new ScottPlot.Interactivity.Key("S"),
-                PanRightKey = new ScottPlot.Interactivity.Key("D"),
+                PanUpKey = new Key("W"),
+                PanLeftKey = new Key("A"),
+                PanDownKey = new Key("S"),
+                PanRightKey = new Key("D"),
             };
+
             formsPlot1.UserInputProcessor.UserActionResponses.Add(keyPanResponse);
+
+            return;
+
+            static void AutoscaleAction(Plot plot, Pixel pixel) => plot.Axes.AutoScale();
         };
 
-        Load += (s, e) => btnDefault.PerformClick();
+        Load += (_, _) => btnDefault.PerformClick();
     }
 
     /// <summary>
-    /// Required because arrow key presses do not invoke KeyDown
+    ///     Required because arrow key presses do not invoke KeyDown
     /// </summary>
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     {
-        ScottPlot.Interactivity.Key key = keyData.GetKey();
-        if (ScottPlot.Interactivity.StandardKeys.IsArrowKey(key))
+        Key key = keyData.GetKey();
+
+        if (StandardKeys.IsArrowKey(key))
         {
-            var keyDownAction = new ScottPlot.Interactivity.UserActions.KeyDown(key);
+            KeyDown keyDownAction = new KeyDown(key);
             formsPlot1.UserInputProcessor.Process(keyDownAction);
+
             return true;
         }
 

@@ -6,7 +6,7 @@ internal class HorizontalBar : IMarker
     {
         float radius = size / 2;
 
-        SKPath path = new();
+        SKPath path = new SKPath();
         path.MoveTo(center.X + radius, center.Y);
         path.LineTo(center.X - radius, center.Y);
 

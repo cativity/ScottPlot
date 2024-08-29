@@ -2,7 +2,7 @@
 
 internal static class TODO
 {
-    /*  
+    /*
 
     #########################################################################
     ## This file tracks features that Scott will soon add to ScottPlot 5.  ##

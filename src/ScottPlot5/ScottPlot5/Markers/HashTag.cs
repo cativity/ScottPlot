@@ -7,7 +7,7 @@ internal class HashTag : IMarker
         float sixthOffset = size / 6;
         float halfOffset = size / 2;
 
-        var path = new SKPath();
+        SKPath path = new SKPath();
         // Vertical Lines
         path.MoveTo(center.X + sixthOffset, center.Y + halfOffset);
         path.LineTo(center.X + sixthOffset, center.Y - halfOffset);

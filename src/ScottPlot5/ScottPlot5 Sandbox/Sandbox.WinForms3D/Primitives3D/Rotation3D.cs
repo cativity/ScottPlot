@@ -8,5 +8,6 @@ public record struct Rotation3D
     public double CenterX;
     public double CenterY;
     public double CenterZ;
-    public Point3D CenterPoint => new(CenterX, CenterY, CenterZ);
+
+    public readonly Point3D CenterPoint => new Point3D(CenterX, CenterY, CenterZ);
 }

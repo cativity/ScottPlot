@@ -5,12 +5,12 @@ internal class CandlestickTests
     [Test]
     public void Test_Candlestick_NegativeX()
     {
-        ScottPlot.Plot plot = new();
+        Plot plot = new Plot();
 
         List<OHLC> price = [];
 
-        DateTime startDate = new(1899, 12, 25); // NOTE: 1900 is the OADate rollover
-        OHLC ohlc = new(100, 103, 99, 102, startDate, TimeSpan.FromDays(1));
+        DateTime startDate = new DateTime(1899, 12, 25); // NOTE: 1900 is the OADate rollover
+        OHLC ohlc = new OHLC(100, 103, 99, 102, startDate, TimeSpan.FromDays(1));
 
         for (int i = 0; i < 10; i++)
         {
@@ -25,12 +25,12 @@ internal class CandlestickTests
     [Test]
     public void Test_OHLC_NegativeX()
     {
-        ScottPlot.Plot plot = new();
+        Plot plot = new Plot();
 
         List<OHLC> price = [];
 
-        DateTime startDate = new(1899, 12, 25); // NOTE: 1900 is the OADate rollover
-        OHLC ohlc = new(100, 103, 99, 102, startDate, TimeSpan.FromDays(1));
+        DateTime startDate = new DateTime(1899, 12, 25); // NOTE: 1900 is the OADate rollover
+        OHLC ohlc = new OHLC(100, 103, 99, 102, startDate, TimeSpan.FromDays(1));
 
         for (int i = 0; i < 10; i++)
         {
@@ -45,12 +45,12 @@ internal class CandlestickTests
     [Test]
     public void Test_Candlestick_NoPriceChange()
     {
-        ScottPlot.Plot plot = new();
+        Plot plot = new Plot();
 
         List<OHLC> price = [];
 
-        DateTime startDate = new(1899, 12, 25); // NOTE: 1900 is the OADate rollover
-        OHLC ohlc = new(100, 105, 95, 95, startDate, TimeSpan.FromDays(1));
+        DateTime startDate = new DateTime(1899, 12, 25); // NOTE: 1900 is the OADate rollover
+        OHLC ohlc = new OHLC(100, 105, 95, 95, startDate, TimeSpan.FromDays(1));
 
         for (int i = 0; i < 10; i++)
         {

@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace ScottPlot.AxisRules;
+﻿namespace ScottPlot.AxisRules;
 
 public class SnapToTicksX(IXAxis xAxis) : IAxisRule
 {
@@ -9,19 +7,24 @@ public class SnapToTicksX(IXAxis xAxis) : IAxisRule
     public void Apply(RenderPack rp, bool beforeLayout)
     {
         if (beforeLayout)
+        {
             return;
-        if (rp.Plot.LastRender.Count == 0)
-            return;
+        }
 
-        var inverted = rp.Plot.LastRender.AxisLimitsByAxis[XAxis].IsInverted;
-        var oldRight = rp.Plot.LastRender.AxisLimitsByAxis[XAxis].Max;
-        var oldLeft = rp.Plot.LastRender.AxisLimitsByAxis[XAxis].Min;
-        var newLimits = XAxis.Range;
+        if (rp.Plot.LastRender.Count == 0)
+        {
+            return;
+        }
+
+        bool inverted = rp.Plot.LastRender.AxisLimitsByAxis[XAxis].IsInverted;
+        double oldRight = rp.Plot.LastRender.AxisLimitsByAxis[XAxis].Max;
+        double oldLeft = rp.Plot.LastRender.AxisLimitsByAxis[XAxis].Min;
+        CoordinateRangeMutable newLimits = XAxis.Range;
         double newRight = newLimits.Max;
         double newLeft = newLimits.Min;
 
         // do not attempt to set limits if they have not changed
-        if (newRight == oldRight & newLeft == oldLeft)
+        if (newRight == oldRight && newLeft == oldLeft)
         {
             return;
         }
@@ -29,46 +32,44 @@ public class SnapToTicksX(IXAxis xAxis) : IAxisRule
         // a locked axis wont be snapped (locking rules take priority)
         bool leftIsLocked = false;
         bool rightIsLocked = false;
-        foreach (var rule in rp.Plot.Axes.Rules)
+
+        foreach (IAxisRule? rule in rp.Plot.Axes.Rules)
         {
-            if (rule is LockedHorizontal lockedHorizontalRule)
+            switch (rule)
             {
-                if (lockedHorizontalRule.XAxis == XAxis)
-                {
+                case LockedHorizontal lockedHorizontalRule when lockedHorizontalRule.XAxis == XAxis:
                     // the requested axis already has a horizontal lock
                     return;
-                }
-            }
 
-            if (rule is LockedLeft lockedLeftRule)
-            {
-                if (lockedLeftRule.XAxis == XAxis)
-                {
+                case LockedLeft lockedLeftRule when lockedLeftRule.XAxis == XAxis:
                     // the requested axis already has a left lock
                     leftIsLocked = true;
-                }
-            }
 
-            if (rule is LockedRight lockedRightRule)
-            {
-                if (lockedRightRule.XAxis == XAxis)
-                {
+                    break;
+
+                case LockedRight lockedRightRule when lockedRightRule.XAxis == XAxis:
                     // the requested axis already has a right lock
                     rightIsLocked = true;
-                }
+
+                    break;
             }
         }
 
         // establish which type of axis change occurred
         bool zoomedInRight = Math.Abs(newRight - oldLeft) < Math.Abs(oldRight - oldLeft);
         bool zoomedInLeft = Math.Abs(newLeft - oldRight) < Math.Abs(oldLeft - oldRight);
-        bool isPanning = (zoomedInLeft ^ zoomedInRight) & (newLeft != oldLeft) & (newRight != oldRight);
+        bool isPanning = zoomedInLeft ^ zoomedInRight && newLeft != oldLeft && newRight != oldRight;
 
         // Find the ticks for the curtrent axis so we can snap to these
         XAxis.RegenerateTicks(new PixelLength(rp.DataRect.Width));
-        var ticks = XAxis.TickGenerator.Ticks.Where(tick => tick.IsMajor).Select(x => x.Position);
-        if (ticks.Count() < 2) return; //if there is only 1 tick we can't establish the tick interval so can't snap to a tick. 
-        var tickDelta = ticks.Skip(1).First() - ticks.First();
+        List<double> ticks = XAxis.TickGenerator?.Ticks.Where(static tick => tick.IsMajor).Select(static x => x.Position).ToList() ?? [];
+
+        if (ticks.Count < 2)
+        {
+            return; //if there is only 1 tick we can't establish the tick interval so can't snap to a tick.
+        }
+
+        double tickDelta = ticks.Skip(1).First() - ticks[0];
 
         // As a default we'll snap outwards, then check if we should have snapped inward
         newRight = inverted ? ticks.Min() - tickDelta : ticks.Max() + tickDelta;
@@ -91,7 +92,7 @@ public class SnapToTicksX(IXAxis xAxis) : IAxisRule
         }
 
         //This is to handle panning, which can be jumpy if we snap before it has panned more than half the tick interval
-        if (isPanning & Math.Abs(newLimits.Max - oldRight) < tickDelta / 2)
+        if (isPanning && Math.Abs(newLimits.Max - oldRight) < tickDelta / 2)
         {
             newRight = oldRight;
             newLeft = oldLeft;
@@ -109,43 +110,52 @@ public class SnapToTicksX(IXAxis xAxis) : IAxisRule
         }
 
         //Now we can set the new limits that are snapped to tick intervals
-        if (newLeft != newRight) XAxis.Range.Set(newLeft, newRight);
+        if (newLeft != newRight)
+        {
+            XAxis.Range.Set(newLeft, newRight);
+        }
 
         //But, the new limits might cause a change in the tick interval! So here we will test that and update the snap if necessary
         XAxis.RegenerateTicks(new PixelLength(rp.DataRect.Width));
-        ticks = XAxis.TickGenerator.Ticks.Where(tick => tick.IsMajor).Select(x => x.Position);
-        var newTickDelta = ticks.Skip(1).First() - ticks.First();
+        ticks = XAxis.TickGenerator?.Ticks.Where(static tick => tick.IsMajor).Select(static x => x.Position).ToList() ?? [];
+        double newTickDelta = ticks.Skip(1).First() - ticks[0];
 
-        if (newTickDelta != tickDelta)
-        {//tick interval has changed
+        if (newTickDelta == tickDelta)
+        {
+            return;
+        }
+        //tick interval has changed
 
-            if (newRight != (inverted ? ticks.Min() : ticks.Max()) & !rightIsLocked)
-            {// Top limit is no longer on a tick because the tick interval has changed
-                if (zoomedInRight)
-                {
-                    newRight = inverted ? ticks.Min() : ticks.Max();
-                }
-                else
-                {
-                    newRight = inverted ? ticks.Min() - newTickDelta : ticks.Max() + newTickDelta;
-                }
+        if (newRight != (inverted ? ticks.Min() : ticks.Max()) && !rightIsLocked)
+        {
+            // Top limit is no longer on a tick because the tick interval has changed
+            if (zoomedInRight)
+            {
+                newRight = inverted ? ticks.Min() : ticks.Max();
             }
-
-            if (newLeft != (inverted ? ticks.Max() : ticks.Min()) & !leftIsLocked)
-            {// Top limit is no longer on a tick because the tick interval has changed
-                if (zoomedInLeft)
-                {
-                    newLeft = inverted ? ticks.Max() : ticks.Min();
-                }
-                else
-                {
-                    newLeft = inverted ? ticks.Max() + newTickDelta : ticks.Min() - newTickDelta;
-                }
+            else
+            {
+                newRight = inverted ? ticks.Min() - newTickDelta : ticks.Max() + newTickDelta;
             }
+        }
 
-            // Finally, we need to reset the limits
-            if (newLeft != newRight) XAxis.Range.Set(newLeft, newRight);
+        if (newLeft != (inverted ? ticks.Max() : ticks.Min()) && !leftIsLocked)
+        {
+            // Top limit is no longer on a tick because the tick interval has changed
+            if (zoomedInLeft)
+            {
+                newLeft = inverted ? ticks.Max() : ticks.Min();
+            }
+            else
+            {
+                newLeft = inverted ? ticks.Max() + newTickDelta : ticks.Min() - newTickDelta;
+            }
+        }
+
+        // Finally, we need to reset the limits
+        if (newLeft != newRight)
+        {
+            XAxis.Range.Set(newLeft, newRight);
         }
     }
-
 }

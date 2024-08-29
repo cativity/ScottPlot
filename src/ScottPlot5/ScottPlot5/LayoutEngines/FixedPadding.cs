@@ -1,15 +1,15 @@
 ﻿namespace ScottPlot.LayoutEngines;
 
 /// <summary>
-/// Generate layouts where the data area has a fixed padding from the edge of the figure
+///     Generate layouts where the data area has a fixed padding from the edge of the figure
 /// </summary>
-public class FixedPadding(PixelPadding padding) : LayoutEngineBase, ILayoutEngine
+public class FixedPadding(PixelPadding padding) : ILayoutEngine
 {
     private PixelPadding Padding { get; } = padding;
 
     public Layout GetLayout(PixelRect figureRect, Plot plot)
     {
-        IEnumerable<IPanel> panels = plot.Axes.GetPanels();
+        List<IPanel> panels = [.. plot.Axes.GetPanels()];
 
         // must recalculate ticks before measuring panels
 
@@ -18,13 +18,12 @@ public class FixedPadding(PixelPadding padding) : LayoutEngineBase, ILayoutEngin
         panels.OfType<IYAxis>().ToList().ForEach(x => x.RegenerateTicks(figureRect.Height));
 
         Dictionary<IPanel, float> panelSizes = LayoutEngineBase.MeasurePanels(panels);
-        Dictionary<IPanel, float> panelOffsets = GetPanelOffsets(panels, panelSizes);
+        Dictionary<IPanel, float> panelOffsets = LayoutEngineBase.GetPanelOffsets(panels, panelSizes);
 
-        PixelRect dataRect = new(
-            left: figureRect.Left + Padding.Left,
-            right: figureRect.Left + figureRect.Width - Padding.Right,
-            bottom: figureRect.Top + figureRect.Height - Padding.Bottom,
-            top: figureRect.Top + Padding.Top);
+        PixelRect dataRect = new PixelRect(figureRect.Left + Padding.Left,
+                                           figureRect.Left + figureRect.Width - Padding.Right,
+                                           figureRect.Top + figureRect.Height - Padding.Bottom,
+                                           figureRect.Top + Padding.Top);
 
         return new Layout(figureRect, dataRect, panelSizes, panelOffsets);
     }

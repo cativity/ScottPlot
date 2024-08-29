@@ -3,12 +3,13 @@
  * https://en.wikipedia.org/wiki/BMP_file_format
  * https://gibberlings3.github.io/iesdp/file_formats/ie_formats/bmp.htm
  */
+
 using System.Runtime.InteropServices;
 
 namespace ScottPlot.IO;
 
 /// <summary>
-/// This struct holds values that define the first several bytes of a bitmap file.
+///     This struct holds values that define the first several bytes of a bitmap file.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 internal struct BitmapHeader
@@ -34,7 +35,7 @@ internal struct BitmapHeader
 
     public BitmapHeader(int width, int height)
     {
-        Size = width * Math.Abs(height) * BitsPerPixel / 8 + FileHeaderSize;
+        Size = (width * Math.Abs(height) * BitsPerPixel / 8) + FileHeaderSize;
         Width = width;
         Height = -height;
     }

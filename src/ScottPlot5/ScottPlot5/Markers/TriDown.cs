@@ -9,7 +9,7 @@ internal class TriDown : IMarker
         float xOffset = (float)(radius * 0.866); // r * sqrt(3)/2
         float yOffset = radius / 2;
 
-        SKPath path = new();
+        SKPath path = new SKPath();
 
         // Bottom line
         path.MoveTo(center.X, center.Y);

@@ -5,29 +5,20 @@ namespace Sandbox.WinForms3D.Plottables3D;
 
 public class Scatter3D : IPlottable3D
 {
-    public readonly List<Point3D> Points = [];
+    public List<Point3D> Points { get; } = [];
 
-    public readonly LineStyle LineStyle = new()
-    {
-        Width = 1,
-        Color = Colors.Blue
-    };
+    public LineStyle LineStyle { get; } = new LineStyle { Width = 1, Color = Colors.Blue };
 
-    public readonly MarkerStyle MarkerStyle = new()
-    {
-        IsVisible = true,
-        Shape = MarkerShape.FilledCircle,
-        FillColor = Colors.Blue,
-        Size = 5,
-    };
+    public MarkerStyle MarkerStyle { get; } = new MarkerStyle { IsVisible = true, Shape = MarkerShape.FilledCircle, FillColor = Colors.Blue, Size = 5, };
 
     public Scatter3D()
     {
-        double m = 10;
+        const double m = 10;
+
         for (double z = 0; z < 1.0; z += 0.01)
         {
-            double x = Math.Sin(z * m) / 2 + .5;
-            double y = Math.Cos(z * m) / 2 + .5;
+            double x = (Math.Sin(z * m) / 2) + .5;
+            double y = (Math.Cos(z * m) / 2) + .5;
             Points.Add(new Point3D(x, y, z));
         }
     }

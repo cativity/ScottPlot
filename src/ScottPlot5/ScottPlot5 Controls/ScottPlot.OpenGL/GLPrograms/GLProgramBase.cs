@@ -6,62 +6,59 @@ namespace ScottPlot.OpenGL.GLPrograms;
 
 public abstract class GLProgramBase : IGLProgram
 {
-    private readonly int Handle;
+    private readonly int _handle;
 
     protected virtual string? VertexShaderSource => null;
+
     protected virtual string? GeometryShaderSource => null;
+
     protected virtual string? FragmentShaderSource => null;
 
     public GLProgramBase()
     {
+        GLShader? vertexShader = new GLShader(ShaderType.VertexShader, VertexShaderSource);
+        GLShader? geometryShader = new GLShader(ShaderType.GeometryShader, GeometryShaderSource);
+        GLShader? fragmentShader = new GLShader(ShaderType.FragmentShader, FragmentShaderSource);
 
-        var VertexShader = new GLShader(ShaderType.VertexShader, VertexShaderSource);
-        var GeometryShader = new GLShader(ShaderType.GeometryShader, GeometryShaderSource);
-        var FragmentShader = new GLShader(ShaderType.FragmentShader, FragmentShaderSource);
+        _handle = GL.CreateProgram();
 
-        Handle = GL.CreateProgram();
+        vertexShader.AttachToProgram(_handle);
+        geometryShader.AttachToProgram(_handle);
+        fragmentShader.AttachToProgram(_handle);
 
-        VertexShader.AttachToProgram(Handle);
-        GeometryShader.AttachToProgram(Handle);
-        FragmentShader.AttachToProgram(Handle);
+        GL.LinkProgram(_handle);
 
-        GL.LinkProgram(Handle);
+        GL.GetProgram(_handle, GetProgramParameterName.LinkStatus, out int success);
 
-        GL.GetProgram(Handle, GetProgramParameterName.LinkStatus, out int success);
         if (success == 0)
         {
-            string infoLog = GL.GetProgramInfoLog(Handle);
+            string infoLog = GL.GetProgramInfoLog(_handle);
             Debug.WriteLine(infoLog);
         }
 
-        VertexShader.DetachFromProgram(Handle);
-        GeometryShader.DetachFromProgram(Handle);
-        FragmentShader.DetachFromProgram(Handle);
+        vertexShader.DetachFromProgram(_handle);
+        geometryShader.DetachFromProgram(_handle);
+        fragmentShader.DetachFromProgram(_handle);
     }
 
     public void Use()
     {
-        GL.UseProgram(Handle);
+        GL.UseProgram(_handle);
     }
 
-    public int GetAttribLocation(string attribName)
-    {
-        return GL.GetAttribLocation(Handle, attribName);
-    }
+    public int GetAttribLocation(string attribName) => GL.GetAttribLocation(_handle, attribName);
 
-    public int GetUniformLocation(string attribName)
-    {
-        return GL.GetUniformLocation(Handle, attribName);
-    }
+    public int GetUniformLocation(string attribName) => GL.GetUniformLocation(_handle, attribName);
 
-    private bool disposedValue = false;
+    private bool _disposedValue;
+
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposedValue)
+        if (!_disposedValue)
         {
-            GL.DeleteProgram(Handle);
+            GL.DeleteProgram(_handle);
 
-            disposedValue = true;
+            _disposedValue = true;
         }
     }
 

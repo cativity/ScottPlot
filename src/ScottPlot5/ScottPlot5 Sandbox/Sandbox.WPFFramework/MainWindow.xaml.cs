@@ -1,15 +1,15 @@
 ﻿using System.Windows;
+using ScottPlot;
 
-namespace Sandbox.WPFFramework
+namespace Sandbox.WPFFramework;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            WpfPlot1.Plot.Add.Signal(ScottPlot.Generate.Sin());
-            WpfPlot1.Plot.Add.Signal(ScottPlot.Generate.Cos());
-        }
+        WpfPlot1.Plot.Add.Signal(Generate.Sin());
+        WpfPlot1.Plot.Add.Signal(Generate.Cos());
     }
 }

@@ -5,7 +5,7 @@ internal class Sandbox
     [Test]
     public void Test_Sandbox()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.Axes.Left.Label.Text = "Vertical Axis";
         plt.Axes.Left.MinimumSize = 100;
         plt.SaveTestImage();

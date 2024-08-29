@@ -1,16 +1,9 @@
-﻿using System.Linq;
-
-namespace ScottPlot.NamedColors;
+﻿namespace ScottPlot.NamedColors;
 
 public abstract class NamedColorsBase : INamedColors
 {
     public Color[] GetAllColors()
     {
-        return GetType()
-            .GetMethods()
-            .Where(x => x.ReturnType == typeof(Color))
-            .Select(x => x.Invoke(null, null))
-            .Cast<Color>()
-            .ToArray();
+        return GetType().GetMethods().Where(static x => x.ReturnType == typeof(Color)).Select(static x => x.Invoke(null, null)).Cast<Color>().ToArray();
     }
 }

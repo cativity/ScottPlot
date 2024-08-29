@@ -11,8 +11,11 @@ public class TickMarkStyle
     public void Render(SKCanvas canvas, SKPaint paint, PixelLine pxLine)
     {
         ApplyToPaint(paint);
+
         if (Hairline)
+        {
             paint.StrokeWidth = 1f / canvas.TotalMatrix.ScaleX;
+        }
 
         Drawing.DrawLine(canvas, paint, pxLine);
     }

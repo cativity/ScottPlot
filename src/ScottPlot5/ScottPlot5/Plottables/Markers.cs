@@ -2,18 +2,27 @@
 
 public class Markers(IScatterSource data) : IPlottable, IHasMarker, IHasLegendText
 {
-    [Obsolete("use LegendText")]
-    public string Label { get => LegendText; set => LegendText = value; }
+    //[Obsolete("use LegendText")]
+    //public string Label { get => LegendText; set => LegendText = value; }
+
     public string LegendText { get; set; } = string.Empty;
+
     public bool IsVisible { get; set; } = true;
+
     public IAxes Axes { get; set; } = new Axes();
 
-    public MarkerStyle MarkerStyle { get; set; } = new() { LineWidth = 1 };
+    public MarkerStyle MarkerStyle { get; set; } = new MarkerStyle { LineWidth = 1 };
+
     public MarkerShape MarkerShape { get => MarkerStyle.Shape; set => MarkerStyle.Shape = value; }
+
     public float MarkerSize { get => MarkerStyle.Size; set => MarkerStyle.Size = value; }
+
     public Color MarkerFillColor { get => MarkerStyle.FillColor; set => MarkerStyle.FillColor = value; }
+
     public Color MarkerLineColor { get => MarkerStyle.LineColor; set => MarkerStyle.LineColor = value; }
+
     public Color MarkerColor { get => MarkerStyle.MarkerColor; set => MarkerStyle.MarkerColor = value; }
+
     public float MarkerLineWidth { get => MarkerStyle.LineWidth; set => MarkerStyle.LineWidth = value; }
 
     public IScatterSource Data { get; } = data;
@@ -36,12 +45,14 @@ public class Markers(IScatterSource data) : IPlottable, IHasMarker, IHasLegendTe
     {
         IReadOnlyList<Coordinates> points = Data.GetScatterPoints();
 
-        if (this.MarkerStyle == MarkerStyle.None || points.Count == 0)
+        if (MarkerStyle == MarkerStyle.None || points.Count == 0)
+        {
             return;
+        }
 
         IEnumerable<Pixel> markerPixels = Data.GetScatterPoints().Select(Axes.GetPixel);
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         Drawing.DrawMarkers(rp.Canvas, paint, markerPixels, MarkerStyle);
     }
 }

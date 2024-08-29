@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SharedTests;
+﻿namespace SharedTests;
 
 internal class NumericConversionTests
 {
@@ -20,19 +18,19 @@ internal class NumericConversionTests
         AssertConversionPreservesOriginalValue<byte>(42);
         AssertConversionPreservesOriginalValue<decimal>(42.69);
 
-        AssertConversionPreservesOriginalValue<Int16>(42);
-        AssertConversionPreservesOriginalValue<Int32>(42);
-        AssertConversionPreservesOriginalValue<Int64>(42);
+        AssertConversionPreservesOriginalValue<short>(42);
+        AssertConversionPreservesOriginalValue<int>(42);
+        AssertConversionPreservesOriginalValue<long>(42);
 
-        AssertConversionPreservesOriginalValue<UInt16>(42);
-        AssertConversionPreservesOriginalValue<UInt32>(42);
-        AssertConversionPreservesOriginalValue<UInt64>(42);
+        AssertConversionPreservesOriginalValue<ushort>(42);
+        AssertConversionPreservesOriginalValue<uint>(42);
+        AssertConversionPreservesOriginalValue<ulong>(42);
     }
 
     [Test]
     public void Test_TypeSpecificFunction_Add()
     {
-        Assert.Multiple(() =>
+        Assert.Multiple(static () =>
         {
             Assert.That(NumericConversion.CreateAddFunction<double>().Invoke(42, 69), Is.EqualTo(111));
             Assert.That(NumericConversion.CreateAddFunction<float>().Invoke(42, 69), Is.EqualTo(111));
@@ -44,7 +42,7 @@ internal class NumericConversionTests
     [Test]
     public void Test_TypeSpecificFunction_Multiply()
     {
-        Assert.Multiple(() =>
+        Assert.Multiple(static () =>
         {
             Assert.That(NumericConversion.CreateMultFunction<double>().Invoke(42, 69), Is.EqualTo(2898));
             Assert.That(NumericConversion.CreateMultFunction<float>().Invoke(42, 69), Is.EqualTo(2898));
@@ -56,7 +54,7 @@ internal class NumericConversionTests
     [Test]
     public void Test_TypeSpecificFunction_Subtract()
     {
-        Assert.Multiple(() =>
+        Assert.Multiple(static () =>
         {
             Assert.That(NumericConversion.CreateSubtractFunction<double>().Invoke(111, 69), Is.EqualTo(42));
             Assert.That(NumericConversion.CreateSubtractFunction<float>().Invoke(111, 69), Is.EqualTo(42));
@@ -68,7 +66,7 @@ internal class NumericConversionTests
     [Test]
     public void Test_TypeSpecificFunction_LessThanOrEqual()
     {
-        Assert.Multiple(() =>
+        Assert.Multiple(static () =>
         {
             Assert.That(NumericConversion.CreateLessThanOrEqualFunction<double>().Invoke(111, 69), Is.False);
             Assert.That(NumericConversion.CreateLessThanOrEqualFunction<double>().Invoke(69, 69), Is.True);

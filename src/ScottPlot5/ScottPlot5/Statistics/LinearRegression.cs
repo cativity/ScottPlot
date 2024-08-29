@@ -5,11 +5,13 @@ public readonly struct LinearRegression
     public readonly double Slope;
     public readonly double Offset;
     public readonly double Rsquared;
+
     public string Formula => $"y = {Slope:0.###}x + {Offset:0.###}";
+
     public string FormulaWithRSquared => $"{Formula} (r²={Rsquared:0.###})";
 
     /// <summary>
-    /// Calculate the linear regression from a collection of X/Y coordinates
+    ///     Calculate the linear regression from a collection of X/Y coordinates
     /// </summary>
     public LinearRegression(Coordinates[] coordinates)
     {
@@ -18,28 +20,28 @@ public readonly struct LinearRegression
             throw new ArgumentException($"{nameof(coordinates)} must have at least 2 points");
         }
 
-        double[] xs = coordinates.Select(x => x.X).ToArray();
-        double[] ys = coordinates.Select(x => x.Y).ToArray();
+        double[] xs = coordinates.Select(static x => x.X).ToArray();
+        double[] ys = coordinates.Select(static x => x.Y).ToArray();
         (Slope, Offset, Rsquared) = GetCoefficients(xs, ys);
     }
 
     /// <summary>
-    /// Calculate the linear regression from a collection of X/Y coordinates
-    /// </summary>     
-    public LinearRegression(IEnumerable<Coordinates> coordinates)
+    ///     Calculate the linear regression from a collection of X/Y coordinates
+    /// </summary>
+    public LinearRegression(IList<Coordinates> coordinates)
     {
-        if (coordinates == null || coordinates.Count() < 2)
+        if (coordinates is null || coordinates.Count < 2)
         {
             throw new ArgumentException($"{nameof(coordinates)} must have at least 2 points");
         }
 
-        double[] xs = coordinates.Select(c => c.X).ToArray();
-        double[] ys = coordinates.Select(c => c.Y).ToArray();
+        double[] xs = coordinates.Select(static c => c.X).ToArray();
+        double[] ys = coordinates.Select(static c => c.Y).ToArray();
         (Slope, Offset, Rsquared) = GetCoefficients(xs, ys);
     }
 
     /// <summary>
-    /// Calculate the linear regression a paired collection of X and Y points
+    ///     Calculate the linear regression a paired collection of X and Y points
     /// </summary>
     public LinearRegression(double[] xs, double[] ys)
     {
@@ -57,7 +59,7 @@ public readonly struct LinearRegression
     }
 
     /// <summary>
-    /// Calculate the linear regression from a collection of evenly-spaced Y values
+    ///     Calculate the linear regression from a collection of evenly-spaced Y values
     /// </summary>
     public LinearRegression(double[] ys, double firstX = 0, double xSpacing = 1)
     {
@@ -71,7 +73,7 @@ public readonly struct LinearRegression
             throw new ArgumentException($"{nameof(ys)} must have at least 2 points");
         }
 
-        double[] xs = Generate.Consecutive(count: ys.Length, delta: xSpacing, first: firstX);
+        double[] xs = Generate.Consecutive(ys.Length, xSpacing, firstX);
         (Slope, Offset, Rsquared) = GetCoefficients(xs, ys);
     }
 
@@ -96,6 +98,7 @@ public readonly struct LinearRegression
         // calcualte R squared (https://en.wikipedia.org/wiki/Coefficient_of_determination)
         double ssTot = 0;
         double ssRes = 0;
+
         for (int i = 0; i < ys.Length; i++)
         {
             double thisY = ys[i];
@@ -103,25 +106,23 @@ public readonly struct LinearRegression
             double distanceFromMeanSquared = Math.Pow(thisY - meanY, 2);
             ssTot += distanceFromMeanSquared;
 
-            double modelY = slope * xs[i] + offset;
+            double modelY = (slope * xs[i]) + offset;
             double distanceFromModelSquared = Math.Pow(thisY - modelY, 2);
             ssRes += distanceFromModelSquared;
         }
-        double rSquared = 1 - ssRes / ssTot;
+
+        double rSquared = 1 - (ssRes / ssTot);
 
         return (slope, offset, rSquared);
     }
 
     /// <summary>
-    /// Return the Y point of the regression line for the given X position
+    ///     Return the Y point of the regression line for the given X position
     /// </summary>
-    public double GetValue(double x)
-    {
-        return Offset + Slope * x;
-    }
+    public double GetValue(double x) => Offset + (Slope * x);
 
     /// <summary>
-    /// Return the Y points of the regression line for the given X positions
+    ///     Return the Y points of the regression line for the given X positions
     /// </summary>
     public double[] GetValues(double[] xs)
     {

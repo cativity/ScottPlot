@@ -2,25 +2,27 @@
 
 internal static class Paths
 {
-    public static readonly string RepoFolder = GetRepoFolder();
-    public static readonly string OutputFolder = Path.Combine(GetRepoFolder(), "dev/www/cookbook/5.0");
-    public static readonly string OutputImageFolder = Path.Combine(GetRepoFolder(), "dev/www/cookbook/5.0/images");
-    public static readonly string RecipeSourceFolder = Path.Combine(GetRepoFolder(), "src/ScottPlot5/ScottPlot5 Cookbook/Recipes");
+    public static string RepoFolder { get; } = GetRepoFolder();
+
+    public static string OutputFolder { get; } = Path.Combine(GetRepoFolder(), "dev/www/cookbook/5.0");
+
+    public static string OutputImageFolder { get; } = Path.Combine(GetRepoFolder(), "dev/www/cookbook/5.0/images");
+
+    public static string RecipeSourceFolder { get; } = Path.Combine(GetRepoFolder(), "src/ScottPlot5/ScottPlot5 Cookbook/Recipes");
 
     private static string GetRepoFolder()
     {
-        string defaultFolder = Path.GetFullPath(TestContext.CurrentContext.TestDirectory); ;
+        string defaultFolder = Path.GetFullPath(TestContext.CurrentContext.TestDirectory);
         string? repoFolder = defaultFolder;
+
         while (repoFolder is not null)
         {
             if (File.Exists(Path.Combine(repoFolder, "LICENSE")))
             {
                 return repoFolder;
             }
-            else
-            {
-                repoFolder = Path.GetDirectoryName(repoFolder);
-            }
+
+            repoFolder = Path.GetDirectoryName(repoFolder);
         }
 
         throw new InvalidOperationException($"repository folder not found in any folder above {defaultFolder}");
@@ -28,10 +30,9 @@ internal static class Paths
 
     public static string GetScottPlotXmlFilePath()
     {
-        string buildFolder = Path.Combine(Paths.RepoFolder, @"src/ScottPlot5/ScottPlot5/bin");
+        string buildFolder = Path.Combine(RepoFolder, "src/ScottPlot5/ScottPlot5/bin");
         string[] files = Directory.GetFiles(buildFolder, "ScottPlot.xml", SearchOption.AllDirectories);
-        return files.Any()
-            ? files.First()
-            : throw new FileNotFoundException("ScottPlot.xml not found in build folder");
+
+        return files.Length != 0 ? files[0] : throw new FileNotFoundException("ScottPlot.xml not found in build folder");
     }
 }

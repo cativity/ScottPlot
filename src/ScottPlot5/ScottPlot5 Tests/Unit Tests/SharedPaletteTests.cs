@@ -5,29 +5,26 @@ internal class SharedPaletteTests
     [Test]
     public void Test_SharedPalette_GetPalettes()
     {
-        ScottPlot.Palette.GetPalettes().Should().NotBeNullOrEmpty();
+        Palette.GetPalettes().Should().NotBeNullOrEmpty();
     }
 
     [Test]
     public void Test_PalleteTitle_ShouldBePopulated()
     {
-        foreach (var palette in ScottPlot.Palette.GetPalettes())
+        foreach (IPalette palette in Palette.GetPalettes().Where(static palette => string.IsNullOrEmpty(palette.Name)))
         {
-            if (string.IsNullOrEmpty(palette.Name))
-                throw new InvalidOperationException($"Palette has invalid title: {palette}");
+            throw new InvalidOperationException($"Palette has invalid title: {palette}");
         }
     }
 
     [Test]
     public void Test_Palletes_ShouldHaveUniqueTitles()
     {
-        HashSet<string> titles = new();
-        foreach (var palette in ScottPlot.Palette.GetPalettes())
-        {
-            if (titles.Contains(palette.Name))
-                throw new InvalidOperationException($"duplicate Palette title: {palette.Name}");
+        HashSet<string> titles = [];
 
-            titles.Add(palette.Name);
+        foreach (IPalette palette in Palette.GetPalettes().Where(palette => !titles.Add(palette.Name)))
+        {
+            throw new InvalidOperationException($"duplicate Palette title: {palette.Name}");
         }
     }
 }

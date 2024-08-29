@@ -4,8 +4,6 @@ public class SyncGLPlottables : IRenderAction
 {
     public void Render(RenderPack rp)
     {
-        var glPlottables = rp.Plot.PlottableList.OfType<IPlottableGL>();
-        if (glPlottables.Any())
-            glPlottables.First().GLFinish();
+        rp.Plot.PlottableList.OfType<IPlottableGL>().FirstOrDefault()?.GLFinish();
     }
 }

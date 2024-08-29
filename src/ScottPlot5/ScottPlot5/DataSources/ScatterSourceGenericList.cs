@@ -1,25 +1,24 @@
 ﻿namespace ScottPlot.DataSources;
 
 /// <summary>
-/// This data source manages X/Y points as separate X and Y collections
+///     This data source manages X/Y points as separate X and Y collections
 /// </summary>
 public class ScatterSourceGenericList<T1, T2>(List<T1> xs, List<T2> ys) : IScatterSource
 {
-    private readonly List<T1> Xs = xs;
-    private readonly List<T2> Ys = ys;
+    public int MinRenderIndex { get; set; }
 
-    public int MinRenderIndex { get; set; } = 0;
     public int MaxRenderIndex { get; set; } = int.MaxValue;
-    private int RenderIndexCount => Math.Min(Ys.Count - 1, MaxRenderIndex) - MinRenderIndex + 1;
+
+    private int RenderIndexCount => Math.Min(ys.Count - 1, MaxRenderIndex) - MinRenderIndex + 1;
 
     public IReadOnlyList<Coordinates> GetScatterPoints()
     {
-        List<Coordinates> points = new(RenderIndexCount);
+        List<Coordinates> points = new List<Coordinates>(RenderIndexCount);
 
         for (int i = 0; i < RenderIndexCount; i++)
         {
-            T1 x = Xs[MinRenderIndex + i];
-            T2 y = Ys[MinRenderIndex + i];
+            T1 x = xs[MinRenderIndex + i];
+            T2 y = ys[MinRenderIndex + i];
             Coordinates c = NumericConversion.GenericToCoordinates(ref x, ref y);
             points.Add(c);
         }
@@ -27,20 +26,19 @@ public class ScatterSourceGenericList<T1, T2>(List<T1> xs, List<T2> ys) : IScatt
         return points;
     }
 
-    public AxisLimits GetLimits()
-    {
-        return new AxisLimits(GetLimitsX(), GetLimitsY());
-    }
+    public AxisLimits GetLimits() => new AxisLimits(GetLimitsX(), GetLimitsY());
 
     public CoordinateRange GetLimitsX()
     {
-        double[] values = NumericConversion.GenericToDoubleArray(Xs.Skip(MinRenderIndex).Take(RenderIndexCount));
+        double[] values = NumericConversion.GenericToDoubleArray(xs.Skip(MinRenderIndex).Take(RenderIndexCount));
+
         return CoordinateRange.MinMaxNan(values);
     }
 
     public CoordinateRange GetLimitsY()
     {
-        double[] values = NumericConversion.GenericToDoubleArray(Ys.Skip(MinRenderIndex).Take(RenderIndexCount));
+        double[] values = NumericConversion.GenericToDoubleArray(ys.Skip(MinRenderIndex).Take(RenderIndexCount));
+
         return CoordinateRange.MinMaxNan(values);
     }
 
@@ -56,13 +54,13 @@ public class ScatterSourceGenericList<T1, T2>(List<T1> xs, List<T2> ys) : IScatt
         for (int i2 = 0; i2 < RenderIndexCount; i2++)
         {
             int i = MinRenderIndex + i2;
-            T1 xValue = Xs[i];
-            T2 yValue = Ys[i];
+            T1 xValue = xs[i];
+            T2 yValue = ys[i];
             double xValueDouble = NumericConversion.GenericToDouble(ref xValue);
             double yValueDouble = NumericConversion.GenericToDouble(ref yValue);
             double dX = (xValueDouble - mouseLocation.X) * renderInfo.PxPerUnitX;
             double dY = (yValueDouble - mouseLocation.Y) * renderInfo.PxPerUnitY;
-            double distanceSquared = dX * dX + dY * dY;
+            double distanceSquared = (dX * dX) + (dY * dY);
 
             if (distanceSquared <= closestDistanceSquared)
             {
@@ -73,17 +71,14 @@ public class ScatterSourceGenericList<T1, T2>(List<T1> xs, List<T2> ys) : IScatt
             }
         }
 
-        return closestDistanceSquared <= maxDistanceSquared
-            ? new DataPoint(closestX, closestY, closestIndex)
-            : DataPoint.None;
+        return closestDistanceSquared <= maxDistanceSquared ? new DataPoint(closestX, closestY, closestIndex) : DataPoint.None;
     }
 
     public DataPoint GetNearestX(Coordinates mouseLocation, RenderDetails renderInfo, float maxDistance = 15)
-    {
-        // TODO: Implement GetNearestX() in this DataSource
-        // Code can be copied from ScatterSourceDoubleArray.GetNearestX() and modified as needed
-        // Contributions are welcome!
-        // https://github.com/ScottPlot/ScottPlot/issues/3807
-        throw new NotImplementedException();
-    }
+        => throw
+               // TODO: Implement GetNearestX() in this DataSource
+               // Code can be copied from ScatterSourceDoubleArray.GetNearestX() and modified as needed
+               // Contributions are welcome!
+               // https://github.com/ScottPlot/ScottPlot/issues/3807
+               new NotImplementedException();
 }

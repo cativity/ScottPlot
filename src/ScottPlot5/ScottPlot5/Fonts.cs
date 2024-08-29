@@ -1,11 +1,10 @@
 ﻿using ScottPlot.FontResolvers;
 using System.Collections.Concurrent;
-using System.Runtime.Serialization;
 
 namespace ScottPlot;
 
 /// <summary>
-/// Cross-platform tools for working with fonts
+///     Cross-platform tools for working with fonts
 /// </summary>
 public static class Fonts
 {
@@ -13,80 +12,73 @@ public static class Fonts
      * https://github.com/ScottPlot/ScottPlot/issues/2833
      * https://github.com/ScottPlot/ScottPlot/pull/2848
      */
-    private static readonly ConcurrentDictionary<(string, bool, bool), SKTypeface> TypefaceCache = [];
+    private static readonly ConcurrentDictionary<(string, bool, bool), SKTypeface> _typefaceCache = [];
 
     /// <summary>
-    /// Collection of font resolvers that return typefaces from font names and style information
+    ///     Collection of font resolvers that return typefaces from font names and style information
     /// </summary>
     public static List<IFontResolver> FontResolvers { get; } = [new SystemFontResolver()];
 
     /// <summary>
-    /// Add a font resolver that creates a typeface from a TTF file
+    ///     Add a font resolver that creates a typeface from a TTF file
     /// </summary>
     public static void AddFontFile(string name, string path, bool bold, bool italic)
     {
-        FontResolvers.FileFontResolver resolver = new(name, path, bold, italic);
+        FileFontResolver resolver = new FileFontResolver(name, path, bold, italic);
         FontResolvers.Add(resolver);
     }
 
     /// <summary>
-    /// This font is used for almost all text rendering.
+    ///     This font is used for almost all text rendering.
     /// </summary>
     public static string Default { get; set; } = SystemFontResolver.InstalledSansFont();
 
     /// <summary>
-    /// Name of a sans-serif font present on the system
+    ///     Name of a sans-serif font present on the system
     /// </summary>
     public static string Sans { get; set; } = SystemFontResolver.InstalledSansFont();
 
     /// <summary>
-    /// Name of a serif font present on the system
+    ///     Name of a serif font present on the system
     /// </summary>
     public static string Serif { get; set; } = SystemFontResolver.InstalledSerifFont();
 
     /// <summary>
-    /// Name of a monospace font present on the system
+    ///     Name of a monospace font present on the system
     /// </summary>
     public static string Monospace { get; set; } = SystemFontResolver.InstalledMonospaceFont();
 
     /// <summary>
-    /// Default system font name
+    ///     Default system font name
     /// </summary>
     public static string System => SystemFontResolver.DefaultSystemFont();
 
-    [Obsolete("To determine if a font exists, call GetTypeface() and check for null", true)]
-    public static bool Exists(string fontName)
-    {
-        throw new NotFiniteNumberException();
-    }
+    //[Obsolete("To determine if a font exists, call GetTypeface() and check for null", true)]
+    //public static bool Exists(string fontName) => throw new NotFiniteNumberException();
 
-    [Obsolete("To determine if a font exists, call GetTypeface() and check for null", true)]
-    public static bool Exists(string fontName, bool bold, bool italic)
-    {
-        throw new NotFiniteNumberException();
-    }
+    //[Obsolete("To determine if a font exists, call GetTypeface() and check for null", true)]
+    //public static bool Exists(string fontName, bool bold, bool italic) => throw new NotFiniteNumberException();
 
     /// <summary>
-    /// Returns a typeface for the requested font name and style.
-    /// A cached typeface will be used if it exists, 
-    /// otherwise one will be created, cached, and returned.
+    ///     Returns a typeface for the requested font name and style.
+    ///     A cached typeface will be used if it exists,
+    ///     otherwise one will be created, cached, and returned.
     /// </summary>
     public static SKTypeface GetTypeface(string fontName, bool bold, bool italic)
     {
-        var typefaceCacheKey = (fontName, bold, italic);
+        (string fontName, bool bold, bool italic) typefaceCacheKey = (fontName, bold, italic);
 
-        if (TypefaceCache.TryGetValue(typefaceCacheKey, out SKTypeface? cachedTypeface))
+        if (_typefaceCache.TryGetValue(typefaceCacheKey, out SKTypeface? cachedTypeface))
         {
-            if (cachedTypeface is not null)
-                return cachedTypeface;
+            return cachedTypeface;
         }
 
         foreach (IFontResolver resolver in FontResolvers)
         {
-            SKTypeface? resolvedTypeface = resolver.CreateTypeface(fontName, bold, italic);
-            if (resolvedTypeface is not null)
+            if (resolver.CreateTypeface(fontName, bold, italic) is SKTypeface resolvedTypeface)
             {
-                TypefaceCache.TryAdd(typefaceCacheKey, resolvedTypeface);
+                _typefaceCache.TryAdd(typefaceCacheKey, resolvedTypeface);
+
                 return resolvedTypeface;
             }
         }
@@ -97,9 +89,9 @@ public static class Fonts
     #region Font Detection
 
     /// <summary>
-    /// Use the characters in the string to determine an installed system font
-    /// most likely to support this character set.
-    /// Returns the system <see cref="Default"/> font if an ideal font cannot be determined.
+    ///     Use the characters in the string to determine an installed system font
+    ///     most likely to support this character set.
+    ///     Returns the system <see cref="Default" /> font if an ideal font cannot be determined.
     /// </summary>
     public static string Detect(string text)
     {
@@ -115,38 +107,37 @@ public static class Fonts
         // Each code point can consist of 1 or 2 C# 'char's (=UTF-16 code units).
 
         if (string.IsNullOrWhiteSpace(text))
-            return Fonts.Default;
+        {
+            return Default;
+        }
 
         string defaultFontFamily = GetDefaultFontFamily(); // Should use the ScottPlot default font instead
         List<int> standaloneCodePoints = GetStandaloneCodePoints(text);
 
         List<string> candidateFontNames = GetCandidateFontsForString(standaloneCodePoints);
 
-        if (!candidateFontNames.Any())
+        if (candidateFontNames.Count == 0)
+        {
             return string.Empty; // TODO: Signal an error somehow? Could return default font name.
+        }
 
         // We prefer the default font if it can render the string without missing glyphs
-        if (candidateFontNames.Contains(defaultFontFamily) &&
-            CountMissingGlyphs(defaultFontFamily, standaloneCodePoints) == 0)
+        if (candidateFontNames.Contains(defaultFontFamily) && CountMissingGlyphs(defaultFontFamily, standaloneCodePoints) == 0)
+        {
             return defaultFontFamily;
+        }
 
-        string bestFontName = candidateFontNames
-            .Select(fontName => new { fontName, NumMissingGlyphs = CountMissingGlyphs(fontName, standaloneCodePoints) })
-            .OrderBy(result => result.NumMissingGlyphs)
-            .First()
-            .fontName;
-
-        return bestFontName;
+        return candidateFontNames.Select(fontName => new { fontName, NumMissingGlyphs = CountMissingGlyphs(fontName, standaloneCodePoints) })
+                                 .OrderBy(result => result.NumMissingGlyphs)
+                                 .First()
+                                 .fontName;
     }
 
     public static string GetDefaultFontFamily()
     {
         using SKTypeface typeface = SKFontManager.Default.MatchCharacter(' ');
 
-        if (typeface != null)
-            return typeface.FamilyName;
-        else
-            return string.Empty;
+        return typeface?.FamilyName ?? string.Empty;
     }
 
     public static List<string> GetCandidateFontsForString(List<int> standaloneCodePoints)
@@ -156,29 +147,37 @@ public static class Fonts
         foreach (int standaloneCodePoint in standaloneCodePoints)
         {
             using SKTypeface? typeface = SKFontManager.Default.MatchCharacter(standaloneCodePoint);
-            if (typeface != null)
-                candidateFontNames.Add(typeface.FamilyName);
 
-            var ch = char.ConvertFromUtf32(standaloneCodePoint);
+            if (typeface is not null)
+            {
+                candidateFontNames.Add(typeface.FamilyName);
+            }
+
+            //string ch = char.ConvertFromUtf32(standaloneCodePoint);
         }
 
-        return candidateFontNames.ToList();
+        return [.. candidateFontNames];
     }
 
     public static int CountMissingGlyphs(string fontName, List<int> standaloneCodePoints)
     {
         int missingGlyphCount = 0;
 
-        using var typeface = SKTypeface.FromFamilyName(fontName);
-        if (typeface != null)
+        using SKTypeface? typeface = SKTypeface.FromFamilyName(fontName);
+
+        if (typeface is not null)
         {
             foreach (int standaloneCodePoint in standaloneCodePoints)
             {
                 ReadOnlySpan<int> codePoints = [standaloneCodePoint];
+
                 if (!typeface.ContainsGlyphs(codePoints))
+                {
                     missingGlyphCount++;
+                }
             }
-            var s = string.Join("", standaloneCodePoints.Select(char.ConvertFromUtf32));
+
+            string s = string.Concat(standaloneCodePoints.Select(char.ConvertFromUtf32));
             Debug.WriteLine($"Input '{s}': Font {fontName} has {missingGlyphCount} items with missing glyphs");
         }
         else
@@ -193,9 +192,8 @@ public static class Fonts
     {
         List<string> textElements = ConvertStringToTextElements(inputText);
         IEnumerable<List<int>> codePoints = textElements.Select(ConvertTextElementToUtf32CodePoints);
-        List<int> standaloneCodePoints = GetStandaloneCodePoints(codePoints);
 
-        return standaloneCodePoints;
+        return GetStandaloneCodePoints(codePoints);
     }
 
     public static List<string> ConvertStringToTextElements(string textString)
@@ -203,6 +201,7 @@ public static class Fonts
         List<string> resultList = [];
 
         TextElementEnumerator chars = StringInfo.GetTextElementEnumerator(textString);
+
         while (chars.MoveNext())
         {
             string textElement = chars.GetTextElement();
@@ -214,16 +213,17 @@ public static class Fonts
     }
 
     /// <summary>
-    /// Take a single text element ("grapheme cluster") as input,
-    /// and return one or more Unicode code points.
-    /// The code points are represented with signed ints since that is idiomatic for C#,
-    /// even though they are always unsigned values.
+    ///     Take a single text element ("grapheme cluster") as input,
+    ///     and return one or more Unicode code points.
+    ///     The code points are represented with signed ints since that is idiomatic for C#,
+    ///     even though they are always unsigned values.
     /// </summary>
     public static List<int> ConvertTextElementToUtf32CodePoints(string textElement)
     {
         List<int> resultList = [];
 
         int i = 0;
+
         while (i < textElement.Length)
         {
             // ArgumentOutOfRangeException is possible for malformed input strings,
@@ -233,9 +233,13 @@ public static class Fonts
 
             // Did we consume one or two chars?
             if (char.IsHighSurrogate(textElement, i))
+            {
                 i += 2;
+            }
             else
-                i += 1;
+            {
+                i++;
+            }
         }
 
         return resultList;
@@ -248,16 +252,7 @@ public static class Fonts
         /// Filter the list to retain the code point lists made up of single code points,
         /// i.e. remove combining characters, etc.
         /// Return as a flattened list of the remaining standalone code points.
-
-        List<int> codePoints = [];
-
-        foreach (List<int> codePointList in codePointLists)
-        {
-            if (codePointList.Count == 1)
-                codePoints.Add(codePointList[0]);
-        }
-
-        return codePoints;
+        return codePointLists.Where(static codePointList => codePointList.Count == 1).Select(static codePointList => codePointList[0]).ToList();
     }
 
     #endregion

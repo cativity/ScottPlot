@@ -1,7 +1,7 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// Represents a point in polar coordinate space
+///     Represents a point in polar coordinate space
 /// </summary>
 public struct PolarCoordinates(double radius, Angle angle)
 {
@@ -9,18 +9,7 @@ public struct PolarCoordinates(double radius, Angle angle)
 
     public Angle Angle { get; set; } = angle;
 
-    public override readonly string ToString()
-    {
-        return $"PolarCoordinates {{ Radius = {Radius}, {Angle} }}";
-    }
+    public override readonly string ToString() => $"PolarCoordinates {{ Radius = {Radius}, {Angle} }}";
 
-    public Coordinates CartesianCoordinates
-    {
-        get
-        {
-            return new Coordinates(
-                x: Radius * Math.Cos(Angle.Radians),
-                y: Radius * Math.Sin(Angle.Radians));
-        }
-    }
+    public readonly Coordinates CartesianCoordinates => new Coordinates(Radius * Math.Cos(Angle.Radians), Radius * Math.Sin(Angle.Radians));
 }

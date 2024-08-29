@@ -9,12 +9,18 @@ public abstract class AxisBase : LabelStyleProperties
     public abstract Edge Edge { get; }
 
     public virtual CoordinateRangeMutable Range { get; private set; } = CoordinateRangeMutable.NotSet;
+
     public float MinimumSize { get; set; } = 0;
+
     public float MaximumSize { get; set; } = float.MaxValue;
+
     public float SizeWhenNoData { get; set; } = 15;
-    public PixelPadding EmptyLabelPadding { get; set; } = new(10, 5);
-    public PixelPadding PaddingBetweenTickAndAxisLabels { get; set; } = new(5, 3);
-    public PixelPadding PaddingOutsideAxisLabels { get; set; } = new(2, 2);
+
+    public PixelPadding EmptyLabelPadding { get; set; } = new PixelPadding(10, 5);
+
+    public PixelPadding PaddingBetweenTickAndAxisLabels { get; set; } = new PixelPadding(5, 3);
+
+    public PixelPadding PaddingOutsideAxisLabels { get; set; } = new PixelPadding(2, 2);
 
     public double Min
     {
@@ -28,56 +34,27 @@ public abstract class AxisBase : LabelStyleProperties
         set => Range.Max = value;
     }
 
-    public override string ToString()
-    {
-        return base.ToString() + " " + Range.ToString();
-    }
+    public override string ToString() => base.ToString() + " " + Range;
 
-    public virtual ITickGenerator TickGenerator { get; set; } = null!;
+    public virtual ITickGenerator? TickGenerator { get; set; }
 
-    [Obsolete("use LabelText, LabelFontColor, LabelFontSize, LabelFontName, etc. or properties of LabelStyle", false)]
-    public LabelStyle Label => LabelStyle;
+    //[Obsolete("use LabelText, LabelFontColor, LabelFontSize, LabelFontName, etc. or properties of LabelStyle", false)]
+    //public LabelStyle Label => LabelStyle;
 
-    public override LabelStyle LabelStyle { get; set; } = new()
-    {
-        Text = string.Empty,
-        FontSize = 16,
-        Bold = true,
-        Rotation = -90,
-    };
+    public override LabelStyle LabelStyle { get; set; } = new LabelStyle { Text = string.Empty, FontSize = 16, Bold = true, Rotation = -90, };
 
-    public bool ShowDebugInformation { get; set; } = false;
+    public bool ShowDebugInformation { get; set; }
 
-    public LineStyle FrameLineStyle { get; } = new()
-    {
-        Width = 1,
-        Color = Colors.Black,
-        AntiAlias = false,
-    };
+    public LineStyle FrameLineStyle { get; } = new LineStyle { Width = 1, Color = Colors.Black, AntiAlias = false, };
 
-    public TickMarkStyle MajorTickStyle { get; set; } = new()
-    {
-        Length = 4,
-        Width = 1,
-        Color = Colors.Black,
-        AntiAlias = false,
-    };
+    public TickMarkStyle MajorTickStyle { get; set; } = new TickMarkStyle { Length = 4, Width = 1, Color = Colors.Black, AntiAlias = false, };
 
-    public TickMarkStyle MinorTickStyle { get; set; } = new()
-    {
-        Length = 2,
-        Width = 1,
-        Color = Colors.Black,
-        AntiAlias = false,
-    };
+    public TickMarkStyle MinorTickStyle { get; set; } = new TickMarkStyle { Length = 2, Width = 1, Color = Colors.Black, AntiAlias = false, };
 
-    public LabelStyle TickLabelStyle { get; set; } = new()
-    {
-        Alignment = Alignment.MiddleCenter
-    };
+    public LabelStyle TickLabelStyle { get; set; } = new LabelStyle { Alignment = Alignment.MiddleCenter };
 
     /// <summary>
-    /// Apply a single color to all axis components: label, tick labels, tick marks, and frame
+    ///     Apply a single color to all axis components: label, tick labels, tick marks, and frame
     /// </summary>
     public void Color(Color color)
     {
@@ -89,16 +66,16 @@ public abstract class AxisBase : LabelStyleProperties
     }
 
     /// <summary>
-    /// Draw a line along the edge of an axis on the side of the data area
+    ///     Draw a line along the edge of an axis on the side of the data area
     /// </summary>
     public static void DrawFrame(RenderPack rp, PixelRect panelRect, Edge edge, LineStyle lineStyle)
     {
         PixelLine pxLine = edge switch
         {
-            Edge.Left => new(panelRect.Right, panelRect.Bottom, panelRect.Right, panelRect.Top),
-            Edge.Right => new(panelRect.Left, panelRect.Bottom, panelRect.Left, panelRect.Top),
-            Edge.Bottom => new(panelRect.Left, panelRect.Top, panelRect.Right, panelRect.Top),
-            Edge.Top => new(panelRect.Left, panelRect.Bottom, panelRect.Right, panelRect.Bottom),
+            Edge.Left => new PixelLine(panelRect.Right, panelRect.Bottom, panelRect.Right, panelRect.Top),
+            Edge.Right => new PixelLine(panelRect.Left, panelRect.Bottom, panelRect.Left, panelRect.Top),
+            Edge.Bottom => new PixelLine(panelRect.Left, panelRect.Top, panelRect.Right, panelRect.Top),
+            Edge.Top => new PixelLine(panelRect.Left, panelRect.Bottom, panelRect.Right, panelRect.Bottom),
             _ => throw new NotImplementedException(edge.ToString()),
         };
 
@@ -110,18 +87,24 @@ public abstract class AxisBase : LabelStyleProperties
             pxLine = pxLine.WithDelta(0, .1f);
         }
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         Drawing.DrawLine(rp.Canvas, paint, pxLine, lineStyle);
     }
 
-    private static void DrawTicksHorizontalAxis(RenderPack rp, LabelStyle label, PixelRect panelRect, IEnumerable<Tick> ticks, IAxis axis, TickMarkStyle majorStyle, TickMarkStyle minorStyle)
+    private static void DrawTicksHorizontalAxis(RenderPack rp,
+                                                LabelStyle label,
+                                                PixelRect panelRect,
+                                                IEnumerable<Tick> ticks,
+                                                IAxis axis,
+                                                TickMarkStyle majorStyle,
+                                                TickMarkStyle minorStyle)
     {
-        if (axis.Edge != Edge.Bottom && axis.Edge != Edge.Top)
+        if (axis.Edge is not Edge.Bottom and not Edge.Top)
         {
             throw new InvalidOperationException();
         }
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
         foreach (Tick tick in ticks)
         {
@@ -133,32 +116,45 @@ public abstract class AxisBase : LabelStyleProperties
             float xPx = axis.GetPixel(tick.Position, panelRect);
             float y = axis.Edge == Edge.Bottom ? panelRect.Top : panelRect.Bottom;
             float yEdge = axis.Edge == Edge.Bottom ? y + tickLength : y - tickLength;
-            PixelLine pxLine = new(xPx, y, xPx, yEdge);
-            var lineStyle = tick.IsMajor ? majorStyle : minorStyle;
+            PixelLine pxLine = new PixelLine(xPx, y, xPx, yEdge);
+            TickMarkStyle lineStyle = tick.IsMajor ? majorStyle : minorStyle;
             lineStyle.Render(rp.Canvas, paint, pxLine);
 
             // draw label
             if (string.IsNullOrWhiteSpace(tick.Label) || !label.IsVisible)
+            {
                 continue;
+            }
+
             label.Text = tick.Label;
-            float pxDistanceFromTick = 2;
+            const float pxDistanceFromTick = 2;
             float pxDistanceFromEdge = tickLength + pxDistanceFromTick;
             float yPx = axis.Edge == Edge.Bottom ? y + pxDistanceFromEdge : y - pxDistanceFromEdge;
-            Pixel labelPixel = new(xPx, yPx);
+            Pixel labelPixel = new Pixel(xPx, yPx);
+
             if (label.Rotation == 0)
+            {
                 label.Alignment = axis.Edge == Edge.Bottom ? Alignment.UpperCenter : Alignment.LowerCenter;
+            }
+
             label.Render(rp.Canvas, labelPixel, paint);
         }
     }
 
-    private static void DrawTicksVerticalAxis(RenderPack rp, LabelStyle label, PixelRect panelRect, IEnumerable<Tick> ticks, IAxis axis, TickMarkStyle majorStyle, TickMarkStyle minorStyle)
+    private static void DrawTicksVerticalAxis(RenderPack rp,
+                                              LabelStyle label,
+                                              PixelRect panelRect,
+                                              IEnumerable<Tick> ticks,
+                                              IAxis axis,
+                                              TickMarkStyle majorStyle,
+                                              TickMarkStyle minorStyle)
     {
-        if (axis.Edge != Edge.Left && axis.Edge != Edge.Right)
+        if (axis.Edge is not Edge.Left and not Edge.Right)
         {
             throw new InvalidOperationException();
         }
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
 
         foreach (Tick tick in ticks)
         {
@@ -170,40 +166,60 @@ public abstract class AxisBase : LabelStyleProperties
             float yPx = axis.GetPixel(tick.Position, panelRect);
             float x = axis.Edge == Edge.Left ? panelRect.Right : panelRect.Left;
             float xEdge = axis.Edge == Edge.Left ? x - tickLength : x + tickLength;
-            PixelLine pxLine = new(x, yPx, xEdge, yPx);
-            var lineStyle = tick.IsMajor ? majorStyle : minorStyle;
+            PixelLine pxLine = new PixelLine(x, yPx, xEdge, yPx);
+            TickMarkStyle lineStyle = tick.IsMajor ? majorStyle : minorStyle;
             lineStyle.Render(rp.Canvas, paint, pxLine);
 
             // draw label
             if (string.IsNullOrWhiteSpace(tick.Label) || !label.IsVisible)
+            {
                 continue;
-            label.Text = tick.Label; float pxDistanceFromTick = 5;
+            }
+
+            label.Text = tick.Label;
+            const float pxDistanceFromTick = 5;
             float pxDistanceFromEdge = tickLength + pxDistanceFromTick;
             float xPx = axis.Edge == Edge.Left ? x - pxDistanceFromEdge : x + pxDistanceFromEdge;
-            Pixel px = new(xPx, yPx);
+            Pixel px = new Pixel(xPx, yPx);
+
             if (label.Rotation == 0)
+            {
                 label.Alignment = axis.Edge == Edge.Left ? Alignment.MiddleRight : Alignment.MiddleLeft;
+            }
+
             label.Render(rp.Canvas, px, paint);
         }
     }
 
-    public static void DrawTicks(RenderPack rp, LabelStyle label, PixelRect panelRect, IEnumerable<Tick> ticks, IAxis axis, TickMarkStyle majorStyle, TickMarkStyle minorStyle)
+    public static void DrawTicks(RenderPack rp,
+                                 LabelStyle label,
+                                 PixelRect panelRect,
+                                 IEnumerable<Tick> ticks,
+                                 IAxis axis,
+                                 TickMarkStyle majorStyle,
+                                 TickMarkStyle minorStyle)
     {
         if (axis.Edge.IsVertical())
+        {
             DrawTicksVerticalAxis(rp, label, panelRect, ticks, axis, majorStyle, minorStyle);
+        }
         else
+        {
             DrawTicksHorizontalAxis(rp, label, panelRect, ticks, axis, majorStyle, minorStyle);
+        }
     }
 
     /// <summary>
-    /// Replace the <see cref="TickGenerator"/> with a <see cref="NumericManual"/> pre-loaded with the given ticks.
+    ///     Replace the <see cref="TickGenerator" /> with a <see cref="NumericManual" /> pre-loaded with the given ticks.
     /// </summary>
     public void SetTicks(double[] xs, string[] labels)
     {
         if (xs.Length != labels.Length)
+        {
             throw new ArgumentException($"{nameof(xs)} and {nameof(labels)} must have equal length");
+        }
 
-        NumericManual manualTickGen = new();
+        NumericManual manualTickGen = new NumericManual();
 
         for (int i = 0; i < xs.Length; i++)
         {

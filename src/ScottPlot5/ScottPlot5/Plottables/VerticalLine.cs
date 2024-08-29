@@ -1,7 +1,7 @@
 ﻿namespace ScottPlot.Plottables;
 
 /// <summary>
-/// A line at a defined X position that spans the entire vertical space of the data area
+///     A line at a defined X position that spans the entire vertical space of the data area
 /// </summary>
 public class VerticalLine : AxisLine
 {
@@ -21,15 +21,14 @@ public class VerticalLine : AxisLine
 
     public override bool IsUnderMouse(CoordinateRect rect) => IsDraggable && rect.ContainsX(X);
 
-    public override AxisLimits GetAxisLimits()
-    {
-        return EnableAutoscale ? AxisLimits.HorizontalOnly(X, X) : AxisLimits.NoLimits;
-    }
+    public override AxisLimits GetAxisLimits() => EnableAutoscale ? AxisLimits.HorizontalOnly(X, X) : AxisLimits.NoLimits;
 
     public override void Render(RenderPack rp)
     {
         if (!IsVisible)
+        {
             return;
+        }
 
         // determine location
         float y1 = rp.DataRect.Bottom;
@@ -38,41 +37,43 @@ public class VerticalLine : AxisLine
 
         // do not render if the axis line is outside the data area
         if (!rp.DataRect.ContainsX(x))
+        {
             return;
+        }
 
         // draw line inside the data area
-        PixelLine line = new(x, y1, x, y2);
+        PixelLine line = new PixelLine(x, y1, x, y2);
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         LineStyle.Render(rp.Canvas, line, paint);
     }
 
     public override void RenderLast(RenderPack rp)
     {
-        if (LabelStyle.IsVisible == false || string.IsNullOrEmpty(LabelStyle.Text))
+        if (!LabelStyle.IsVisible || string.IsNullOrEmpty(LabelStyle.Text))
+        {
             return;
+        }
 
         // determine location
         float x = Axes.GetPixelX(X);
 
         // do not render if the axis line is outside the data area
         if (!rp.DataRect.ContainsX(x))
+        {
             return;
+        }
 
-        float y = LabelOppositeAxis
-            ? rp.DataRect.Top - LabelStyle.PixelPadding.Top
-            : rp.DataRect.Bottom + LabelStyle.PixelPadding.Bottom;
+        float y = LabelOppositeAxis ? rp.DataRect.Top - LabelStyle.PixelPadding.Top : rp.DataRect.Bottom + LabelStyle.PixelPadding.Bottom;
 
-        Alignment defaultAlignment = LabelOppositeAxis
-            ? Alignment.LowerCenter
-            : Alignment.UpperCenter;
+        Alignment defaultAlignment = LabelOppositeAxis ? Alignment.LowerCenter : Alignment.UpperCenter;
 
         LabelStyle.Alignment = ManualLabelAlignment ?? defaultAlignment;
 
         // draw label outside the data area
         rp.CanvasState.DisableClipping();
 
-        using SKPaint paint = new();
+        using SKPaint paint = new SKPaint();
         LabelStyle.Render(rp.Canvas, new Pixel(x, y), paint);
     }
 }

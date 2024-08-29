@@ -1,6 +1,6 @@
 ﻿using ScottPlot;
 
-Plot plt = new();
+Plot plt = new Plot();
 plt.Add.Signal(Generate.Sin());
 plt.Add.Signal(Generate.Cos());
 

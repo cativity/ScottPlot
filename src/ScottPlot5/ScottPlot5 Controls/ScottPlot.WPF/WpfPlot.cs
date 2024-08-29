@@ -1,59 +1,62 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
-namespace ScottPlot.WPF
+namespace ScottPlot.WPF;
+
+[ToolboxItem(true)]
+[DesignTimeVisible(true)]
+[TemplatePart(Name = _partSkElement, Type = typeof(SKElement))]
+public class WpfPlot : WpfPlotBase
 {
-    [System.ComponentModel.ToolboxItem(true)]
-    [System.ComponentModel.DesignTimeVisible(true)]
-    [TemplatePart(Name = PART_SKElement, Type = typeof(SkiaSharp.Views.WPF.SKElement))]
-    public class WpfPlot : WpfPlotBase
+    private const string _partSkElement = "PART_SKElement";
+
+    private SKElement? _skElement;
+
+    protected override FrameworkElement PlotFrameworkElement => _skElement!;
+
+    public override GRContext GRContext => null!;
+
+    static WpfPlot()
     {
-        private const string PART_SKElement = "PART_SKElement";
+        DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfPlot), new FrameworkPropertyMetadata(typeof(WpfPlot)));
+    }
 
-        private SkiaSharp.Views.WPF.SKElement? SKElement;
-        protected override FrameworkElement PlotFrameworkElement => SKElement!;
+    public override void OnApplyTemplate()
+    {
+        _skElement = Template.FindName(_partSkElement, this) as SKElement;
 
-        public override GRContext GRContext => null!;
-
-        static WpfPlot()
+        if (_skElement is null)
         {
-            DefaultStyleKeyProperty.OverrideMetadata(
-                forType: typeof(WpfPlot),
-                typeMetadata: new FrameworkPropertyMetadata(typeof(WpfPlot)));
+            return;
         }
 
-        public override void OnApplyTemplate()
+        _skElement.PaintSurface += (sender, e) =>
         {
-            SKElement = Template.FindName(PART_SKElement, this) as SkiaSharp.Views.WPF.SKElement;
+            float width = e.Surface.Canvas.LocalClipBounds.Width;
+            float height = e.Surface.Canvas.LocalClipBounds.Height;
+            PixelRect rect = new PixelRect(0, width, height, 0);
+            Plot.Render(e.Surface.Canvas, rect);
+        };
 
-            if (SKElement == null)
-                return;
+        _skElement.MouseDown += SKElement_MouseDown;
+        _skElement.MouseUp += SKElement_MouseUp;
+        _skElement.MouseMove += SKElement_MouseMove;
+        _skElement.MouseWheel += SKElement_MouseWheel;
+        _skElement.KeyDown += SKElement_KeyDown;
+        _skElement.KeyUp += SKElement_KeyUp;
+    }
 
-            SKElement.PaintSurface += (sender, e) =>
-            {
-                float width = (float)e.Surface.Canvas.LocalClipBounds.Width;
-                float height = (float)e.Surface.Canvas.LocalClipBounds.Height;
-                PixelRect rect = new(0, width, height, 0);
-                Plot.Render(e.Surface.Canvas, rect);
-            };
+    public override void Refresh()
+    {
+        if (!CheckAccess())
+        {
+            Dispatcher.BeginInvoke(Refresh);
 
-            SKElement.MouseDown += SKElement_MouseDown;
-            SKElement.MouseUp += SKElement_MouseUp;
-            SKElement.MouseMove += SKElement_MouseMove;
-            SKElement.MouseWheel += SKElement_MouseWheel;
-            SKElement.KeyDown += SKElement_KeyDown;
-            SKElement.KeyUp += SKElement_KeyUp;
+            return;
         }
 
-        public override void Refresh()
-        {
-            if (!CheckAccess())
-            {
-                Dispatcher.BeginInvoke(Refresh);
-                return;
-            }
-
-            SKElement?.InvalidateVisual();
-        }
+        _skElement?.InvalidateVisual();
     }
 }

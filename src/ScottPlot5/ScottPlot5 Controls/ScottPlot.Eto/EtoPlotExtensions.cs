@@ -1,82 +1,83 @@
 ﻿using Eto.Forms;
+using ScottPlot.Interactivity;
+using ScottPlot.Interactivity.UserActions;
+using MouseButton = ScottPlot.Control.MouseButton;
 
 namespace ScottPlot.Eto;
 
 internal static class EtoPlotExtensions
 {
-    public static void ProcessMouseDown(this Interactivity.UserInputProcessor processor, MouseEventArgs e)
+    public static void ProcessMouseDown(this UserInputProcessor processor, MouseEventArgs e)
     {
         Pixel pixel = e.Pixel();
 
-        Interactivity.IUserAction action = e.Buttons switch
+        IUserAction action = e.Buttons switch
         {
-            MouseButtons.Primary => new Interactivity.UserActions.LeftMouseDown(pixel),
-            MouseButtons.Middle => new Interactivity.UserActions.MiddleMouseDown(pixel),
-            MouseButtons.Alternate => new Interactivity.UserActions.RightMouseDown(pixel),
-            _ => new Interactivity.UserActions.Unknown(e.Buttons.ToString(), "pressed"),
+            MouseButtons.Primary => new LeftMouseDown(pixel),
+            MouseButtons.Middle => new MiddleMouseDown(pixel),
+            MouseButtons.Alternate => new RightMouseDown(pixel),
+            _ => new Unknown(e.Buttons.ToString(), "pressed"),
         };
 
         processor.Process(action);
     }
 
-    public static void ProcessMouseUp(this Interactivity.UserInputProcessor processor, MouseEventArgs e)
+    public static void ProcessMouseUp(this UserInputProcessor processor, MouseEventArgs e)
     {
         Pixel pixel = e.Pixel();
 
-        Interactivity.IUserAction action = e.Buttons switch
+        IUserAction action = e.Buttons switch
         {
-            MouseButtons.Primary => new Interactivity.UserActions.LeftMouseUp(pixel),
-            MouseButtons.Middle => new Interactivity.UserActions.MiddleMouseUp(pixel),
-            MouseButtons.Alternate => new Interactivity.UserActions.RightMouseUp(pixel),
-            _ => new Interactivity.UserActions.Unknown(e.Buttons.ToString(), "released"),
+            MouseButtons.Primary => new LeftMouseUp(pixel),
+            MouseButtons.Middle => new MiddleMouseUp(pixel),
+            MouseButtons.Alternate => new RightMouseUp(pixel),
+            _ => new Unknown(e.Buttons.ToString(), "released"),
         };
 
         processor.Process(action);
     }
 
-    public static void ProcessMouseMove(this Interactivity.UserInputProcessor processor, MouseEventArgs e)
+    public static void ProcessMouseMove(this UserInputProcessor processor, MouseEventArgs e)
     {
         Pixel pixel = e.Pixel();
-        Interactivity.IUserAction action = new Interactivity.UserActions.MouseMove(pixel);
+        IUserAction action = new MouseMove(pixel);
         processor.Process(action);
     }
 
-    public static void ProcessMouseWheel(this Interactivity.UserInputProcessor processor, MouseEventArgs e)
+    public static void ProcessMouseWheel(this UserInputProcessor processor, MouseEventArgs e)
     {
         Pixel pixel = e.Pixel();
 
-        Interactivity.IUserAction action = e.Delta.Height > 0
-            ? new Interactivity.UserActions.MouseWheelUp(pixel)
-            : new Interactivity.UserActions.MouseWheelDown(pixel);
+        IUserAction action = e.Delta.Height > 0 ? new MouseWheelUp(pixel) : new MouseWheelDown(pixel);
 
         processor.Process(action);
     }
 
-    public static void ProcessKeyDown(this Interactivity.UserInputProcessor processor, KeyEventArgs e)
+    public static void ProcessKeyDown(this UserInputProcessor processor, KeyEventArgs e)
     {
-        Interactivity.Key key = e.ToKey();
-        Interactivity.IUserAction action = new Interactivity.UserActions.KeyDown(key);
+        Key key = e.ToKey();
+        IUserAction action = new KeyDown(key);
         processor.Process(action);
     }
 
-    public static void ProcessKeyUp(this Interactivity.UserInputProcessor processor, KeyEventArgs e)
+    public static void ProcessKeyUp(this UserInputProcessor processor, KeyEventArgs e)
     {
-        Interactivity.Key key = e.ToKey();
-        Interactivity.IUserAction action = new Interactivity.UserActions.KeyUp(key);
+        Key key = e.ToKey();
+        IUserAction action = new KeyUp(key);
         processor.Process(action);
     }
 
-    public static Interactivity.Key ToKey(this KeyEventArgs e)
+    public static Key ToKey(this KeyEventArgs e)
     {
         return e.Key switch
         {
-            Keys.LeftControl => Interactivity.StandardKeys.Control,
-            Keys.RightControl => Interactivity.StandardKeys.Control,
-            Keys.LeftAlt => Interactivity.StandardKeys.Alt,
-            Keys.RightAlt => Interactivity.StandardKeys.Alt,
-            Keys.LeftShift => Interactivity.StandardKeys.Shift,
-            Keys.RightShift => Interactivity.StandardKeys.Shift,
-            _ => new Interactivity.Key(e.ToString() ?? string.Empty),
+            Keys.LeftControl => StandardKeys.Control,
+            Keys.RightControl => StandardKeys.Control,
+            Keys.LeftAlt => StandardKeys.Alt,
+            Keys.RightAlt => StandardKeys.Alt,
+            Keys.LeftShift => StandardKeys.Shift,
+            Keys.RightShift => StandardKeys.Shift,
+            _ => new Key(e.ToString() ?? string.Empty),
         };
     }
 
@@ -84,19 +85,19 @@ internal static class EtoPlotExtensions
     {
         double x = e.Location.X;
         double y = e.Location.Y;
+
         return new Pixel((float)x, (float)y);
     }
 
-    internal static Control.MouseButton OldToButton(this MouseEventArgs e)
+    internal static MouseButton OldToButton(this MouseEventArgs e)
     {
-        if (e.Buttons == MouseButtons.Middle)
-            return Control.MouseButton.Middle;
-        else if (e.Buttons == MouseButtons.Primary)
-            return Control.MouseButton.Left;
-        else if (e.Buttons == MouseButtons.Alternate)
-            return Control.MouseButton.Right;
-        else
-            return Control.MouseButton.Unknown;
+        return e.Buttons switch
+        {
+            MouseButtons.Middle => MouseButton.Middle,
+            MouseButtons.Primary => MouseButton.Left,
+            MouseButtons.Alternate => MouseButton.Right,
+            _ => MouseButton.Unknown
+        };
     }
 
     internal static Control.Key OldToKey(this KeyEventArgs e)

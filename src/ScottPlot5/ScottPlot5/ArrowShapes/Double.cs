@@ -11,18 +11,19 @@ public class Double : IArrowShape
         rp.CanvasState.RotateDegrees(arrowLine.AngleDegrees + 90);
 
         // origin is the tip, base extends to the right
-        Pixel[] pixels = [
-            new(0, 0),
-            new(arrowStyle.ArrowheadLength, arrowStyle.ArrowheadWidth / 2),
-            new(arrowStyle.ArrowheadAxisLength, arrowStyle.ArrowWidth / 2),
-            new(length - arrowStyle.ArrowheadAxisLength, arrowStyle.ArrowWidth / 2),
-            new(length - arrowStyle.ArrowheadLength, arrowStyle.ArrowheadWidth / 2),
-            new(length, 0),
-            new(length - arrowStyle.ArrowheadLength, -arrowStyle.ArrowheadWidth / 2),
-            new(length - arrowStyle.ArrowheadAxisLength, -arrowStyle.ArrowWidth / 2),
-            new(arrowStyle.ArrowheadAxisLength, -arrowStyle.ArrowWidth / 2),
-            new(arrowStyle.ArrowheadLength, -arrowStyle.ArrowheadWidth / 2),
-            new(0, 0),
+        Pixel[] pixels =
+        [
+            new Pixel(0, 0),
+            new Pixel(arrowStyle.ArrowheadLength, arrowStyle.ArrowheadWidth / 2),
+            new Pixel(arrowStyle.ArrowheadAxisLength, arrowStyle.ArrowWidth / 2),
+            new Pixel(length - arrowStyle.ArrowheadAxisLength, arrowStyle.ArrowWidth / 2),
+            new Pixel(length - arrowStyle.ArrowheadLength, arrowStyle.ArrowheadWidth / 2),
+            new Pixel(length, 0),
+            new Pixel(length - arrowStyle.ArrowheadLength, -arrowStyle.ArrowheadWidth / 2),
+            new Pixel(length - arrowStyle.ArrowheadAxisLength, -arrowStyle.ArrowWidth / 2),
+            new Pixel(arrowStyle.ArrowheadAxisLength, -arrowStyle.ArrowWidth / 2),
+            new Pixel(arrowStyle.ArrowheadLength, -arrowStyle.ArrowheadWidth / 2),
+            new Pixel(0, 0),
         ];
 
         Drawing.DrawPath(rp.Canvas, rp.Paint, pixels, arrowStyle.FillStyle);

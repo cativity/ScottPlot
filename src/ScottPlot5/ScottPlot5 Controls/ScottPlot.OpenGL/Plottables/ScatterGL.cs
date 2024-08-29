@@ -4,15 +4,18 @@ using ScottPlot.OpenGL;
 using ScottPlot.OpenGL.GLPrograms;
 using SkiaSharp;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ScottPlot.Plottables;
 
 /// <summary>
-/// This plot type uses an OpenGL shader for rendering.
+///     This plot type uses an OpenGL shader for rendering.
 /// </summary>
 public class ScatterGL : Scatter, IPlottableGL
 {
     public IPlotControl PlotControl { get; }
+
     protected int VertexBufferObject;
     protected int VertexArrayObject;
     protected ILinesDrawProgram? LinesProgram;
@@ -20,20 +23,23 @@ public class ScatterGL : Scatter, IPlottableGL
     protected double[] Vertices;
     protected readonly int VerticesCount;
 
-    protected bool GLHasBeenInitialized = false;
+    protected bool GLHasBeenInitialized;
 
     public GLFallbackRenderStrategy Fallback { get; set; } = GLFallbackRenderStrategy.Software;
 
-    public ScatterGL(IScatterSource data, IPlotControl control) : base(data)
+    public ScatterGL(IScatterSource data, IPlotControl control)
+        : base(data)
     {
         PlotControl = control;
-        var dataPoints = data.GetScatterPoints();
+        IReadOnlyList<Coordinates> dataPoints = data.GetScatterPoints();
         Vertices = new double[dataPoints.Count * 2];
+
         for (int i = 0; i < dataPoints.Count; i++)
         {
             Vertices[i * 2] = dataPoints[i].X;
-            Vertices[i * 2 + 1] = dataPoints[i].Y;
+            Vertices[(i * 2) + 1] = dataPoints[i].Y;
         }
+
         VerticesCount = Vertices.Length / 2;
     }
 
@@ -55,25 +61,19 @@ public class ScatterGL : Scatter, IPlottableGL
 
     protected Matrix4d CalcTransform()
     {
-        var xRange = Axes.XAxis.Range;
-        var yRange = Axes.YAxis.Range;
+        CoordinateRangeMutable xRange = Axes.XAxis.Range;
+        CoordinateRangeMutable yRange = Axes.YAxis.Range;
 
-        Matrix4d translate = Matrix4d.CreateTranslation(
-            x: -1.0 * (xRange.Min + xRange.Max) / 2,
-            y: -1.0 * (yRange.Min + yRange.Max) / 2,
-            z: 0.0);
+        Matrix4d translate = Matrix4d.CreateTranslation(-1.0 * (xRange.Min + xRange.Max) / 2, -1.0 * (yRange.Min + yRange.Max) / 2, 0.0);
 
-        Matrix4d scale = Matrix4d.Scale(
-            x: 2.0 / (xRange.Max - xRange.Min),
-            y: 2.0 / (yRange.Max - yRange.Min),
-            z: 1.0);
+        Matrix4d scale = Matrix4d.Scale(2.0 / (xRange.Max - xRange.Min), 2.0 / (yRange.Max - yRange.Min), 1.0);
 
         return translate * scale;
     }
 
     public new void Render(RenderPack rp)
     {
-        System.Diagnostics.Debug.WriteLine("WARNING: Software rendering (not OpenGL) is being used");
+        Debug.WriteLine("WARNING: Software rendering (not OpenGL) is being used");
         base.Render(rp);
     }
 
@@ -82,15 +82,16 @@ public class ScatterGL : Scatter, IPlottableGL
         if (PlotControl.GRContext is not null && surface.Context is not null)
         {
             RenderWithOpenGL(surface, PlotControl.GRContext);
+
             return;
         }
 
         if (Fallback == GLFallbackRenderStrategy.Software)
         {
             surface.Canvas.ClipRect(Axes.DataRect.ToSKRect());
-            PixelSize figureSize = new(surface.Canvas.LocalClipBounds.Width, surface.Canvas.LocalClipBounds.Height);
-            PixelRect rect = new(0, figureSize.Width, figureSize.Height, 0);
-            RenderPack rp = new(PlotControl.Plot, rect, surface.Canvas);
+            PixelSize figureSize = new PixelSize(surface.Canvas.LocalClipBounds.Width, surface.Canvas.LocalClipBounds.Height);
+            PixelRect rect = new PixelRect(0, figureSize.Width, figureSize.Height, 0);
+            RenderPack rp = new RenderPack(PlotControl.Plot, rect, surface.Canvas);
             Render(rp);
         }
     }
@@ -103,16 +104,16 @@ public class ScatterGL : Scatter, IPlottableGL
         context.ResetContext();
 
         if (!GLHasBeenInitialized)
+        {
             InitializeGL();
+        }
 
-        GL.Viewport(
-            x: (int)Axes.DataRect.Left,
-            y: (int)(height - Axes.DataRect.Bottom),
-            width: (int)Axes.DataRect.Width,
-            height: (int)Axes.DataRect.Height);
+        GL.Viewport((int)Axes.DataRect.Left, (int)(height - Axes.DataRect.Bottom), (int)Axes.DataRect.Width, (int)Axes.DataRect.Height);
 
         if (LinesProgram is null)
+        {
             throw new NullReferenceException(nameof(LinesProgram));
+        }
 
         LinesProgram.Use();
         LinesProgram.SetTransform(CalcTransform());
@@ -126,7 +127,9 @@ public class ScatterGL : Scatter, IPlottableGL
     protected void RenderMarkers()
     {
         if (MarkerStyle.Shape == MarkerShape.None || MarkerStyle.Size == 0)
+        {
             return;
+        }
 
         IMarkersDrawProgram? newProgram = MarkerStyle.Shape switch
         {
@@ -144,7 +147,9 @@ public class ScatterGL : Scatter, IPlottableGL
         }
 
         if (MarkerProgram is null)
+        {
             throw new NullReferenceException(nameof(MarkerProgram));
+        }
 
         MarkerProgram.Use();
         MarkerProgram.SetTransform(CalcTransform());
@@ -152,7 +157,7 @@ public class ScatterGL : Scatter, IPlottableGL
         MarkerProgram.SetFillColor(MarkerStyle.FillColor.ToTkColor());
         MarkerProgram.SetViewPortSize(Axes.DataRect.Width, Axes.DataRect.Height);
         MarkerProgram.SetOutlineColor(MarkerStyle.LineColor.ToTkColor());
-        MarkerProgram.SetOpenFactor(1.0f - (float)MarkerStyle.LineWidth * 2 / MarkerStyle.Size);
+        MarkerProgram.SetOpenFactor(1.0f - (MarkerStyle.LineWidth * 2 / MarkerStyle.Size));
         GL.BindVertexArray(VertexArrayObject);
         GL.DrawArrays(PrimitiveType.Points, 0, VerticesCount);
     }

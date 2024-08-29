@@ -10,22 +10,24 @@ namespace ScottPlot.WinForms;
 
 public abstract class FormsPlotBase : UserControl, IPlotControl
 {
-    public abstract GRContext GRContext { get; }
+    public abstract GRContext? GRContext { get; }
 
     public Plot Plot { get; internal set; }
 
     public IPlotInteraction Interaction { get; set; }
+
     public IPlotMenu Menu { get; set; }
+
     public UserInputProcessor UserInputProcessor { get; }
 
     public float DisplayScale { get; set; }
 
-    public FormsPlotBase()
+    protected FormsPlotBase()
     {
-        Plot = new() { PlotControl = this };
+        Plot = new Plot { PlotControl = this };
         DisplayScale = DetectDisplayScale();
         Interaction = new Interaction(this);
-        UserInputProcessor = new(Plot);
+        UserInputProcessor = new UserInputProcessor(Plot);
         Menu = new FormsPlotMenu(this);
 
         // TODO: replace this with an annotation instead of title
@@ -40,14 +42,18 @@ public abstract class FormsPlotBase : UserControl, IPlotControl
         set
         {
             base.BackColor = value;
-            if (Plot is not null)
-                Plot.FigureBackground.Color = Color.FromColor(value);
+
+            //if (Plot is not null)
+            //{
+            Debug.Assert(Plot is not null);
+            Plot.FigureBackground.Color = Color.FromColor(value);
+            //}
         }
     }
 
     public void Reset()
     {
-        Plot plot = new();
+        Plot plot = new Plot();
         plot.FigureBackground.Color = Color.FromColor(BackColor);
         plot.DataBackground.Color = Colors.White;
         Reset(plot);
@@ -117,8 +123,8 @@ public abstract class FormsPlotBase : UserControl, IPlotControl
     public float DetectDisplayScale()
     {
         using Graphics gfx = CreateGraphics();
-        const int DEFAULT_DPI = 96;
-        float ratio = gfx.DpiX / DEFAULT_DPI;
-        return ratio;
+        const int defaultDpi = 96;
+
+        return gfx.DpiX / defaultDpi;
     }
 }

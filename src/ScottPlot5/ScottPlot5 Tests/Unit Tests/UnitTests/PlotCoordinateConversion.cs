@@ -1,15 +1,17 @@
-﻿namespace ScottPlotTests.UnitTests;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ScottPlotTests.UnitTests;
 
 internal class PlotCoordinateConversion
 {
     [Test]
     public void Test_Plot_Pixel_To_Coords_And_Back()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.Axes.SetLimits(-5, 25, 10, 30);
         plt.SaveTestImage();
 
-        Pixel initialPx = new(55.0F, 333.0F);
+        Pixel initialPx = new Pixel(55.0F, 333.0F);
         Coordinates coordinates = plt.GetCoordinates(initialPx);
         Pixel convertedPx = plt.GetPixel(coordinates);
 
@@ -20,12 +22,12 @@ internal class PlotCoordinateConversion
     [Test]
     public void Test_Plot_Pixel_To_Coords_And_Back_Scaled()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.Axes.SetLimits(1, 2, -15, -5);
-        plt.ScaleFactor = 2.5;      // Change from default of 1.0
+        plt.ScaleFactor = 2.5; // Change from default of 1.0
         plt.SaveTestImage();
 
-        Pixel initialPx = new(329.0F, 200.0F);
+        Pixel initialPx = new Pixel(329.0F, 200.0F);
         Coordinates coordinates = plt.GetCoordinates(initialPx);
         Pixel convertedPx = plt.GetPixel(coordinates);
 
@@ -38,45 +40,41 @@ internal class PlotCoordinateConversion
     [TestCase(0.5)]
     public void Test_GetCoordinateRectFromPixels(double scaleFactor)
     {
-        double xCoordMin = -20;
-        double xCoordMax = 20;
-        double yCoordMin = -10;
-        double yCoordMax = 10;
-        double widthCoord = xCoordMax - xCoordMin;
-        double heightCoord = yCoordMax - yCoordMin;
+        const double xCoordMin = -20;
+        const double xCoordMax = 20;
+        const double yCoordMin = -10;
+        const double yCoordMax = 10;
+        const double widthCoord = xCoordMax - xCoordMin;
+        const double heightCoord = yCoordMax - yCoordMin;
 
-        double widthPx = 800;
-        double heightPx = 400;
+        const double widthPx = 800;
+        const double heightPx = 400;
 
-        Plot plot = new()
-        {
-            ScaleFactor = (float)scaleFactor
-        };
+        Plot plot = new Plot { ScaleFactor = (float)scaleFactor };
         plot.Axes.SetLimits(xCoordMin, xCoordMax, yCoordMin, yCoordMax);
         plot.Layout.Frameless();
 
         // Render the plot
         plot.SaveTestImage((int)widthPx, (int)heightPx);
 
-        double xPx = 200;
-        double yPx = 300;
-        double radius = 40;
-        Pixel px = new((float)xPx, (float)yPx);
+        const double xPx = 200;
+        const double yPx = 300;
+        const double radius = 40;
+        Pixel px = new Pixel((float)xPx, (float)yPx);
 
-        Coordinates rightTopCoords = plot.GetCoordinates(
-                (float)(xPx + radius), (float)(yPx - radius));
-        Coordinates leftBotCoords = plot.GetCoordinates(
-                (float)(xPx - radius), (float)(yPx + radius));
+        _ = plot.GetCoordinates((float)(xPx + radius), (float)(yPx - radius));
+        _ = plot.GetCoordinates((float)(xPx - radius), (float)(yPx + radius));
+        //Coordinates rightTopCoords = plot.GetCoordinates((float)(xPx + radius), (float)(yPx - radius));
+        //Coordinates leftBotCoords = plot.GetCoordinates((float)(xPx - radius), (float)(yPx + radius));
 
-        CoordinateRect rect1 = plot.GetCoordinateRect((float)xPx, (float)yPx,
-                (float)radius);
+        CoordinateRect rect1 = plot.GetCoordinateRect((float)xPx, (float)yPx, (float)radius);
         CoordinateRect rect2 = plot.GetCoordinateRect(px, (float)radius);
 
         // Expected values
-        double left = xCoordMin + (xPx - radius) * widthCoord / widthPx;
-        double right = xCoordMin + (xPx + radius) * widthCoord / widthPx;
-        double top = yCoordMax - (yPx - radius) * heightCoord / heightPx;
-        double bottom = yCoordMax - (yPx + radius) * heightCoord / heightPx;
+        const double left = xCoordMin + ((xPx - radius) * widthCoord / widthPx);
+        const double right = xCoordMin + ((xPx + radius) * widthCoord / widthPx);
+        const double top = yCoordMax - ((yPx - radius) * heightCoord / heightPx);
+        const double bottom = yCoordMax - ((yPx + radius) * heightCoord / heightPx);
 
         Assert.Multiple(() =>
         {
@@ -97,18 +95,15 @@ internal class PlotCoordinateConversion
     [TestCase(0.5)]
     public void Test_GetCoordinateRectVsGetCoordinates(double scaleFactor)
     {
-        Plot plot = new()
-        {
-            ScaleFactor = (float)scaleFactor
-        };
+        Plot plot = new Plot { ScaleFactor = (float)scaleFactor };
         plot.Axes.SetLimits(5, 10, -20, -10);
 
         // Render the plot
         plot.SaveTestImage(400, 600);
 
-        float xPx = 100;
-        float yPx = 50;
-        float radius = 20;
+        const float xPx = 100;
+        const float yPx = 50;
+        const float radius = 20;
 
         Coordinates rightTopCoords = plot.GetCoordinates(xPx + radius, yPx - radius);
         Coordinates leftBotCoords = plot.GetCoordinates(xPx - radius, yPx + radius);
@@ -128,30 +123,27 @@ internal class PlotCoordinateConversion
     [TestCase(0.5)]
     public void Test_GetCoordinateRectFromCoords(double scaleFactor)
     {
-        double xCoordMin = 0;
-        double xCoordMax = 10;
-        double yCoordMin = 0;
-        double yCoordMax = 20;
-        double widthCoord = xCoordMax - xCoordMin;
-        double heightCoord = yCoordMax - yCoordMin;
+        const double xCoordMin = 0;
+        const double xCoordMax = 10;
+        const double yCoordMin = 0;
+        const double yCoordMax = 20;
+        const double widthCoord = xCoordMax - xCoordMin;
+        const double heightCoord = yCoordMax - yCoordMin;
 
-        double widthPx = 400;
-        double heightPx = 600;
+        const double widthPx = 400;
+        const double heightPx = 600;
 
-        Plot plot = new()
-        {
-            ScaleFactor = (float)scaleFactor
-        };
+        Plot plot = new Plot { ScaleFactor = (float)scaleFactor };
         plot.Axes.SetLimits(xCoordMin, xCoordMax, yCoordMin, yCoordMax);
         plot.Layout.Frameless();
 
         // Render the plot
         plot.SaveTestImage((int)widthPx, (int)heightPx);
 
-        Coordinates coords = new(7, 5);
-        double radius = 10; // pixels
-        double radiusXCoord = radius * widthCoord / widthPx;
-        double radiusYCoord = radius * heightCoord / heightPx;
+        Coordinates coords = new Coordinates(7, 5);
+        const double radius = 10; // pixels
+        const double radiusXCoord = radius * widthCoord / widthPx;
+        const double radiusYCoord = radius * heightCoord / heightPx;
 
         CoordinateRect rect = plot.GetCoordinateRect(coords, (float)radius);
 

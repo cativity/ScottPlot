@@ -10,46 +10,33 @@ namespace ScottPlot.Eto;
 public class EtoPlotMenu : IPlotMenu
 {
     public string DefaultSaveImageFilename { get; set; } = "Plot.png";
-    public List<ContextMenuItem> ContextMenuItems { get; set; } = new();
-    readonly EtoPlot ThisControl;
+
+    public List<ContextMenuItem> ContextMenuItems { get; set; } = new List<ContextMenuItem>();
+
+    private readonly EtoPlot _thisControl;
 
     public EtoPlotMenu(EtoPlot etoPlot)
     {
-        ThisControl = etoPlot;
+        _thisControl = etoPlot;
         Reset();
     }
 
     public ContextMenuItem[] GetDefaultContextMenuItems()
     {
-        ContextMenuItem saveImage = new()
-        {
-            Label = "Save Image",
-            OnInvoke = OpenSaveImageDialog
-        };
+        ContextMenuItem saveImage = new ContextMenuItem { Label = "Save Image", OnInvoke = OpenSaveImageDialog };
 
-        ContextMenuItem copyImage = new()
-        {
-            Label = "Copy to Clipboard",
-            OnInvoke = CopyImageToClipboard
-        };
+        ContextMenuItem copyImage = new ContextMenuItem { Label = "Copy to Clipboard", OnInvoke = CopyImageToClipboard };
 
-        ContextMenuItem autoscale = new()
-        {
-            Label = "Autoscale",
-            OnInvoke = Autoscale,
-        };
+        ContextMenuItem autoscale = new ContextMenuItem { Label = "Autoscale", OnInvoke = Autoscale, };
 
-        return new ContextMenuItem[] {
-            saveImage,
-            copyImage,
-            autoscale,
-        };
+        return new[] { saveImage, copyImage, autoscale, };
     }
 
     public ContextMenu GetContextMenu()
     {
-        ContextMenu menu = new();
-        foreach (var curr in ContextMenuItems)
+        ContextMenu menu = new ContextMenu();
+
+        foreach (ContextMenuItem curr in ContextMenuItems)
         {
             if (curr.IsSeparator)
             {
@@ -57,8 +44,8 @@ public class EtoPlotMenu : IPlotMenu
             }
             else
             {
-                var menuItem = new ButtonMenuItem() { Text = curr.Label };
-                menuItem.Click += (s, e) => curr.OnInvoke(ThisControl);
+                ButtonMenuItem? menuItem = new ButtonMenuItem() { Text = curr.Label };
+                menuItem.Click += (s, e) => curr.OnInvoke(_thisControl);
                 menu.Items.Add(menuItem);
             }
         }
@@ -66,38 +53,39 @@ public class EtoPlotMenu : IPlotMenu
         return menu;
     }
 
-    public readonly List<FileFilter> FileDialogFilters = new()
+    public readonly List<FileFilter> FileDialogFilters = new List<FileFilter>
     {
-        new() { Name = "PNG Files", Extensions = new string[] { "png" } },
-        new() { Name = "JPEG Files", Extensions = new string[] { "jpg", "jpeg" } },
-        new() { Name = "BMP Files", Extensions = new string[] { "bmp" } },
-        new() { Name = "WebP Files", Extensions = new string[] { "webp" } },
-        new() { Name = "SVG Files", Extensions = new string[] { "svg" } },
-        new() { Name = "All Files", Extensions = new string[] { "*" } },
+        new FileFilter { Name = "PNG Files", Extensions = new[] { "png" } },
+        new FileFilter { Name = "JPEG Files", Extensions = new[] { "jpg", "jpeg" } },
+        new FileFilter { Name = "BMP Files", Extensions = new[] { "bmp" } },
+        new FileFilter { Name = "WebP Files", Extensions = new[] { "webp" } },
+        new FileFilter { Name = "SVG Files", Extensions = new[] { "svg" } },
+        new FileFilter { Name = "All Files", Extensions = new[] { "*" } },
     };
 
     public void OpenSaveImageDialog(IPlotControl plotControl)
     {
-        SaveFileDialog dialog = new()
-        {
-            FileName = DefaultSaveImageFilename
-        };
+        SaveFileDialog dialog = new SaveFileDialog { FileName = DefaultSaveImageFilename };
 
-        foreach (var curr in FileDialogFilters)
+        foreach (FileFilter? curr in FileDialogFilters)
         {
             dialog.Filters.Add(curr);
         }
 
-        if (dialog.ShowDialog(ThisControl) == DialogResult.Ok)
+        if (dialog.ShowDialog(_thisControl) == DialogResult.Ok)
         {
-            var filename = dialog.FileName;
+            string? filename = dialog.FileName;
 
             if (string.IsNullOrEmpty(filename))
+            {
                 return;
+            }
 
             // Eto doesn't add the extension for you when you select a filter :/
             if (!Path.HasExtension(filename))
+            {
                 filename += $".{dialog.CurrentFilter.Extensions[0]}";
+            }
 
             // TODO: launch a pop-up window indicating if extension is invalid or save failed
             ImageFormat format = ImageFormatLookup.FromFilePath(filename);
@@ -106,16 +94,16 @@ public class EtoPlotMenu : IPlotMenu
         }
     }
 
-    public void CopyImageToClipboard(IPlotControl plotControl)
+    public static void CopyImageToClipboard(IPlotControl plotControl)
     {
         PixelSize lastRenderSize = plotControl.Plot.RenderManager.LastRender.FigureRect.Size;
         byte[] bytes = plotControl.Plot.GetImage((int)lastRenderSize.Width, (int)lastRenderSize.Height).GetImageBytes();
-        MemoryStream ms = new(bytes);
-        using Bitmap bmp = new(ms);
+        MemoryStream ms = new MemoryStream(bytes);
+        using Bitmap bmp = new Bitmap(ms);
         Clipboard.Instance.Image = bmp;
     }
 
-    public void Autoscale(IPlotControl plotControl)
+    public static void Autoscale(IPlotControl plotControl)
     {
         plotControl.Plot.Axes.AutoScale();
         plotControl.Refresh();
@@ -123,8 +111,8 @@ public class EtoPlotMenu : IPlotMenu
 
     public void ShowContextMenu(Pixel pixel)
     {
-        var menu = GetContextMenu();
-        menu.Show(ThisControl, new Point((int)pixel.X, (int)pixel.Y));
+        ContextMenu? menu = GetContextMenu();
+        menu.Show(_thisControl, new Point((int)pixel.X, (int)pixel.Y));
     }
 
     public void Reset()
@@ -138,9 +126,9 @@ public class EtoPlotMenu : IPlotMenu
         ContextMenuItems.Clear();
     }
 
-    public void Add(string Label, Action<IPlotControl> action)
+    public void Add(string label, Action<IPlotControl> action)
     {
-        ContextMenuItems.Add(new ContextMenuItem() { Label = Label, OnInvoke = action });
+        ContextMenuItems.Add(new ContextMenuItem() { Label = label, OnInvoke = action });
     }
 
     public void AddSeparator()

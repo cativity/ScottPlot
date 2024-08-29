@@ -1,4 +1,6 @@
-﻿namespace ScottPlotTests.UnitTests;
+﻿using ScottPlot.DataSources;
+
+namespace ScottPlotTests.UnitTests;
 
 internal class SignalDataTests
 {
@@ -6,7 +8,7 @@ internal class SignalDataTests
     public void Test_Signal_DataLimits()
     {
         double[] data = Generate.Zeros(51);
-        ScottPlot.DataSources.SignalSourceDouble ss = new(data, period: 1);
+        SignalSourceDouble ss = new SignalSourceDouble(data, 1);
 
         AxisLimits limits = ss.GetLimits();
         limits.Left.Should().Be(0);

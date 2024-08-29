@@ -4,7 +4,7 @@ public class NumericManual : ITickGenerator
 {
     public Tick[] Ticks { get; private set; } = [];
 
-    private readonly List<Tick> TickList = new();
+    private readonly List<Tick> _tickList = [];
 
     public int MaxTickCount { get; set; } = 50;
 
@@ -14,13 +14,15 @@ public class NumericManual : ITickGenerator
 
     public NumericManual(Tick[] ticks)
     {
-        TickList.AddRange(ticks);
+        _tickList.AddRange(ticks);
     }
 
     public NumericManual(double[] positions, string[] labels)
     {
         if (positions.Length != labels.Length)
+        {
             throw new ArgumentException($"{nameof(positions)} must have same length as {nameof(labels)}");
+        }
 
         for (int i = 0; i < positions.Length; i++)
         {
@@ -30,12 +32,12 @@ public class NumericManual : ITickGenerator
 
     public void Regenerate(CoordinateRange range, Edge edge, PixelLength size, SKPaint paint, LabelStyle labelStyle)
     {
-        Ticks = TickList.Where(x => range.Contains(x.Position)).ToArray();
+        Ticks = _tickList.Where(x => range.Contains(x.Position)).ToArray();
     }
 
     public void Add(Tick tick)
     {
-        TickList.Add(tick);
+        _tickList.Add(tick);
     }
 
     public void AddMajor(double position, string label)

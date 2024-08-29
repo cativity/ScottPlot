@@ -6,8 +6,7 @@ public partial class SignalPerformance : Form, IDemoWindow
 {
     public string Title => "Scatter Plot, Signal Plot, and SignalConst";
 
-    public string Description => "Demonstrates performance of Scatter plots, " +
-        "Signal Plots, and SignalConst on large datasets.";
+    public string Description => "Demonstrates performance of Scatter plots, Signal Plots, and SignalConst on large datasets.";
 
     public SignalPerformance()
     {
@@ -19,10 +18,10 @@ public partial class SignalPerformance : Form, IDemoWindow
         cbPointCount.Items.Add("10,000,000");
         cbPointCount.SelectedIndex = 1;
 
-        rbScatter.CheckedChanged += (s, e) => Replot();
-        rbSignal.CheckedChanged += (s, e) => Replot();
-        rbSignalConst.CheckedChanged += (s, e) => Replot();
-        cbPointCount.SelectedIndexChanged += (s, e) => Replot();
+        rbScatter.CheckedChanged += (_, _) => Replot();
+        rbSignal.CheckedChanged += (_, _) => Replot();
+        rbSignalConst.CheckedChanged += (_, _) => Replot();
+        cbPointCount.SelectedIndexChanged += (_, _) => Replot();
 
         Replot();
     }
@@ -35,7 +34,6 @@ public partial class SignalPerformance : Form, IDemoWindow
 
         if (rbScatter.Checked)
         {
-
             formsPlot1.Plot.Add.ScatterLine(xs, ys);
             formsPlot1.Plot.Title($"Scatter Plot with {ys.Length:N0} Points");
         }
@@ -54,11 +52,12 @@ public partial class SignalPerformance : Form, IDemoWindow
         formsPlot1.Refresh();
     }
 
-    private (double[] xs, double[] ys) GetData(int count = 1_000_000)
+    private static (double[] xs, double[] ys) GetData(int count = 1_000_000)
     {
         double[] xs = Generate.Consecutive(count);
         double[] ys = Generate.Sin(count);
         Generate.AddNoiseInPlace(ys);
+
         return (xs, ys);
     }
 }

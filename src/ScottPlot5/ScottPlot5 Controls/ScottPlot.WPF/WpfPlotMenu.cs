@@ -6,58 +6,40 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.IO;
+using System.Windows.Controls.Primitives;
 
 namespace ScottPlot.WPF;
 
 public class WpfPlotMenu : IPlotMenu
 {
     public string DefaultSaveImageFilename { get; set; } = "Plot.png";
-    public List<ContextMenuItem> ContextMenuItems { get; set; } = new();
-    readonly WpfPlotBase ThisControl;
+
+    public List<ContextMenuItem> ContextMenuItems { get; set; } = new List<ContextMenuItem>();
+
+    private readonly WpfPlotBase _thisControl;
 
     public WpfPlotMenu(WpfPlotBase control)
     {
-        ThisControl = control;
+        _thisControl = control;
         Reset();
     }
 
     public ContextMenuItem[] GetDefaultContextMenuItems()
     {
-        ContextMenuItem saveImage = new()
-        {
-            Label = "Save Image",
-            OnInvoke = OpenSaveImageDialog
-        };
+        ContextMenuItem saveImage = new ContextMenuItem { Label = "Save Image", OnInvoke = OpenSaveImageDialog };
 
-        ContextMenuItem copyImage = new()
-        {
-            Label = "Copy to Clipboard",
-            OnInvoke = CopyImageToClipboard
-        };
+        ContextMenuItem copyImage = new ContextMenuItem { Label = "Copy to Clipboard", OnInvoke = CopyImageToClipboard };
 
-        ContextMenuItem autoscale = new()
-        {
-            Label = "Autoscale",
-            OnInvoke = Autoscale,
-        };
+        ContextMenuItem autoscale = new ContextMenuItem { Label = "Autoscale", OnInvoke = Autoscale, };
 
-        ContextMenuItem newWindow = new()
-        {
-            Label = "Open in New Window",
-            OnInvoke = OpenInNewWindow,
-        };
+        ContextMenuItem newWindow = new ContextMenuItem { Label = "Open in New Window", OnInvoke = OpenInNewWindow, };
 
-        return new ContextMenuItem[]
-        {
-            saveImage,
-            copyImage,
-            newWindow,
-        };
+        return new[] { saveImage, copyImage, newWindow, };
     }
 
     public ContextMenu GetContextMenu()
     {
-        ContextMenu menu = new();
+        ContextMenu menu = new ContextMenu();
 
         foreach (ContextMenuItem curr in ContextMenuItems)
         {
@@ -67,8 +49,8 @@ public class WpfPlotMenu : IPlotMenu
             }
             else
             {
-                MenuItem menuItem = new() { Header = curr.Label };
-                menuItem.Click += (s, e) => curr.OnInvoke(ThisControl);
+                MenuItem menuItem = new MenuItem { Header = curr.Label };
+                menuItem.Click += (s, e) => curr.OnInvoke(_thisControl);
                 menu.Items.Add(menuItem);
             }
         }
@@ -78,29 +60,31 @@ public class WpfPlotMenu : IPlotMenu
 
     public void ShowContextMenu(Pixel position)
     {
-        var menu = GetContextMenu();
-        menu.PlacementTarget = ThisControl;
-        menu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
+        ContextMenu? menu = GetContextMenu();
+        menu.PlacementTarget = _thisControl;
+        menu.Placement = PlacementMode.MousePoint;
         menu.IsOpen = true;
     }
 
     public void OpenSaveImageDialog(IPlotControl plotControl)
     {
-        SaveFileDialog dialog = new()
+        SaveFileDialog dialog = new SaveFileDialog
         {
             FileName = DefaultSaveImageFilename,
-            Filter = "PNG Files (*.png)|*.png" +
-                     "|JPEG Files (*.jpg, *.jpeg)|*.jpg;*.jpeg" +
-                     "|BMP Files (*.bmp)|*.bmp" +
-                     "|WebP Files (*.webp)|*.webp" +
-                     "|SVG Files (*.svg)|*.svg" +
-                     "|All files (*.*)|*.*"
+            Filter = "PNG Files (*.png)|*.png"
+                     + "|JPEG Files (*.jpg, *.jpeg)|*.jpg;*.jpeg"
+                     + "|BMP Files (*.bmp)|*.bmp"
+                     + "|WebP Files (*.webp)|*.webp"
+                     + "|SVG Files (*.svg)|*.svg"
+                     + "|All files (*.*)|*.*"
         };
 
         if (dialog.ShowDialog() is true)
         {
             if (string.IsNullOrEmpty(dialog.FileName))
+            {
                 return;
+            }
 
             ImageFormat format;
 
@@ -111,8 +95,10 @@ public class WpfPlotMenu : IPlotMenu
             catch (ArgumentException)
             {
                 MessageBox.Show("Unsupported image file format", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+
                 return;
             }
+
             try
             {
                 PixelSize lastRenderSize = plotControl.Plot.RenderManager.LastRender.FigureRect.Size;
@@ -121,6 +107,7 @@ public class WpfPlotMenu : IPlotMenu
             catch (Exception)
             {
                 MessageBox.Show("Image save failed", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+
                 return;
             }
         }
@@ -132,22 +119,22 @@ public class WpfPlotMenu : IPlotMenu
         Image bmp = plotControl.Plot.GetImage((int)lastRenderSize.Width, (int)lastRenderSize.Height);
         byte[] bmpBytes = bmp.GetImageBytes();
 
-        using MemoryStream ms = new();
+        using MemoryStream ms = new MemoryStream();
         ms.Write(bmpBytes, 0, bmpBytes.Length);
-        BitmapImage bmpImage = new();
+        BitmapImage bmpImage = new BitmapImage();
         bmpImage.BeginInit();
         bmpImage.StreamSource = ms;
         bmpImage.EndInit();
         Clipboard.SetImage(bmpImage);
     }
 
-    public void Autoscale(IPlotControl plotControl)
+    public static void Autoscale(IPlotControl plotControl)
     {
         plotControl.Plot.Axes.AutoScale();
         plotControl.Refresh();
     }
 
-    public void OpenInNewWindow(IPlotControl plotControl)
+    public static void OpenInNewWindow(IPlotControl plotControl)
     {
         WpfPlotViewer.Launch(plotControl.Plot, "Interactive Plot");
         plotControl.Refresh();
@@ -164,9 +151,9 @@ public class WpfPlotMenu : IPlotMenu
         ContextMenuItems.Clear();
     }
 
-    public void Add(string Label, Action<IPlotControl> action)
+    public void Add(string label, Action<IPlotControl> action)
     {
-        ContextMenuItems.Add(new ContextMenuItem() { Label = Label, OnInvoke = action });
+        ContextMenuItems.Add(new ContextMenuItem() { Label = label, OnInvoke = action });
     }
 
     public void AddSeparator()

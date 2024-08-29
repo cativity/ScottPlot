@@ -1,30 +1,32 @@
-﻿
-namespace ScottPlot.Control;
+﻿namespace ScottPlot.Control;
 
 /// <summary>
-/// Logic for drawing the shaded region on the plot when the user middle-click-drags to zoom
+///     Logic for drawing the shaded region on the plot when the user middle-click-drags to zoom
 /// </summary>
 public class StandardZoomRectangle(Plot plot) : IZoomRectangle
 {
-    public bool IsVisible { get; set; } = false;
+    public bool IsVisible { get; set; }
 
     public Color FillColor = new Color(255, 0, 0).WithAlpha(100);
 
-    public LineStyle LineStyle { get; set; } = new()
-    {
-        Color = new Color(255, 0, 0).WithAlpha(200)
-    };
+    public LineStyle LineStyle { get; set; } = new LineStyle { Color = new Color(255, 0, 0).WithAlpha(200) };
 
     public Pixel MouseDown { get; set; }
+
     public Pixel MouseUp { get; set; }
-    public bool HorizontalSpan { get; set; } = false;
-    public bool VerticalSpan { get; set; } = false;
+
+    public bool HorizontalSpan { get; set; }
+
+    public bool VerticalSpan { get; set; }
+
     public Plot Plot { get; } = plot;
 
     public void Apply(IXAxis xAxis)
     {
-        if (HorizontalSpan == true)
+        if (HorizontalSpan)
+        {
             return;
+        }
 
         PixelRect dataRect = Plot.RenderManager.LastRender.DataRect;
         double x1 = xAxis.GetCoordinate(MouseDown.X, dataRect);
@@ -36,8 +38,10 @@ public class StandardZoomRectangle(Plot plot) : IZoomRectangle
 
     public void Apply(IYAxis yAxis)
     {
-        if (VerticalSpan == true)
+        if (VerticalSpan)
+        {
             return;
+        }
 
         PixelRect dataRect = Plot.RenderManager.LastRender.DataRect;
         double y1 = yAxis.GetCoordinate(MouseDown.Y, dataRect);
@@ -52,7 +56,7 @@ public class StandardZoomRectangle(Plot plot) : IZoomRectangle
         SKCanvas canvas = rp.Canvas;
         PixelRect dataRect = rp.DataRect;
 
-        SKRect rect = new(MouseDown.X, MouseDown.Y, MouseUp.X, MouseUp.Y);
+        SKRect rect = new SKRect(MouseDown.X, MouseDown.Y, MouseUp.X, MouseUp.Y);
 
         rp.CanvasState.Save();
         canvas.ClipRect(dataRect.ToSKRect());
@@ -69,10 +73,8 @@ public class StandardZoomRectangle(Plot plot) : IZoomRectangle
             rect.Top = dataRect.Top;
         }
 
-        using SKPaint paint = new()
-        {
-            IsAntialias = true
-        };
+        using SKPaint paint = new SKPaint();
+        paint.IsAntialias = true;
 
         paint.Color = FillColor.ToSKColor();
         paint.IsStroke = false;

@@ -6,20 +6,13 @@ namespace ScottPlot.Palettes;
 
 public class OneHalf : IPalette
 {
-    public string Name { get; } = "One Half";
+    public string Name => "One Half";
 
-    public string Description { get; } = "A Sublime color scheme " +
-        "by Son A. Pham: https://github.com/sonph/onehalf";
+    public string Description => "A Sublime color scheme by Son A. Pham: https://github.com/sonph/onehalf";
 
-    public Color[] Colors { get; } = Color.FromHex(HexColors);
+    public Color[] Colors { get; } = Color.FromHex(_hexColors);
 
-    private static readonly string[] HexColors =
-    {
-        "#383a42", "#e4564a", "#50a14f", "#c18402", "#0084bc", "#a626a4", "#0897b3"
-    };
+    private static readonly string[] _hexColors = ["#383a42", "#e4564a", "#50a14f", "#c18402", "#0084bc", "#a626a4", "#0897b3"];
 
-    public Color GetColor(int index)
-    {
-        return Colors[index % Colors.Length];
-    }
+    public Color GetColor(int index) => Colors[index % Colors.Length];
 }

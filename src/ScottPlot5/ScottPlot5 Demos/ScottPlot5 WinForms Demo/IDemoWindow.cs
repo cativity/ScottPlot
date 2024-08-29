@@ -3,5 +3,6 @@
 public interface IDemoWindow
 {
     string Title { get; }
+
     string Description { get; }
 }

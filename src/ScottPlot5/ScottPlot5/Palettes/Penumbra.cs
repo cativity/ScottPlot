@@ -7,20 +7,13 @@ namespace ScottPlot.Palettes;
 
 public class Penumbra : IPalette
 {
-    public string Name { get; } = "Penumbra";
+    public string Name => "Penumbra";
 
-    public string Description => "A perceptually uniform color palette " +
-        "by Neal McKee: https://github.com/nealmckee/penumbra";
+    public string Description => "A perceptually uniform color palette by Neal McKee: https://github.com/nealmckee/penumbra";
 
-    public Color[] Colors { get; } = Color.FromHex(HexColors);
+    public Color[] Colors { get; } = Color.FromHex(_hexColors);
 
-    private static readonly string[] HexColors =
-    {
-        "#CB7459", "#A38F2D", "#46A473", "#00A0BE", "#7E87D6", "#BD72A8"
-    };
+    private static readonly string[] _hexColors = ["#CB7459", "#A38F2D", "#46A473", "#00A0BE", "#7E87D6", "#BD72A8"];
 
-    public Color GetColor(int index)
-    {
-        return Colors[index % Colors.Length];
-    }
+    public Color GetColor(int index) => Colors[index % Colors.Length];
 }

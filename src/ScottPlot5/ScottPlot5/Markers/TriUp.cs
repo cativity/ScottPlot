@@ -9,7 +9,7 @@ internal class TriUp : IMarker
         float xOffset = (float)(radius * 0.866); // r * sqrt(3)/2
         float yOffset = radius / 2;
 
-        SKPath path = new();
+        SKPath path = new SKPath();
 
         // Top line
         path.MoveTo(center.X, center.Y);

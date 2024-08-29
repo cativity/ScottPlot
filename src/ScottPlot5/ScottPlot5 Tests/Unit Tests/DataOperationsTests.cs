@@ -5,13 +5,7 @@ internal class DataOperationsTests
     [Test]
     public void Test_DataOperations_NaNToNull()
     {
-        double[,] input =
-        {
-            { double.NaN, 2, 3, 4 },
-            { 5, double.NaN, 7, 8 },
-            { 9, 10, double.NaN, 12 },
-            { 13, 14, 15, double.NaN }
-        };
+        double[,] input = { { double.NaN, 2, 3, 4 }, { 5, double.NaN, 7, 8 }, { 9, 10, double.NaN, 12 }, { 13, 14, 15, double.NaN } };
 
         double?[,] output = DataOperations.ReplaceNaNWithNull(input);
 
@@ -30,13 +24,7 @@ internal class DataOperationsTests
     [Test]
     public void Test_DataOperations_NullToNaN()
     {
-        double?[,] input =
-        {
-            { null, 2, 3, 4 },
-            { 5, null, 7, 8 },
-            { 9, 10, null, 12 },
-            { 13, 14, 15, null }
-        };
+        double?[,] input = { { null, 2, 3, 4 }, { 5, null, 7, 8 }, { 9, 10, null, 12 }, { 13, 14, 15, null } };
 
         double[,] output = DataOperations.ReplaceNullWithNaN(input);
 
@@ -55,13 +43,7 @@ internal class DataOperationsTests
     [Test]
     public void Test_DataOperations_ResizeHalf()
     {
-        double[,] input =
-        {
-            { 1, 2, 3, 4 },
-            { 5, 6, 7, 8 },
-            { 9, 10, 11, 12 },
-            { 13, 14, 15, 16 }
-        };
+        double[,] input = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 16 } };
 
         double[,] output = DataOperations.ResizeHalf(input);
 

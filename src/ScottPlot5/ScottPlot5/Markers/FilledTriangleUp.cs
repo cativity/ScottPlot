@@ -11,16 +11,15 @@ internal class FilledTriangleUp : IMarker
 
         // Top, right, and left vertices
         SKPoint[] pointsList =
-        {
-            new (center.X, center.Y - radius),
-            new (center.X + xOffset, center.Y + yOffset),
-            new (center.X - xOffset, center.Y + yOffset),
-        };
+        [
+            new SKPoint(center.X, center.Y - radius), new SKPoint(center.X + xOffset, center.Y + yOffset),
+            new SKPoint(center.X - xOffset, center.Y + yOffset)
+        ];
 
-        SKPath path = new();
+        SKPath path = new SKPath();
         path.AddPoly(pointsList);
 
-        PixelRect rect = new(center, radius);
+        PixelRect rect = new PixelRect(center, radius);
         Drawing.DrawPath(canvas, paint, path, markerStyle.FillStyle, rect);
         Drawing.DrawPath(canvas, paint, path, markerStyle.OutlineStyle);
     }

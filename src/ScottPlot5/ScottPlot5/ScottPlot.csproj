@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net462;netstandard2.0;net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net8.0</TargetFrameworks>
+        <!--<TargetFrameworks>net462;netstandard2.0;net6.0;net8.0</TargetFrameworks>-->
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>12</LangVersion>
@@ -32,8 +33,24 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <Deterministic>true</Deterministic>
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-
+        <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="CompilerServices\**" />
+      <Compile Remove="obj\Debug\net8.0\**" />
+      <EmbeddedResource Remove="CompilerServices\**" />
+      <EmbeddedResource Remove="obj\Debug\net8.0\**" />
+      <None Remove="CompilerServices\**" />
+      <None Remove="obj\Debug\net8.0\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Primitives\BarSeries.cs" />
+      <Compile Remove="Primitives\Line.cs" />
+      <Compile Remove="Stylers\PlotStyler.cs" />
+      <Compile Remove="TODO.cs" />
+    </ItemGroup>
 
     <!-- Include additional files for the NuGet package -->
     <ItemGroup>
@@ -43,9 +60,15 @@
 
     <!-- NuGet package dependencies -->
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="*">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
+        <PackageReference Include="Roslynator.Analyzers" Version="4.12.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="SkiaSharp" Version="2.*" />
         <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.*" />
@@ -54,6 +77,9 @@
     <!-- Packages allowing modern C# language features to be used in .NET Framework project -->
     <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
         <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="obj\Debug\" />
     </ItemGroup>
 
 </Project>

@@ -1,11 +1,13 @@
-﻿namespace ScottPlotTests.RenderTests;
+﻿using ScottPlot.Plottables;
+
+namespace ScottPlotTests.RenderTests;
 
 internal class FontTests
 {
     [Test]
     public void Test_Font_Default()
     {
-        Plot plt = new();
+        Plot plt = new Plot();
         plt.Axes.Top.Label.Text = Fonts.Default;
         plt.XLabel("Horizontal Axis");
         plt.YLabel("Vertical Axis");
@@ -26,7 +28,7 @@ internal class FontTests
             ("Korean Mixed", "테스트 123ABC"),
         ];
 
-        Plot myPlot = new();
+        Plot myPlot = new Plot();
         myPlot.HideGrid();
 
         for (int i = 0; i < samples.Count; i++)
@@ -34,16 +36,16 @@ internal class FontTests
             string language = samples[i].Item1;
             string text = samples[i].Item2;
 
-            var txtSample = myPlot.Add.Text(text, 2.5, i);
+            Text txtSample = myPlot.Add.Text(text, 2.5, i);
             txtSample.LabelFontSize = 14;
             txtSample.LabelFontName = Fonts.Detect(text); // this works
             txtSample.LabelStyle.SetBestFont(); // this also works
             txtSample.LabelFontColor = Colors.Magenta;
 
-            var txtLanguage = myPlot.Add.Text(language, 0, i);
+            Text txtLanguage = myPlot.Add.Text(language, 0, i);
             txtLanguage.LabelFontSize = 14;
 
-            var txtFont = myPlot.Add.Text(txtSample.LabelFontName, 5, i);
+            Text txtFont = myPlot.Add.Text(txtSample.LabelFontName, 5, i);
             txtFont.LabelFontSize = 14;
             txtFont.LabelFontColor = Colors.Green;
         }

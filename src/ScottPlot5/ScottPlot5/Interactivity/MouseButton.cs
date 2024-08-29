@@ -1,9 +1,6 @@
 ﻿namespace ScottPlot.Interactivity;
 
 /// <summary>
-/// Represents a physical button on a mouse
+///     Represents a physical button on a mouse
 /// </summary>
-public record struct MouseButton(string name)
-{
-    public string Name { get; } = name;
-}
+public record struct MouseButton(string Name);

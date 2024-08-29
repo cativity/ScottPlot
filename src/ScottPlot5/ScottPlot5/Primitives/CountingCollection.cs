@@ -1,23 +1,21 @@
 ﻿namespace ScottPlot;
 
-internal class CountingCollection<T> where T : notnull
+public class CountingCollection<T>
+    where T : notnull
 {
     public readonly Dictionary<T, int> Counts = [];
 
-    public bool Any() => Counts.Any();
+    public bool Any() => Counts.Count != 0;
+
     public int Count => Counts.Count;
 
-    public IEnumerable<T> SortedKeys => Counts.OrderBy(x => x.Value).Select(x => x.Key);
+    public IEnumerable<T> SortedKeys => Counts.OrderBy(static x => x.Value).Select(static x => x.Key);
 
     public void Add(T item)
     {
-        if (Counts.ContainsKey(item))
+        if (!Counts.TryAdd(item, 1))
         {
             Counts[item]++;
-        }
-        else
-        {
-            Counts[item] = 1;
         }
     }
 
@@ -29,10 +27,7 @@ internal class CountingCollection<T> where T : notnull
         }
     }
 
-    public override string ToString()
-    {
-        return $"CountingCollection<{typeof(T)}> with {Count} items";
-    }
+    public override string ToString() => $"CountingCollection<{typeof(T)}> with {Count} items";
 
     public string GetLongString()
     {

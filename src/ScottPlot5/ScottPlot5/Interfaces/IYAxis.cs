@@ -1,7 +1,7 @@
 ﻿namespace ScottPlot;
 
 /// <summary>
-/// Vertical axis
+///     Vertical axis
 /// </summary>
 public interface IYAxis : IAxis
 {

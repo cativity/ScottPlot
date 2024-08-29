@@ -1,11 +1,13 @@
-﻿namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
+﻿using ScottPlot.Testing;
+
+namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
 
 internal class MiddleClickZoomRectangleTests
 {
     [Test]
     public void Test_MiddleClickDragZoomRectangle_Zooms()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.Plot.ZoomRectangle.IsVisible.Should().BeFalse();
@@ -29,7 +31,7 @@ internal class MiddleClickZoomRectangleTests
     [Test]
     public void Test_ShiftMiddleClickDragZoomRectangle_OnlyZoomsVertically()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.PressShift();
@@ -48,7 +50,7 @@ internal class MiddleClickZoomRectangleTests
     [Test]
     public void Test_CtrlMiddleClickDragZoomRectangle_OnlyZoomsHorizontally()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.PressCtrl();
@@ -67,7 +69,7 @@ internal class MiddleClickZoomRectangleTests
     [Test]
     public void Test_AltLeftClickDragZoomRectangle_Zooms()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.PressAlt();

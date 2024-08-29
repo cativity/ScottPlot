@@ -4,12 +4,7 @@ public class RenderPlottablesLast : IRenderAction
 {
     public void Render(RenderPack rp)
     {
-        IRenderLast[] visibleLastPlottables = rp.Plot.PlottableList
-            .Where(x => x.IsVisible)
-            .OfType<IRenderLast>()
-            .ToArray();
-
-        foreach (IRenderLast plottable in visibleLastPlottables)
+        foreach (IRenderLast plottable in rp.Plot.PlottableList.Where(static x => x.IsVisible).OfType<IRenderLast>().ToArray())
         {
             plottable.RenderLast(rp);
         }

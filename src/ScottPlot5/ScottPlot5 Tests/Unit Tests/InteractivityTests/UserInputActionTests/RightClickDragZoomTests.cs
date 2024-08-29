@@ -1,11 +1,13 @@
-﻿namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
+﻿using ScottPlot.Testing;
+
+namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
 
 internal class RightClickDragZoomTests
 {
     [Test]
     public void Test_RightClickDragZoom_ZoomsWithoutPanning()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.RightClickDrag(plotControl.Center, plotControl.Center.MovedRight(50).MovedUp(50));
@@ -23,7 +25,7 @@ internal class RightClickDragZoomTests
     [Test]
     public void Test_RightClickDragZoom_ShiftLocksHorizontalAxis()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.PressShift();
@@ -42,7 +44,7 @@ internal class RightClickDragZoomTests
     [Test]
     public void Test_RightClickDragZoom_CtrlLocksVerticalAxis()
     {
-        ScottPlot.Testing.MockPlotControl plotControl = new();
+        MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
 
         plotControl.PressCtrl();

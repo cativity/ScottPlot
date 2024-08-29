@@ -7,16 +7,18 @@ public class CodeFormatTests
     {
         List<string> methodNames = SourceCodeParsing.GetMethodNames("PlottableAdder.cs");
 
-        methodNames.Remove("GetNextColor");
-        methodNames.Remove("PlottablesThatDoNotGetColors = [");
+        //methodNames.Remove("GetNextColor");
+        //methodNames.Remove("PlottablesThatDoNotGetColors =");
+        //methodNames.Remove("PlottablesThatDoNotGetColors = [");
 
         string lastMethodName = string.Empty;
+
         foreach (string methodName in methodNames)
         {
             if (string.Compare(methodName, lastMethodName) < 0)
             {
-                throw new InvalidOperationException($"PlottableAdder.cs methods must be in alphabetical order. " +
-                    $"{lastMethodName} is currently before {methodName}.");
+                throw new InvalidOperationException("PlottableAdder.cs methods must be in alphabetical order. "
+                                                    + $"{lastMethodName} is currently before {methodName}.");
             }
 
             lastMethodName = methodName;

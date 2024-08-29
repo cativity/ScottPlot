@@ -8,9 +8,9 @@ namespace Sandbox.WinForms3D;
 public class Plot3D
 {
     public double ZoomFactor = 200;
-    public Rotation3D Rotation = new() { DegreesX = 110, DegreesY = 18, DegreesZ = 5 };
-    public Point3D CameraCenter = new();
-    public readonly Axis3D Axis3D = new();
+    public Rotation3D Rotation = new Rotation3D { DegreesX = 110, DegreesY = 18, DegreesZ = 5 };
+    public Point3D CameraCenter = new Point3D();
+    public readonly Axis3D Axis3D = new Axis3D();
     public readonly List<IPlottable3D> Plottables = [];
 
     public Pixel GetPoint2D(Point3D point, Pixel imageCenter)
@@ -21,14 +21,15 @@ public class Plot3D
         point = point.RotatedY(Rotation.DegreesY);
         point = point.RotatedZ(Rotation.DegreesZ);
         point = point.Translated(Point3D.Origin, Rotation.CenterPoint);
-        float x = (float)(point.X - CameraCenter.X * ZoomFactor) + imageCenter.X;
-        float y = (float)(CameraCenter.Y * ZoomFactor - point.Y) + imageCenter.Y;
+        float x = (float)(point.X - (CameraCenter.X * ZoomFactor)) + imageCenter.X;
+        float y = (float)((CameraCenter.Y * ZoomFactor) - point.Y) + imageCenter.Y;
+
         return new Pixel(x, y);
     }
 
     public void Render(SKSurface surface)
     {
-        RenderPack3D rp = new(this, surface);
+        RenderPack3D rp = new RenderPack3D(this, surface);
 
         Drawing.FillRectangle(rp.Canvas, rp.ImageRect, Colors.White);
 
