@@ -44,9 +44,9 @@ public struct Coordinates(double x, double y) : IEquatable<Coordinates>
 
     public override readonly int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
 
-    public readonly CoordinateRect ToRect(double radiusX, double radiusY) => new(X - radiusX, X + radiusX, Y - radiusY, Y + radiusY);
+    public readonly CoordinateRect ToRect(double radiusX, double radiusY) => new CoordinateRect(X - radiusX, X + radiusX, Y - radiusY, Y + radiusY);
 
     public readonly CoordinateRect ToRect(double radius) => ToRect(radius, radius);
 
-    public readonly Coordinates WithDelta(double dX, double dY) => new(X + dX, Y + dY);
+    public readonly Coordinates WithDelta(double dX, double dY) => new Coordinates(X + dX, Y + dY);
 }

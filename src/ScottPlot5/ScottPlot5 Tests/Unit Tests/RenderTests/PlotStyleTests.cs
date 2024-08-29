@@ -8,7 +8,7 @@ namespace ScottPlotTests.RenderTests;
 internal class PlotStyleTests
 {
     [Test]
-    public void Test_PlotStyle_Apply()
+    public void TestPlotStyleApply()
     {
         // create a plot with everything customized
         Plot plot1 = new Plot();
@@ -44,7 +44,7 @@ internal class PlotStyleTests
     }
 
     [Test]
-    public void Test_PlotStyle_Light()
+    public void TestPlotStyleLight()
     {
         // create a plot with everything customized
         Plot plot1 = new Plot();
@@ -79,7 +79,7 @@ internal class PlotStyleTests
     }
 
     [Test]
-    public void Test_PlotStyle_Dark()
+    public void TestPlotStyleDark()
     {
         Plot plot1 = new Plot();
 

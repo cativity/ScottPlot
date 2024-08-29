@@ -39,7 +39,13 @@ public class DuplicateIdentifier<T>(string title)
         {
             IEnumerable<T> duplicateThings = _things.Where(x => x.Key == id).Select(x => x.Value);
             string duplicateThingsString = string.Join(", ", duplicateThings);
-            sb.AppendLine($"The {title} \"{id}\" is not unique as it is shared by: {duplicateThingsString}");
+
+            sb.Append("The ")
+              .Append(title)
+              .Append(" \"")
+              .Append(id)
+              .Append("\" is not unique as it is shared by: ")
+              .AppendLine(duplicateThingsString);
         }
 
         throw new InvalidOperationException(sb.ToString());

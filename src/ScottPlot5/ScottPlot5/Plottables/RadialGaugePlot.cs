@@ -142,7 +142,7 @@ public class RadialGaugePlot : IPlottable
             throw new ArgumentException("Values must not be null or empty");
         }
 
-        bool numberOfGroupsChanged = Levels is null || levels.Length != Levels.Length;
+        bool numberOfGroupsChanged = levels.Length != Levels.Length;
 
         if (numberOfGroupsChanged)
         {

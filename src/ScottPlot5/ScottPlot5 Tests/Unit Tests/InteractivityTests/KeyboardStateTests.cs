@@ -5,7 +5,7 @@ namespace ScottPlotTests.InteractivityTests;
 internal class KeyboardStateTests
 {
     [Test]
-    public void Test_KeyboardState_RemembersKey()
+    public void TestKeyboardStateRemembersKey()
     {
         KeyboardState ks = new KeyboardState();
         ks.PressedKeyCount.Should().Be(0);

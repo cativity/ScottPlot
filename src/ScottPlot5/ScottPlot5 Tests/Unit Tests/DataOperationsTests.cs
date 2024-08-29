@@ -3,7 +3,7 @@
 internal class DataOperationsTests
 {
     [Test]
-    public void Test_DataOperations_NaNToNull()
+    public void TestDataOperationsNaNToNull()
     {
         double[,] input = { { double.NaN, 2, 3, 4 }, { 5, double.NaN, 7, 8 }, { 9, 10, double.NaN, 12 }, { 13, 14, 15, double.NaN } };
 
@@ -22,7 +22,7 @@ internal class DataOperationsTests
     }
 
     [Test]
-    public void Test_DataOperations_NullToNaN()
+    public void TestDataOperationsNullToNaN()
     {
         double?[,] input = { { null, 2, 3, 4 }, { 5, null, 7, 8 }, { 9, 10, null, 12 }, { 13, 14, 15, null } };
 
@@ -41,7 +41,7 @@ internal class DataOperationsTests
     }
 
     [Test]
-    public void Test_DataOperations_ResizeHalf()
+    public void TestDataOperationsResizeHalf()
     {
         double[,] input = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 }, { 13, 14, 15, 16 } };
 

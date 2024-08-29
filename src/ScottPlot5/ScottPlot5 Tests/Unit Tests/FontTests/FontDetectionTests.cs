@@ -5,7 +5,7 @@ namespace ScottPlotTests.FontTests;
 internal static class FontDetectionTests
 {
     [Test]
-    public static void ConvertStringToTextElements_UnitTests()
+    public static void ConvertStringToTextElementsUnitTests()
     {
         List<string> testcases = ["𝓦", "á", "🌹", "👩🏽‍🚒", "已", "a", "𝓦á🌹👩🏽‍🚒已"];
         List<List<string>> expectedResults = [["𝓦"], ["á"], ["🌹"], ["👩🏽‍🚒"], ["已"], ["a"], ["𝓦", "á", "🌹", "👩🏽‍🚒", "已"]];
@@ -28,7 +28,7 @@ internal static class FontDetectionTests
     }
 
     [Test]
-    public static void GetStandaloneCodePoints_UnitTests()
+    public static void GetStandaloneCodePointsUnitTests()
     {
         //List<List<string>> expectedResults = [["𝓦"], [], ["🌹"], [], ["已"], ["a"], ["𝓦"]];
 
@@ -47,7 +47,7 @@ internal static class FontDetectionTests
     }
 
     [Test]
-    public static void ConvertTextElementToUtf32CodePoints_UnitTests()
+    public static void ConvertTextElementToUtf32CodePointsUnitTests()
     {
         foreach (string? testcase in (List<string>)(["𝓦", "á", "🌹", "👩🏽‍🚒", "已", "a"]))
         {

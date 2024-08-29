@@ -5,7 +5,7 @@ namespace ScottPlotTests.RenderTests;
 internal class InternationalTests
 {
     [Test]
-    public void Test_Tick_DefaultCulture()
+    public void TestTickDefaultCulture()
     {
         Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin(100, 500_000));
@@ -16,7 +16,7 @@ internal class InternationalTests
     }
 
     [Test]
-    public void Test_Tick_OtherCulture()
+    public void TestTickOtherCulture()
     {
         Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
 

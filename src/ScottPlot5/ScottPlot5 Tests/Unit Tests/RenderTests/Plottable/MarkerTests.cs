@@ -6,7 +6,7 @@ namespace ScottPlotTests.RenderTests.Plottable;
 internal class MarkerTests
 {
     [Test]
-    public void Test_Marker_Legend()
+    public void TestMarkerLegend()
     {
         Plot plt = new Plot();
 
@@ -20,7 +20,7 @@ internal class MarkerTests
     }
 
     [Test]
-    public void Test_All_Markers()
+    public void TestAllMarkers()
     {
         Plot plt = new Plot();
 

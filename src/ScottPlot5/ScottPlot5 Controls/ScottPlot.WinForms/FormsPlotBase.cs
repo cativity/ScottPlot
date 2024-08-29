@@ -72,48 +72,48 @@ public abstract class FormsPlotBase : UserControl, IPlotControl
         Menu.ShowContextMenu(position);
     }
 
-    internal void SKElement_MouseDown(object? sender, MouseEventArgs e)
+    internal void SKElementMouseDown(object? sender, MouseEventArgs e)
     {
         Interaction.MouseDown(e.Pixel(), e.Button());
         UserInputProcessor.ProcessMouseDown(e);
         base.OnMouseDown(e);
     }
 
-    internal void SKElement_MouseUp(object? sender, MouseEventArgs e)
+    internal void SKElementMouseUp(object? sender, MouseEventArgs e)
     {
         Interaction.MouseUp(e.Pixel(), e.Button());
         UserInputProcessor.ProcessMouseUp(e);
         base.OnMouseUp(e);
     }
 
-    internal void SKElement_MouseMove(object? sender, MouseEventArgs e)
+    internal void SKElementMouseMove(object? sender, MouseEventArgs e)
     {
         Interaction.OnMouseMove(e.Pixel());
         UserInputProcessor.ProcessMouseMove(e);
         base.OnMouseMove(e);
     }
 
-    internal void SKElement_DoubleClick(object? sender, EventArgs e)
+    internal void SKElementDoubleClick(object? sender, EventArgs e)
     {
         Interaction.DoubleClick();
         base.OnDoubleClick(e);
     }
 
-    internal void SKElement_MouseWheel(object? sender, MouseEventArgs e)
+    internal void SKElementMouseWheel(object? sender, MouseEventArgs e)
     {
         Interaction.MouseWheelVertical(e.Pixel(), e.Delta);
         UserInputProcessor.ProcessMouseWheel(e);
         base.OnMouseWheel(e);
     }
 
-    internal void SKElement_KeyDown(object? sender, KeyEventArgs e)
+    internal void SKElementKeyDown(object? sender, KeyEventArgs e)
     {
         Interaction.KeyDown(e.Key());
         UserInputProcessor.ProcessKeyDown(e);
         base.OnKeyDown(e);
     }
 
-    internal void SKElement_KeyUp(object? sender, KeyEventArgs e)
+    internal void SKElementKeyUp(object? sender, KeyEventArgs e)
     {
         Interaction.KeyUp(e.Key());
         UserInputProcessor.ProcessKeyUp(e);

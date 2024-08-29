@@ -65,19 +65,17 @@ internal class ApiDocs(Type typeInAssembly, string xmlFilePath)
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.AppendLine("""
-                      <style>
-                      body {font-family: sans-serif;}
-                      .title{font-family: monospace; font-size: 1.5em; font-weight: 600;}
-                      .otherType{color: blue; font-family: monospace;}
-                      .scottPlotType{color: blue; font-family: monospace;}
-                      .name{color: black; font-family: monospace;}
-                      .docs{color: green; font-family: monospace;}
-                      a {text-decoration: none;}
-                      a:hover {text-decoration: underline;}
-                      .break-container{width:95vw;position:relative;left:calc(-1 * (95vw - 95%)/2);}
-                      </style>
-                      """);
+        sb.AppendLine("<style>")
+          .AppendLine("body {font-family: sans-serif;}")
+          .AppendLine(".title{font-family: monospace; font-size: 1.5em; font-weight: 600;}")
+          .AppendLine(".otherType{color: blue; font-family: monospace;}")
+          .AppendLine(".scottPlotType{color: blue; font-family: monospace;}")
+          .AppendLine(".name{color: black; font-family: monospace;}")
+          .AppendLine(".docs{color: green; font-family: monospace;}")
+          .AppendLine("a {text-decoration: none;}")
+          .AppendLine("a:hover {text-decoration: underline;}")
+          .AppendLine(".break-container{width:95vw;position:relative;left:calc(-1 * (95vw - 95%)/2);}")
+          .AppendLine("</style>");
 
         sb.AppendLine("<div class='break-container'>");
 
@@ -85,22 +83,40 @@ internal class ApiDocs(Type typeInAssembly, string xmlFilePath)
         {
             sb.AppendLine("<div style='margin-top: 2em'>");
 
-            sb.AppendLine($"<div class='title' id='{classDocs.TypeName.CleanNameHtml}'>"
-                          + $"<a style='color: black;' href='#{classDocs.TypeName.CleanNameHtml}'>"
-                          + $"{classDocs.TypeName.CleanNameHtml}</a></div>");
+            sb.Append("<div class='title' id='")
+              .Append(classDocs.TypeName.CleanNameHtml)
+              .Append("'><a style='color: black;' href='#")
+              .Append(classDocs.TypeName.CleanNameHtml)
+              .Append("'>")
+              .Append(classDocs.TypeName.CleanNameHtml)
+              .AppendLine("</a></div>");
 
-            sb.AppendLine($"<div class='docs'>{classDocs.Docs}</div>");
+            sb.Append("<div class='docs'>").Append(classDocs.Docs).AppendLine("</div>");
             sb.AppendLine("</div>");
 
             foreach (PropertyDocs propDocs in classDocs.GetPropertyDocs(_xmlDocsDB))
             {
                 if (propDocs.TypeName.CleanNameHtml.StartsWith(_scottPlotPrefix))
                 {
-                    sb.AppendLine($"<div><a class='scottPlotType' href='#{propDocs.TypeName.CleanNameHtml}'>{propDocs.TypeName.CleanNameHtml}</a> <span class='name'>{propDocs.Name}</span> <span class='docs'>{propDocs.Docs}</span></div>");
+                    sb.Append("<div><a class='scottPlotType' href='#")
+                      .Append(propDocs.TypeName.CleanNameHtml)
+                      .Append("'>")
+                      .Append(propDocs.TypeName.CleanNameHtml)
+                      .Append("</a> <span class='name'>")
+                      .Append(propDocs.Name)
+                      .Append("</span> <span class='docs'>")
+                      .Append(propDocs.Docs)
+                      .AppendLine("</span></div>");
                 }
                 else
                 {
-                    sb.AppendLine($"<div><span class='otherType'>{propDocs.TypeName.CleanNameHtml}</span> <span class='name'>{propDocs.Name}</span> <span class='docs'>{propDocs.Docs}</span></div>");
+                    sb.Append("<div><span class='otherType'>")
+                      .Append(propDocs.TypeName.CleanNameHtml)
+                      .Append("</span> <span class='name'>")
+                      .Append(propDocs.Name)
+                      .Append("</span> <span class='docs'>")
+                      .Append(propDocs.Docs)
+                      .AppendLine("</span></div>");
                 }
             }
 
@@ -124,11 +140,29 @@ internal class ApiDocs(Type typeInAssembly, string xmlFilePath)
 
                 if (methodDocs.ReturnTypeName.CleanNameHtml.StartsWith(_scottPlotPrefix))
                 {
-                    sb.AppendLine($"<div><a class='scottPlotType' href='#{methodDocs.ReturnTypeName.CleanNameHtml}'>{methodDocs.ReturnTypeName.CleanNameHtml}</a> <span class='name'>{methodDocs.Name}({argLine})</span> <span class='docs'>{methodDocs.Docs}</span></div>");
+                    sb.Append("<div><a class='scottPlotType' href='#")
+                      .Append(methodDocs.ReturnTypeName.CleanNameHtml)
+                      .Append("'>")
+                      .Append(methodDocs.ReturnTypeName.CleanNameHtml)
+                      .Append("</a> <span class='name'>")
+                      .Append(methodDocs.Name)
+                      .Append('(')
+                      .Append(argLine)
+                      .Append(")</span> <span class='docs'>")
+                      .Append(methodDocs.Docs)
+                      .AppendLine("</span></div>");
                 }
                 else
                 {
-                    sb.AppendLine($"<div><span class='otherType'>{methodDocs.ReturnTypeName.CleanNameHtml}</span> <span class='name'>{methodDocs.Name}({argLine})</span> <span class='docs'>{methodDocs.Docs}</span></div>");
+                    sb.Append("<div><span class='otherType'>")
+                      .Append(methodDocs.ReturnTypeName.CleanNameHtml)
+                      .Append("</span> <span class='name'>")
+                      .Append(methodDocs.Name)
+                      .Append('(')
+                      .Append(argLine)
+                      .Append(")</span> <span class='docs'>")
+                      .Append(methodDocs.Docs)
+                      .AppendLine("</span></div>");
                 }
             }
         }

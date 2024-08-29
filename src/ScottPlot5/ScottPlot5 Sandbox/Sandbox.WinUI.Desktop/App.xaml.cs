@@ -30,13 +30,7 @@ public partial class App : Application
     /// <summary>
     ///     Gets the main window of the app.
     /// </summary>
-    internal static Window MainWindow
-    {
-        get => _window!;
-        private set => _window = value;
-    }
-
-    private static Window? _window;
+    internal static Window? MainWindow { get; private set; }
 
     /// <summary>
     ///     Invoked when the application is launched normally by the end user.  Other entry points

@@ -19,7 +19,7 @@ internal class TTestTests
     [TestCase(13, 1.337270069235878, 0.1936715043753276)]
     [TestCase(14, 1.0390652822828303, 0.30834135755575226)]
     [TestCase(15, 0.7201094247712603, 0.4774263688268924)]
-    public void Test_Statistics_UnpairedTTest(int n, double expectedT, double expectedP)
+    public void TestStatisticsUnpairedTTest(int n, double expectedT, double expectedP)
     {
         /* Tested with Python:
 

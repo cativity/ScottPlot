@@ -3,7 +3,7 @@
 internal class DataStreamer
 {
     [Test]
-    public void Test_DataStreamer_ExpandToFitData()
+    public void TestDataStreamerExpandToFitData()
     {
         Plot plt = new Plot();
 

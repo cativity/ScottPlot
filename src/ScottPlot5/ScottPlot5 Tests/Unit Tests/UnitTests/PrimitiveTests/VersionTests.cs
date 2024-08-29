@@ -5,7 +5,7 @@ namespace ScottPlotTests.UnitTests.PrimitiveTests;
 internal class VersionTests
 {
     [Test]
-    public void Test_Version_Numbers_Valid()
+    public void TestVersionNumbersValid()
     {
         Version.VersionString.Should().NotBeNullOrWhiteSpace();
         Version.Major.Should().BeGreaterThanOrEqualTo(5);

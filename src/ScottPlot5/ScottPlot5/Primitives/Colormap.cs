@@ -1,32 +1,31 @@
-﻿namespace ScottPlot;
+﻿using System.Reflection;
+
+namespace ScottPlot;
 
 public static class Colormap
 {
     /// <summary>
-    /// Return an array containing every available colormap
+    ///     Return an array containing every available colormap
     /// </summary>
     public static IColormap[] GetColormaps()
-    {
-        return System.Reflection.Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .Where(x => x.IsClass)
-            .Where(x => !x.IsAbstract)
-            .Where(x => x.GetInterfaces().Contains(typeof(IColormap)))
-            .Where(x => x.GetConstructors().Where(x => x.GetParameters().Length == 0).Any())
-            .Select(x => (IColormap)Activator.CreateInstance(x)!)
-            .ToArray();
-    }
+        => Assembly.GetExecutingAssembly()
+                   .GetTypes()
+                   .Where(static x => x.IsClass
+                                      && !x.IsAbstract
+                                      && x.GetInterfaces().Contains(typeof(IColormap))
+                                      && x.GetConstructors().Any(static c => c.GetParameters().Length == 0))
+                   .Select(Activator.CreateInstance)
+                   .Cast<IColormap>()
+                   .ToArray();
 
     public static Image GetImage(IColormap colormap, int width, int height)
     {
-        using SKBitmap bmp = new(width, height);
-        using SKCanvas canvas = new(bmp);
+        using SKBitmap bmp = new SKBitmap(width, height);
+        using SKCanvas canvas = new SKCanvas(bmp);
 
-        using SKPaint paint = new()
-        {
-            IsAntialias = false,
-            IsStroke = true,
-        };
+        using SKPaint paint = new SKPaint();
+        paint.IsAntialias = false;
+        paint.IsStroke = true;
 
         for (int i = 0; i < width; i++)
         {
@@ -34,9 +33,10 @@ public static class Colormap
             canvas.DrawLine(i, 0, i, height, paint);
         }
 
-        using MemoryStream ms = new();
-        bmp.Encode(ms, SKEncodedImageFormat.Jpeg, quality: 85);
+        using MemoryStream ms = new MemoryStream();
+        bmp.Encode(ms, SKEncodedImageFormat.Jpeg, 85);
         byte[] bytes = ms.ToArray();
-        return new ScottPlot.Image(bytes);
+
+        return new Image(bytes);
     }
 }

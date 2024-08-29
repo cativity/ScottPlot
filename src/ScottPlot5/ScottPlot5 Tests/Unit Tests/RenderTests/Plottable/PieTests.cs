@@ -5,7 +5,7 @@ namespace ScottPlotTests.RenderTests.Plottable;
 internal class PieTests
 {
     [Test]
-    public void Test_Pie_Render()
+    public void TestPieRender()
     {
         Plot plt = new Plot();
 
@@ -23,7 +23,7 @@ internal class PieTests
     }
 
     [Test]
-    public void Test_Pie_Legend()
+    public void TestPieLegend()
     {
         Plot plt = new Plot();
 

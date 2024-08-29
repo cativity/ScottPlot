@@ -3,7 +3,7 @@
 internal class CandlestickTests
 {
     [Test]
-    public void Test_Candlestick_NegativeX()
+    public void TestCandlestickNegativeX()
     {
         Plot plot = new Plot();
 
@@ -23,7 +23,7 @@ internal class CandlestickTests
     }
 
     [Test]
-    public void Test_OHLC_NegativeX()
+    public void TestOHLCNegativeX()
     {
         Plot plot = new Plot();
 
@@ -43,7 +43,7 @@ internal class CandlestickTests
     }
 
     [Test]
-    public void Test_Candlestick_NoPriceChange()
+    public void TestCandlestickNoPriceChange()
     {
         Plot plot = new Plot();
 

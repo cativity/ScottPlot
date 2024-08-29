@@ -8,7 +8,7 @@ internal class KeyPanAndZoomTests
     //private const int FIGURE_HEIGHT = 300;
 
     [Test]
-    public void Test_ArrowKey_Pan()
+    public void TestArrowKeyPan()
     {
         MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
@@ -27,7 +27,7 @@ internal class KeyPanAndZoomTests
     }
 
     [Test]
-    public void Test_CtrlArrowKey_Zoom()
+    public void TestCtrlArrowKeyZoom()
     {
         MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();

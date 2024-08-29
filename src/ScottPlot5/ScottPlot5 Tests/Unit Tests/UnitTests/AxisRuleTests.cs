@@ -5,7 +5,7 @@ namespace ScottPlotTests.UnitTests;
 internal class AxisRuleTests
 {
     [Test]
-    public void Test_AxisRule_LockedBottom()
+    public void TestAxisRuleLockedBottom()
     {
         Plot plt = new Plot();
 
@@ -28,7 +28,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_LockedCenterX()
+    public void TestAxisRuleLockedCenterX()
     {
         Plot plt = new Plot();
 
@@ -51,7 +51,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_LockedCenterY()
+    public void TestAxisRuleLockedCenterY()
     {
         Plot plt = new Plot();
 
@@ -74,7 +74,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_LockedHorizontal()
+    public void TestAxisRuleLockedHorizontal()
     {
         Plot plt = new Plot();
 
@@ -100,7 +100,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_LockedLeft()
+    public void TestAxisRuleLockedLeft()
     {
         Plot plt = new Plot();
 
@@ -123,7 +123,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_LockedRight()
+    public void TestAxisRuleLockedRight()
     {
         Plot plt = new Plot();
 
@@ -146,7 +146,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_LockedTop()
+    public void TestAxisRuleLockedTop()
     {
         Plot plt = new Plot();
 
@@ -169,7 +169,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_LockedVertical()
+    public void TestAxisRuleLockedVertical()
     {
         Plot plt = new Plot();
 
@@ -195,7 +195,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_MaximumBoundary()
+    public void TestAxisRuleMaximumBoundary()
     {
         Plot plt = new Plot();
 
@@ -215,7 +215,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_MinimumBoundary()
+    public void TestAxisRuleMinimumBoundary()
     {
         Plot plt = new Plot();
 
@@ -235,7 +235,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_MaximumSpan()
+    public void TestAxisRuleMaximumSpan()
     {
         Plot plt = new Plot();
 
@@ -255,7 +255,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_MinimumSpan()
+    public void TestAxisRuleMinimumSpan()
     {
         Plot plt = new Plot();
 
@@ -275,7 +275,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_SquarePreserveX()
+    public void TestAxisRuleSquarePreserveX()
     {
         Plot plt = new Plot();
 
@@ -291,7 +291,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_SquarePreserveY()
+    public void TestAxisRuleSquarePreserveY()
     {
         Plot plt = new Plot();
 
@@ -307,7 +307,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_SquareZoom()
+    public void TestAxisRuleSquareZoom()
     {
         Plot plt = new Plot();
 
@@ -325,7 +325,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_SnapTicksX()
+    public void TestAxisRuleSnapTicksX()
     {
         Plot plt = new Plot();
 
@@ -341,7 +341,7 @@ internal class AxisRuleTests
     }
 
     [Test]
-    public void Test_AxisRule_SnapTicksY()
+    public void TestAxisRuleSnapTicksY()
     {
         Plot plt = new Plot();
 

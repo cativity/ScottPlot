@@ -3,7 +3,7 @@
 internal class RenderManagerTests
 {
     [Test]
-    public void Test_RenderManager_Output()
+    public void TestRenderManagerOutput()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));

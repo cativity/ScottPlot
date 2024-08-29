@@ -3,7 +3,7 @@
 internal class AnnotationTests
 {
     [Test]
-    public void Test_Annotation_Alignment()
+    public void TestAnnotationAlignment()
     {
         Plot plt = new Plot();
 
@@ -16,7 +16,7 @@ internal class AnnotationTests
     }
 
     [Test]
-    public void Test_Annotation_Height()
+    public void TestAnnotationHeight()
     {
         //https://github.com/ScottPlot/ScottPlot/issues/3749
         Plot plt = new Plot();

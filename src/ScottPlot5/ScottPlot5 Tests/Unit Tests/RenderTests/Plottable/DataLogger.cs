@@ -3,7 +3,7 @@
 internal class DataLogger
 {
     [Test]
-    public void Test_EmptyDataLogger_WithDateTimeAxis()
+    public void TestEmptyDataLoggerWithDateTimeAxis()
     {
         Plot plt = new Plot();
 

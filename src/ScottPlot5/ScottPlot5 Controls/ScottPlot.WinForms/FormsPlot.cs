@@ -34,14 +34,14 @@ public class FormsPlot : FormsPlotBase
 
         SKControl = new SKControl { Dock = DockStyle.Fill };
 
-        SKControl.PaintSurface += SKElement_PaintSurface;
-        SKControl.MouseDown += SKElement_MouseDown;
-        SKControl.MouseUp += SKElement_MouseUp;
-        SKControl.MouseMove += SKElement_MouseMove;
-        SKControl.DoubleClick += SKElement_DoubleClick;
-        SKControl.MouseWheel += SKElement_MouseWheel;
-        SKControl.KeyDown += SKElement_KeyDown;
-        SKControl.KeyUp += SKElement_KeyUp;
+        SKControl.PaintSurface += SKElementPaintSurface;
+        SKControl.MouseDown += SKElementMouseDown;
+        SKControl.MouseUp += SKElementMouseUp;
+        SKControl.MouseMove += SKElementMouseMove;
+        SKControl.DoubleClick += SKElementDoubleClick;
+        SKControl.MouseWheel += SKElementMouseWheel;
+        SKControl.KeyDown += SKElementKeyDown;
+        SKControl.KeyUp += SKElementKeyUp;
 
         Controls.Add(SKControl);
     }
@@ -53,14 +53,14 @@ public class FormsPlot : FormsPlotBase
             return;
         }
 
-        SKControl.PaintSurface -= SKElement_PaintSurface;
-        SKControl.MouseDown -= SKElement_MouseDown;
-        SKControl.MouseUp -= SKElement_MouseUp;
-        SKControl.MouseMove -= SKElement_MouseMove;
-        SKControl.DoubleClick -= SKElement_DoubleClick;
-        SKControl.MouseWheel -= SKElement_MouseWheel;
-        SKControl.KeyDown -= SKElement_KeyDown;
-        SKControl.KeyUp -= SKElement_KeyUp;
+        SKControl.PaintSurface -= SKElementPaintSurface;
+        SKControl.MouseDown -= SKElementMouseDown;
+        SKControl.MouseUp -= SKElementMouseUp;
+        SKControl.MouseMove -= SKElementMouseMove;
+        SKControl.DoubleClick -= SKElementDoubleClick;
+        SKControl.MouseWheel -= SKElementMouseWheel;
+        SKControl.KeyDown -= SKElementKeyDown;
+        SKControl.KeyUp -= SKElementKeyUp;
 
         Controls.Remove(SKControl);
 
@@ -70,7 +70,7 @@ public class FormsPlot : FormsPlotBase
         }
     }
 
-    private void SKElement_PaintSurface(object? sender, SKPaintSurfaceEventArgs e)
+    private void SKElementPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {
         Plot.Render(e.Surface);
     }

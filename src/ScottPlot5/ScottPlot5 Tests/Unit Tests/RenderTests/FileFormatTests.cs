@@ -3,7 +3,7 @@
 internal class FileFormatTests
 {
     [Test]
-    public void Test_Save_Bmp()
+    public void TestSaveBmp()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));
@@ -12,7 +12,7 @@ internal class FileFormatTests
     }
 
     [Test]
-    public void Test_Save_Jpeg()
+    public void TestSaveJpeg()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));
@@ -21,7 +21,7 @@ internal class FileFormatTests
     }
 
     [Test]
-    public void Test_Save_Png()
+    public void TestSavePng()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));
@@ -30,7 +30,7 @@ internal class FileFormatTests
     }
 
     [Test]
-    public void Test_Save_Webp()
+    public void TestSaveWebp()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));
@@ -39,7 +39,7 @@ internal class FileFormatTests
     }
 
     [Test]
-    public void Test_Save_Html()
+    public void TestSaveHtml()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));
@@ -50,7 +50,7 @@ internal class FileFormatTests
     }
 
     [Test]
-    public void Test_Save_Svg()
+    public void TestSaveSvg()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));
@@ -59,7 +59,7 @@ internal class FileFormatTests
     }
 
     [Test]
-    public void Test_Get_Svg()
+    public void TestGetSvg()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(51));
@@ -69,7 +69,7 @@ internal class FileFormatTests
     }
 
     [Test]
-    public void Test_Svg_EmptyRect()
+    public void TestSvgEmptyRect()
     {
         // Empty rectangles have outlines in some browsers
         // https://github.com/ScottPlot/ScottPlot/issues/3709

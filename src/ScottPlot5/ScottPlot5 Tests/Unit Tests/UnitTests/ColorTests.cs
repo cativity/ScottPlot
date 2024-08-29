@@ -3,7 +3,7 @@
 public class ColorTests
 {
     [Test]
-    public void Test_Color_ValuesMatchKnown()
+    public void TestColorValuesMatchKnown()
     {
         Color color = Color.FromHex("#2e5b6d");
 
@@ -17,7 +17,7 @@ public class ColorTests
     }
 
     [Test]
-    public void Test_Color_Transparent()
+    public void TestColorTransparent()
     {
         // If requesting a semitransparent black, make it slightly non-black
         // to prevent SVG export from rendering the color as opaque.
@@ -33,7 +33,7 @@ public class ColorTests
     }
 
     [Test]
-    public void Test_Color_AlphaARGB()
+    public void TestColorAlphaARGB()
     {
         Color color = Color.FromHex("#2e5b6d").WithAlpha(123);
         color.Red.Should().Be(46);

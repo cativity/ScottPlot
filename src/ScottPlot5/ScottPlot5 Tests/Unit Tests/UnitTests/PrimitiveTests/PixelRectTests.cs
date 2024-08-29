@@ -3,7 +3,7 @@
 internal class PixelRectTests
 {
     [Test]
-    public void Test_PixelRect_Defaults()
+    public void TestPixelRectDefaults()
     {
         PixelRect pxRect = new PixelRect();
         pxRect.Left.Should().Be(0);
@@ -14,7 +14,7 @@ internal class PixelRectTests
     }
 
     [Test]
-    public void Test_PixelRect_Constructor()
+    public void TestPixelRectConstructor()
     {
         PixelRect pxRect = new PixelRect(-3, 7, 123, 11);
         pxRect.Left.Should().Be(-3);
@@ -28,7 +28,7 @@ internal class PixelRectTests
     }
 
     [Test]
-    public void Test_Pixel_CustomToString()
+    public void TestPixelCustomToString()
     {
         new PixelRect().ToString().Should().Contain("Left=");
     }

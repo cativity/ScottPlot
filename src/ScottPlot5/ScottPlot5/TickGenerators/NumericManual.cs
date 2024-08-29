@@ -40,7 +40,7 @@ public class NumericManual : ITickGenerator
         _tickList.Add(tick);
     }
 
-    public void AddMajor(double position, string label)
+    public void AddMajor(double position, string? label)
     {
         Add(Tick.Major(position, label));
     }

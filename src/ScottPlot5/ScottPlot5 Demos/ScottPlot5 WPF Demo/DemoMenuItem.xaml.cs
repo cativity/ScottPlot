@@ -20,6 +20,6 @@ public partial class DemoMenuItem : UserControl
         TextBlock1.Text = ((IDemoWindow)instance).Description;
         ((Window)instance).Close();
 
-        Button1.Click += (s, e) => ((Window)Activator.CreateInstance(type)!).Show();
+        Button1.Click += (s, e) => (Activator.CreateInstance(type) as Window)?.Show();
     }
 }

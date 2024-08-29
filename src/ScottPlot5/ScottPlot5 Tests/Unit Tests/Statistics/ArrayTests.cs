@@ -13,7 +13,7 @@ internal class ArrayTests
     private readonly double[,] _sample2DWithNaN = { { 2, 3, double.NaN, 7 }, { 11, double.NaN, double.NaN, double.NaN }, { 23, double.NaN, double.NaN, 37 } };
 
     [Test]
-    public void Test_ArrayStats1D_NanMean()
+    public void TestArrayStats1DNanMean()
     {
         // known values calculated with https://goodcalculators.com/standard-error-calculator/
 
@@ -28,7 +28,7 @@ internal class ArrayTests
     }
 
     [Test]
-    public void Test_ArrayStats1D_NanStdev()
+    public void TestArrayStats1DNanStdev()
     {
         // known values calculated with https://goodcalculators.com/standard-error-calculator/
 
@@ -46,7 +46,7 @@ internal class ArrayTests
     }
 
     [Test]
-    public void Test_ArrayStats2D_AllReal()
+    public void TestArrayStats2DAllReal()
     {
         // known values calculated with https://goodcalculators.com/standard-error-calculator/
 
@@ -67,7 +67,7 @@ internal class ArrayTests
     }
 
     [Test]
-    public void Test_ArrayStats2D_WithNan()
+    public void TestArrayStats2DWithNan()
     {
         // known values calculated with https://goodcalculators.com/standard-error-calculator/
 

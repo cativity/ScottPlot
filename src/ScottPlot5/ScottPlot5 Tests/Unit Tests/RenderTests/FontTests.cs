@@ -5,7 +5,7 @@ namespace ScottPlotTests.RenderTests;
 internal class FontTests
 {
     [Test]
-    public void Test_Font_Default()
+    public void TestFontDefault()
     {
         Plot plt = new Plot();
         plt.Axes.Top.Label.Text = Fonts.Default;
@@ -15,7 +15,7 @@ internal class FontTests
     }
 
     [Test]
-    public void Test_Font_SpecialCharacters()
+    public void TestFontSpecialCharacters()
     {
         List<(string, string)> samples =
         [

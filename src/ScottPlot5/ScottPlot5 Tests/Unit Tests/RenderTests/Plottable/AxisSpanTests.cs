@@ -3,7 +3,7 @@
 internal class AxisSpanTests
 {
     [Test]
-    public void Test_AxisSpan_ExtremelyNarrow()
+    public void TestAxisSpanExtremelyNarrow()
     {
         Plot plot = new Plot();
         const double width = 1e-10;

@@ -15,15 +15,25 @@ public class Marker : IPlottable, IHasMarker, IHasLegendText
             Y = value.Y;
         }
     }
+
     public Coordinates Position
     {
-        get => new(X, Y);
-        set { X = value.X; Y = value.Y; }
+        get => new Coordinates(X, Y);
+        set
+        {
+            X = value.X;
+            Y = value.Y;
+        }
     }
+
     public Coordinates Coordinates
     {
-        get => new(X, Y);
-        set { X = value.X; Y = value.Y; }
+        get => new Coordinates(X, Y);
+        set
+        {
+            X = value.X;
+            Y = value.Y;
+        }
     }
 
     //[Obsolete("use LegendText")]

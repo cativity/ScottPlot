@@ -5,7 +5,7 @@ namespace ScottPlotTests.CodeTests;
 internal class CodeRequirementTests
 {
     [Test]
-    public void Test_AllTestMethods_HaveTestAttribute()
+    public void TestAllTestMethodsHaveTestAttribute()
     {
         IEnumerable<MethodInfo> testMethods = Assembly.GetAssembly(typeof(CodeRequirementTests))?.GetTypes()
                                                       .SelectMany(static t => t.GetMethods())
@@ -29,7 +29,7 @@ internal class CodeRequirementTests
     }
 
     [Test]
-    public void Test_Plottables_RenderMethodIsVirtual()
+    public void TestPlottablesRenderMethodIsVirtual()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3693
 
@@ -60,7 +60,7 @@ internal class CodeRequirementTests
     }
 
     [Test]
-    public void Test_RenderActions_ArePublic()
+    public void TestRenderActionsArePublic()
     {
         IEnumerable<Type> actionTypes =
             Assembly.GetAssembly(typeof(Plot))?.GetTypes().Where(static x => x.IsAssignableTo(typeof(IRenderAction)) && x.IsClass) ?? [];

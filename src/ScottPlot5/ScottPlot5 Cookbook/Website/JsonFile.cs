@@ -5,7 +5,7 @@ namespace ScottPlotCookbook.Website;
 
 internal static class JsonFile
 {
-    internal static readonly string BuildID = GetBuildID();
+    internal static readonly string _buildID = GetBuildID();
 
     private static string GetBuildID()
     {
@@ -77,7 +77,7 @@ internal static class JsonFile
             writer.WriteString("anchorUrl", recipe.AnchoredCategoryUrl);
             writer.WriteString("categoryUrl", recipe.CategoryUrl);
             writer.WriteString("recipeUrl", recipe.RecipeUrl);
-            writer.WriteString("imageUrl", recipe.ImageUrl + "?" + BuildID);
+            writer.WriteString("imageUrl", recipe.ImageUrl + "?" + _buildID);
             writer.WriteString("sourceUrl", recipe.Sourceurl);
 
             writer.WriteEndObject();

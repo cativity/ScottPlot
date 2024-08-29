@@ -5,7 +5,7 @@ namespace ScottPlotTests;
 internal class ImageDiffTests
 {
     [Test]
-    public void Test_Image_Diff()
+    public void TestImageDiff()
     {
         Image img1 = new Image("TestImages/bag_frame1.png");
         Image img2 = new Image("TestImages/bag_frame2.png");

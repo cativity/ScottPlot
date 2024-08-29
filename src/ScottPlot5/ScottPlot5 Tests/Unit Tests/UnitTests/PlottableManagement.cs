@@ -7,7 +7,7 @@ namespace ScottPlotTests.UnitTests;
 internal class PlottableManagement
 {
     [Test]
-    public void Test_Plot_RemoveInstance()
+    public void TestPlotRemoveInstance()
     {
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
@@ -40,7 +40,7 @@ internal class PlottableManagement
     }
 
     [Test]
-    public void Test_Plot_RemoveType()
+    public void TestPlotRemoveType()
     {
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
@@ -76,7 +76,7 @@ internal class PlottableManagement
     }
 
     [Test]
-    public void Test_Plot_RemoveTypeGeneric()
+    public void TestPlotRemoveTypeGeneric()
     {
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
@@ -113,7 +113,7 @@ internal class PlottableManagement
     }
 
     [Test]
-    public void Test_Plot_RemoveTypePredicate()
+    public void TestPlotRemoveTypePredicate()
     {
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
@@ -145,7 +145,7 @@ internal class PlottableManagement
     }
 
     [Test]
-    public void Test_Plot_GetPlottables()
+    public void TestPlotGetPlottables()
     {
         double[] xs = Generate.Consecutive();
         double[] ys = Generate.Sin();
@@ -170,7 +170,7 @@ internal class PlottableManagement
     public void NullTextTest()
     {
         Plot myPlot = new Plot();
-        myPlot.Add.Text(null!, new Coordinates());
+        myPlot.Add.Text(null, new Coordinates());
         myPlot.RenderManager.Render(new SKCanvas(new SKBitmap()), new PixelRect());
         Assert.Pass();
     }

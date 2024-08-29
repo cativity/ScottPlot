@@ -3,7 +3,7 @@
 public class LinePatternTests
 {
     [Test]
-    public void Test_EveryLinePattern_HasPathEffect()
+    public void TestEveryLinePatternHasPathEffect()
     {
         foreach (LinePattern pattern in Enum.GetValues<LinePattern>())
         {

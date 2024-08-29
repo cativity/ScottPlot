@@ -3,7 +3,7 @@
 internal class PlotAxisManipulation
 {
     [Test]
-    public void Test_Plot_Pan()
+    public void TestPlotPan()
     {
         Plot plt = new Plot();
         plt.Axes.SetLimits(-7, 42, -13, 69);
@@ -14,7 +14,7 @@ internal class PlotAxisManipulation
     }
 
     [Test]
-    public void Test_Plot_Pan_Pixels()
+    public void TestPlotPanPixels()
     {
         Plot plt = new Plot();
 
@@ -35,7 +35,7 @@ internal class PlotAxisManipulation
     }
 
     [Test]
-    public void Test_Plot_Zoom()
+    public void TestPlotZoom()
     {
         Plot plt = new Plot();
 

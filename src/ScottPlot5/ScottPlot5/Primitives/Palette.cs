@@ -24,12 +24,10 @@ public static class Palette
     public static IPalette[] GetPalettes()
     {
         return System.Reflection.Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .Where(x => x.IsClass)
-            .Where(x => !x.IsAbstract)
-            .Where(x => x.GetInterfaces().Contains(typeof(IPalette)))
-            .Where(x => x.GetConstructors().Where(x => x.GetParameters().Length == 0).Any())
-            .Select(x => (IPalette)Activator.CreateInstance(x)!)
-            .ToArray();
+                     .GetTypes()
+                     .Where(static x => x.IsClass && !x.IsAbstract && x.GetInterfaces().Contains(typeof(IPalette)) && x.GetConstructors().Any(static x => x.GetParameters().Length == 0))
+                     .Select(static x => Activator.CreateInstance(x))
+                     .Cast<IPalette>()
+                     .ToArray();
     }
 }

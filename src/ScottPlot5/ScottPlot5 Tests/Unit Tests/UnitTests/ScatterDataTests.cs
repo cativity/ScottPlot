@@ -6,7 +6,7 @@ namespace ScottPlotTests.UnitTests;
 internal class ScatterDataTests
 {
     [Test]
-    public void Test_ScatterLimits()
+    public void TestScatterLimits()
     {
         double[] xs = Generate.Consecutive(51);
         double[] ys = Generate.Sin(51);
@@ -21,7 +21,7 @@ internal class ScatterDataTests
     }
 
     [Test]
-    public void Test_ScatterLimits_WithNoRealPoint()
+    public void TestScatterLimitsWithNoRealPoint()
     {
         double[] xs = Generate.NaN(51);
         double[] ys = Generate.NaN(51);
@@ -152,7 +152,7 @@ internal class ScatterDataTests
     }
 
     [Test]
-    public void Test_ScatterLimits_MissingLeft()
+    public void TestScatterLimitsMissingLeft()
     {
         double[] xs = Generate.Consecutive(51);
         double[] ys = Generate.Sin(51);
@@ -173,7 +173,7 @@ internal class ScatterDataTests
     }
 
     [Test]
-    public void Test_ScatterLimits_MissingRight()
+    public void TestScatterLimitsMissingRight()
     {
         double[] xs = Generate.Consecutive(51);
         double[] ys = Generate.Sin(51);
@@ -194,7 +194,7 @@ internal class ScatterDataTests
     }
 
     [Test]
-    public void Test_Scatter_GetNearest_CoordinatesArray()
+    public void TestScatterGetNearestCoordinatesArray()
     {
         double[] xs = Generate.Consecutive(51);
         double[] ys = Generate.Sin(51);
@@ -215,7 +215,7 @@ internal class ScatterDataTests
     }
 
     [Test]
-    public void Test_Scatter_GetNearest_CoordinatesList()
+    public void TestScatterGetNearestCoordinatesList()
     {
         double[] xs = Generate.Consecutive(51);
         double[] ys = Generate.Sin(51);
@@ -236,7 +236,7 @@ internal class ScatterDataTests
     }
 
     [Test]
-    public void Test_Scatter_GetNearest_DoubleArray()
+    public void TestScatterGetNearestDoubleArray()
     {
         double[] xs = Generate.Consecutive(51);
         double[] ys = Generate.Sin(51);
@@ -256,7 +256,7 @@ internal class ScatterDataTests
     }
 
     [Test]
-    public void Test_Scatter_GetNearest_GenericArray()
+    public void TestScatterGetNearestGenericArray()
     {
         float[] xs = Generate.Consecutive(51).Select(static x => (float)x).ToArray();
         float[] ys = Generate.Sin(51).Select(static x => (float)x).ToArray();
@@ -276,7 +276,7 @@ internal class ScatterDataTests
     }
 
     [Test]
-    public void Test_Scatter_GetNearest_GenericList()
+    public void TestScatterGetNearestGenericList()
     {
         List<float> xs = Generate.Consecutive(51).Select(static x => (float)x).ToList();
         List<float> ys = Generate.Sin(51).Select(static x => (float)x).ToList();

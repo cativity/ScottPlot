@@ -3,7 +3,7 @@
 internal class Sandbox
 {
     [Test]
-    public void Test_Sandbox()
+    public void TestSandbox()
     {
         Plot plt = new Plot();
         plt.Axes.Left.Label.Text = "Vertical Axis";

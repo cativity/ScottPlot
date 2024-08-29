@@ -7,7 +7,7 @@ namespace ScottPlotTests.RenderTests;
 internal class LabelTests
 {
     [Test]
-    public void Test_Label_Alignment()
+    public void TestLabelAlignment()
     {
         SKBitmap bmp = new SKBitmap(500, 500);
         using SKCanvas canvas = new SKCanvas(bmp);
@@ -43,7 +43,7 @@ internal class LabelTests
     }
 
     [Test]
-    public void Test_Label_Rotation()
+    public void TestLabelRotation()
     {
         SKBitmap bmp = new SKBitmap(500, 500);
         using SKCanvas canvas = new SKCanvas(bmp);
@@ -79,7 +79,7 @@ internal class LabelTests
     }
 
     [Test]
-    public void Test_Label_Alignment_With_Rotation()
+    public void TestLabelAlignmentWithRotation()
     {
         SKBitmap bmp = new SKBitmap(500, 500);
         using SKCanvas canvas = new SKCanvas(bmp);
@@ -117,7 +117,7 @@ internal class LabelTests
     }
 
     [Test]
-    public void Test_MultilineLabel_AlignmentWithRotation()
+    public void TestMultilineLabelAlignmentWithRotation()
     {
         SKBitmap bmp = new SKBitmap(600, 600);
         using SKCanvas canvas = new SKCanvas(bmp);
@@ -158,7 +158,7 @@ internal class LabelTests
     }
 
     [Test]
-    public void Test_String_Measurement()
+    public void TestStringMeasurement()
     {
         SKBitmap bmp = new SKBitmap(500, 500);
         using SKCanvas canvas = new SKCanvas(bmp);
@@ -192,7 +192,7 @@ internal class LabelTests
     }
 
     [Test]
-    public void Test_Label_Multiline()
+    public void TestLabelMultiline()
     {
         SKSurface surface = Drawing.CreateSurface(400, 300);
         SKCanvas canvas = surface.Canvas;
@@ -220,7 +220,7 @@ internal class LabelTests
     }
 
     [Test]
-    public void Test_Label_Rounded()
+    public void TestLabelRounded()
     {
         SKBitmap bmp = new SKBitmap(200, 150);
         using SKCanvas canvas = new SKCanvas(bmp);
@@ -245,7 +245,7 @@ internal class LabelTests
     }
 
     [Test]
-    public void Test_Label_AntiAlias()
+    public void TestLabelAntiAlias()
     {
         SKBitmap bmp = new SKBitmap(200, 200);
         using SKCanvas canvas = new SKCanvas(bmp);
@@ -295,22 +295,22 @@ internal class LabelTests
     }
 
     [Test]
-    public void Test_Label_Offset()
+    public void TestLabelOffset()
     {
         SKBitmap bmp = new SKBitmap(500, 500);
-        Test_Label_Offset(bmp, "X:{0}, Y:{1}");
+        TestLabelOffset(bmp, "X:{0}, Y:{1}");
         bmp.SaveTestImage();
     }
 
     [Test]
-    public void Test_Label_MultiLineOffset()
+    public void TestLabelMultiLineOffset()
     {
         SKBitmap bmp = new SKBitmap(500, 500);
-        Test_Label_Offset(bmp, "X:{0}\nY:{1}");
+        TestLabelOffset(bmp, "X:{0}\nY:{1}");
         bmp.SaveTestImage();
     }
 
-    private static void Test_Label_Offset(SKBitmap bmp, string format)
+    private static void TestLabelOffset(SKBitmap bmp, string format)
     {
         using SKCanvas canvas = new SKCanvas(bmp);
         canvas.Clear(SKColors.Navy);
@@ -347,7 +347,7 @@ internal class LabelTests
     }
 
     [Test]
-    public static void Test_Label_MultilineAlignment()
+    public static void TestLabelMultilineAlignment()
     {
         Plot plot = new Plot();
 

@@ -5,7 +5,7 @@ namespace ScottPlotCookbook;
 internal class JsonCookbookInfoTests
 {
     [Test]
-    public void Test_JsonCookbook_Loads()
+    public void TestJsonCookbookLoads()
     {
         string json = JsonFile.Generate();
 

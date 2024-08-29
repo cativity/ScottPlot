@@ -3,7 +3,7 @@
 internal class SharedColorTests
 {
     [Test]
-    public void Test_RgbColor_RgbConstructor()
+    public void TestRgbColorRgbConstructor()
     {
         Color color = new Color(33, 66, 99);
         color.R.Should().Be(33);
@@ -13,7 +13,7 @@ internal class SharedColorTests
     }
 
     [Test]
-    public void Test_RgbColor_HexConstructor()
+    public void TestRgbColorHexConstructor()
     {
         Color color = Color.FromHex("#336699");
         color.R.Should().Be(51);
@@ -23,7 +23,7 @@ internal class SharedColorTests
     }
 
     [Test]
-    public void Test_RgbColor_HexConstructorWithAlpha()
+    public void TestRgbColorHexConstructorWithAlpha()
     {
         Color color = Color.FromHex("#336699AA");
         color.R.Should().Be(51);

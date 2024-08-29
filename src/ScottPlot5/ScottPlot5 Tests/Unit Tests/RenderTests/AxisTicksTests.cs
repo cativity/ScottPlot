@@ -6,7 +6,7 @@ namespace ScottPlotTests.RenderTests;
 internal class AxisTicksTests
 {
     [Test]
-    public void Test_DateTimeTicks_Bottom()
+    public void TestDateTimeTicksBottom()
     {
         Plot plt = new Plot();
         plt.Axes.Bottom.TickGenerator = new DateTimeAutomatic();
@@ -19,7 +19,7 @@ internal class AxisTicksTests
     }
 
     [Test]
-    public void Test_DateTimeTicks_Left()
+    public void TestDateTimeTicksLeft()
     {
         Plot plt = new Plot();
 
@@ -33,7 +33,7 @@ internal class AxisTicksTests
     }
 
     [Test]
-    public void Test_Multiline_TickLabels()
+    public void TestMultilineTickLabels()
     {
         Plot plt = new Plot();
 
@@ -57,7 +57,7 @@ internal class AxisTicksTests
     }
 
     [Test]
-    public void Test_MultilineRotated_TickLabels()
+    public void TestMultilineRotatedTickLabels()
     {
         Plot myPlot = new Plot();
 
@@ -100,7 +100,7 @@ internal class AxisTicksTests
     }
 
     [Test]
-    public void Test_Ticks_LargeFontSize()
+    public void TestTicksLargeFontSize()
     {
         Plot myPlot = new Plot();
         myPlot.Axes.Bottom.TickLabelStyle.FontSize = 96;
@@ -108,7 +108,7 @@ internal class AxisTicksTests
     }
 
     [Test]
-    public void Test_Ticks_LongLabels()
+    public void TestTicksLongLabels()
     {
         Plot plt = new Plot();
         plt.Axes.SetLimitsY(0, 1e9);
@@ -117,7 +117,7 @@ internal class AxisTicksTests
     }
 
     [Test]
-    public void Test_Ticks_Null()
+    public void TestTicksNull()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3736
 
@@ -130,7 +130,7 @@ internal class AxisTicksTests
 
         for (int i = 1; i <= 10; i++)
         {
-            tickGen.AddMajor(i, null!);
+            tickGen.AddMajor(i, null);
         }
 
         plt.Axes.Bottom.TickGenerator = tickGen;

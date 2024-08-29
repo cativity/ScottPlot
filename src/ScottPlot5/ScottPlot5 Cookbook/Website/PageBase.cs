@@ -1,8 +1,10 @@
-﻿namespace ScottPlotCookbook.Website;
+﻿using Version = ScottPlot.Version;
+
+namespace ScottPlotCookbook.Website;
 
 internal abstract class PageBase
 {
-    protected StringBuilder SB = new();
+    protected StringBuilder Sb = new StringBuilder();
 
     public void AddVersionInformation()
     {
@@ -35,14 +37,17 @@ internal abstract class PageBase
     {
         Directory.CreateDirectory(folder);
 
-        if (!url.EndsWith("/"))
+        if (!url.EndsWith('/'))
+        {
             url += "/";
+        }
 
-        StringBuilder sbfm = new();
+        StringBuilder sbfm = new StringBuilder();
         sbfm.AppendLine("---");
-        sbfm.AppendLine($"Title: {title}");
-        sbfm.AppendLine($"Description: {description}");
-        sbfm.AppendLine($"URL: {url}");
+        sbfm.Append("Title: ").AppendLine(title);
+        sbfm.Append("Description: ").AppendLine(description);
+        sbfm.Append("URL: ").AppendLine(url);
+
         if (frontmatter is not null)
         {
             foreach (string line in frontmatter)
@@ -50,15 +55,16 @@ internal abstract class PageBase
                 sbfm.AppendLine(line);
             }
         }
-        sbfm.AppendLine($"Date: {DateTime.UtcNow:yyyy-MM-dd}");
-        sbfm.AppendLine($"Version: {ScottPlot.Version.LongString}");
-        sbfm.AppendLine($"Version: {ScottPlot.Version.LongString}");
-        sbfm.AppendLine($"SearchUrl: \"/cookbook/5.0/search/\"");
-        sbfm.AppendLine($"ShowEditLink: false");
+
+        sbfm.Append("Date: ").AppendLine($"{DateTime.UtcNow:yyyy-MM-dd}");
+        sbfm.Append("Version: ").AppendLine(Version.LongString);
+        sbfm.Append("Version: ").AppendLine(Version.LongString);
+        sbfm.AppendLine("SearchUrl: \"/cookbook/5.0/search/\"");
+        sbfm.AppendLine("ShowEditLink: false");
         sbfm.AppendLine("---");
         sbfm.AppendLine();
 
-        string md = sbfm.ToString() + SB.ToString();
+        string md = sbfm.Append(Sb).ToString();
 
         string saveAs = Path.Combine(folder, filename);
         File.WriteAllText(saveAs, md);

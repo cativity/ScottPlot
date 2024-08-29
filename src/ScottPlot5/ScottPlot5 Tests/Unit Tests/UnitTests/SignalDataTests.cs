@@ -5,7 +5,7 @@ namespace ScottPlotTests.UnitTests;
 internal class SignalDataTests
 {
     [Test]
-    public void Test_Signal_DataLimits()
+    public void TestSignalDataLimits()
     {
         double[] data = Generate.Zeros(51);
         SignalSourceDouble ss = new SignalSourceDouble(data, 1);

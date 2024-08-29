@@ -3,7 +3,7 @@
 internal class CoordinateTests
 {
     [Test]
-    public void Test_Coordinate_DefaultValues()
+    public void TestCoordinateDefaultValues()
     {
         Coordinates coord = new Coordinates();
         coord.X.Should().Be(0);
@@ -16,7 +16,7 @@ internal class CoordinateTests
     [TestCase(5, -6)]
     [TestCase(0, double.NaN)] // permitted
     [TestCase(0, double.PositiveInfinity)] // permitted
-    public void Test_Coordinate_Construct(double x, double y)
+    public void TestCoordinateConstruct(double x, double y)
     {
         Coordinates coord = new Coordinates(x, y);
         coord.X.Should().Be(x);
@@ -24,7 +24,7 @@ internal class CoordinateTests
     }
 
     [Test]
-    public void Test_Coordinate_CustomToString()
+    public void TestCoordinateCustomToString()
     {
         new Coordinates().ToString().Should().Contain("X =");
     }

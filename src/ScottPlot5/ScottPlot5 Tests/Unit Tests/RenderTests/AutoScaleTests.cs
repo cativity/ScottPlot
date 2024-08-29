@@ -5,7 +5,7 @@ namespace ScottPlotTests.RenderTests;
 internal class AutoScaleTests
 {
     [Test]
-    public void Test_Autoscale_Default()
+    public void TestAutoscaleDefault()
     {
         Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin());
@@ -20,7 +20,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_Autoscale_Tight()
+    public void TestAutoscaleTight()
     {
         Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin());
@@ -36,7 +36,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_Autoscale_Custom()
+    public void TestAutoscaleCustom()
     {
         Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin());
@@ -46,7 +46,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_ManualLimits()
+    public void TestManualLimits()
     {
         Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin());
@@ -62,7 +62,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_ManualLimits_X()
+    public void TestManualLimitsX()
     {
         Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin());
@@ -78,7 +78,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_ManualLimits_Y()
+    public void TestManualLimitsY()
     {
         Plot plot = new Plot();
         plot.Add.Signal(Generate.Sin());
@@ -94,7 +94,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_AutoScale_NoVisiblePlots()
+    public void TestAutoScaleNoVisiblePlots()
     {
         Plot plot = new Plot();
 
@@ -114,7 +114,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_AutoScale_DefinedPlottables()
+    public void TestAutoScaleDefinedPlottables()
     {
         Plot plot = new Plot();
 
@@ -149,7 +149,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_Autoscale_ExtremelyLarge()
+    public void TestAutoscaleExtremelyLarge()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3930
 
@@ -159,7 +159,7 @@ internal class AutoScaleTests
     }
 
     [Test]
-    public void Test_Autoscale_ExtremelySmall()
+    public void TestAutoscaleExtremelySmall()
     {
         Plot plot = new Plot();
         plot.Add.Marker(1e-100, 1e-100);

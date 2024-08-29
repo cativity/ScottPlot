@@ -3,7 +3,7 @@
 internal class BarTests
 {
     [Test]
-    public void Test_Bar_Single()
+    public void TestBarSingle()
     {
         Plot plt = new Plot();
 

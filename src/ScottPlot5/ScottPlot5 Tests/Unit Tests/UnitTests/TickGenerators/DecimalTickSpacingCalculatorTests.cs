@@ -5,7 +5,7 @@ namespace ScottPlotTests.UnitTests.TickGenerators;
 internal class DecimalTickSpacingCalculatorTests
 {
     [Test]
-    public void Test_CalculatorLabels_ShouldAlwaysFitInGivenSpace()
+    public void TestCalculatorLabelsShouldAlwaysFitInGivenSpace()
     {
         DecimalTickSpacingCalculator calc = new DecimalTickSpacingCalculator();
         CoordinateRange range = new CoordinateRange(-500_000_000, 500_000_000);

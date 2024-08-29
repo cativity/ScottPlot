@@ -4,7 +4,7 @@ internal class RecipePage(JsonCookbookInfo.JsonRecipeInfo recipe) : PageBase
 {
     public void Generate(string outputFolder)
     {
-        Sb.AppendLine($"# {recipe.Name}");
+        Sb.Append("# ").AppendLine(recipe.Name);
         Sb.AppendLine();
 
         AddVersionInformation();
@@ -12,7 +12,7 @@ internal class RecipePage(JsonCookbookInfo.JsonRecipeInfo recipe) : PageBase
         Sb.AppendLine();
         Sb.AppendLine(recipe.Description);
         Sb.AppendLine();
-        Sb.AppendLine($"[![]({recipe.ImageUrl})]({recipe.ImageUrl})");
+        Sb.Append("[![](").Append(recipe.ImageUrl).Append(")](").Append(recipe.ImageUrl).AppendLine(")");
         Sb.AppendLine();
         Sb.AppendLine("{{< code-sp5 >}}");
         Sb.AppendLine();
@@ -22,7 +22,7 @@ internal class RecipePage(JsonCookbookInfo.JsonRecipeInfo recipe) : PageBase
         Sb.AppendLine();
         Sb.AppendLine("{{< /code-sp5 >}}");
         Sb.AppendLine();
-        Sb.AppendLine($"<a href='{recipe.SourceUrl}'>{InlineIcons.GitHubIcon()} Edit on GitHub</a>");
+        Sb.Append("<a href='").Append(recipe.SourceUrl).Append("'>").Append(InlineIcons.GitHubIcon()).AppendLine(" Edit on GitHub</a>");
         Sb.AppendLine();
 
         const string breadcrumbName1 = "ScottPlot 5.0 Cookbook";

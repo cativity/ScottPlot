@@ -8,7 +8,7 @@ namespace ScottPlotCookbook;
 internal class RecipeTests
 {
     [Test]
-    public void Test_Query_Categories_HavePopulatedFields()
+    public void TestQueryCategoriesHavePopulatedFields()
     {
         ICategory[] categories = Query.GetCategories().ToArray();
 
@@ -23,7 +23,7 @@ internal class RecipeTests
     }
 
     [Test]
-    public void Test_Query_Categories_HaveUniqueNames()
+    public void TestQueryCategoriesHaveUniqueNames()
     {
         DuplicateIdentifier<ICategory> ids = new DuplicateIdentifier<ICategory>("category name");
 
@@ -36,7 +36,7 @@ internal class RecipeTests
     }
 
     [Test]
-    public void Test_Query_Categories_HaveUniqueDescriptions()
+    public void TestQueryCategoriesHaveUniqueDescriptions()
     {
         DuplicateIdentifier<ICategory> ids = new DuplicateIdentifier<ICategory>("category description");
 
@@ -49,7 +49,7 @@ internal class RecipeTests
     }
 
     [Test]
-    public static void Test_RecipeSources_FoundAndValid()
+    public static void TestRecipeSourcesFoundAndValid()
     {
         SourceDatabase db = new SourceDatabase();
 
@@ -74,7 +74,7 @@ internal class RecipeTests
     }
 
     [Test]
-    public static void Test_ChaptersList_HasAllChapters()
+    public static void TestChaptersListHasAllChapters()
     {
         string[] orderedChapterNames = Query.GetChapterNamesInOrder();
 
@@ -85,7 +85,7 @@ internal class RecipeTests
     }
 
     [Test]
-    public static void Test_Recipes_HaveTestAttribute()
+    public static void TestRecipesHaveTestAttribute()
     {
         List<Type> recipeTypes = Assembly.GetAssembly(typeof(IRecipe))?.GetTypes().Where(static x => x.IsAssignableTo(typeof(RecipeBase)) && !x.IsAbstract).ToList() ?? [];
 
@@ -98,7 +98,7 @@ internal class RecipeTests
     }
 
     [Test]
-    public static void Test_Recipes_ArePublic()
+    public static void TestRecipesArePublic()
     {
         List<Type> recipeTypes = Assembly.GetAssembly(typeof(IRecipe))?.GetTypes().Where(static x => x.IsAssignableTo(typeof(RecipeBase)) && !x.IsAbstract).ToList() ?? [];
 

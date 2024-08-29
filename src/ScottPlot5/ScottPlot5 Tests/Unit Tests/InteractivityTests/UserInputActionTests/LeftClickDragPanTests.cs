@@ -5,7 +5,7 @@ namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
 internal class LeftClickDragPanTests
 {
     [Test]
-    public void Test_LeftClickDragPan_PanButDoesNotZoom()
+    public void TestLeftClickDragPanPanButDoesNotZoom()
     {
         MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
@@ -23,7 +23,7 @@ internal class LeftClickDragPanTests
     }
 
     [Test]
-    public void Test_LeftClickDragPan_ShiftLocksHorizontalAxis()
+    public void TestLeftClickDragPanShiftLocksHorizontalAxis()
     {
         MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();
@@ -42,7 +42,7 @@ internal class LeftClickDragPanTests
     }
 
     [Test]
-    public void Test_LeftClickDragPan_CtrlLocksVerticalAxis()
+    public void TestLeftClickDragPanCtrlLocksVerticalAxis()
     {
         MockPlotControl plotControl = new MockPlotControl();
         AxisLimits originalLimits = plotControl.Plot.Axes.GetLimits();

@@ -5,7 +5,7 @@ namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
 internal class RightClickContextMenuTests
 {
     [Test]
-    public void Test_RightClickContextMenu_LaunchesMenu()
+    public void TestRightClickContextMenuLaunchesMenu()
     {
         MockPlotControl plotControl = new MockPlotControl();
         plotControl.ContextMenuLaunchCount.Should().Be(0);
@@ -18,7 +18,7 @@ internal class RightClickContextMenuTests
     }
 
     [Test]
-    public void Test_RightClickDrag_DoesNotLaunchMenu()
+    public void TestRightClickDragDoesNotLaunchMenu()
     {
         MockPlotControl plotControl = new MockPlotControl();
         plotControl.ContextMenuLaunchCount.Should().Be(0);

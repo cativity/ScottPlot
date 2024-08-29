@@ -3,7 +3,7 @@
 internal class CoordinateRectTests
 {
     [Test]
-    public void Test_CoordinateRect_Defaults()
+    public void TestCoordinateRectDefaults()
     {
         CoordinateRect cRect = new CoordinateRect();
         cRect.Left.Should().Be(0);
@@ -14,7 +14,7 @@ internal class CoordinateRectTests
     }
 
     [Test]
-    public void Test_CoordinateRect_Constructor()
+    public void TestCoordinateRectConstructor()
     {
         CoordinateRect cRect = new CoordinateRect(-3, 7, -13, 11);
         cRect.Left.Should().Be(-3);
@@ -27,7 +27,7 @@ internal class CoordinateRectTests
     }
 
     [Test]
-    public void Test_CoordinateRect_Expanded()
+    public void TestCoordinateRectExpanded()
     {
         Coordinates coord = new Coordinates(13, 42);
 

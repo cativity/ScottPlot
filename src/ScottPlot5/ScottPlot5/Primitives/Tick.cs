@@ -13,14 +13,14 @@ public readonly struct Tick
         IsMajor = true;
     }
 
-    public Tick(double position, string label, bool isMajor)
+    public Tick(double position, string? label, bool isMajor)
     {
         Position = position;
-        Label = label;
+        Label = label ?? string.Empty;
         IsMajor = isMajor;
     }
 
-    public static Tick Major(double position, string label) => new Tick(position, label, true);
+    public static Tick Major(double position, string? label) => new Tick(position, label, true);
 
     public static Tick Minor(double position) => new Tick(position, string.Empty, false);
 }

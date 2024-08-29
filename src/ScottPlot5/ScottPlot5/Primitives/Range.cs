@@ -62,12 +62,7 @@ public readonly struct Range // TODO: evaluate if this can be replaced with more
             return Min;
         }
 
-        if (value > Max)
-        {
-            return Max;
-        }
-
-        return value;
+        return value > Max ? Max : value;
     }
 
     public static Range GetRange(double[,] input) => GetRange(input.Cast<double>());

@@ -8,7 +8,7 @@ namespace ScottPlotTests.UnitTests.TickGenerators;
 public class DateTimeFixedIntervalsTests
 {
     [Test]
-    public void Test_HourlyTicks_GeneratesTicksFromStartTimeOfRange()
+    public void TestHourlyTicksGeneratesTicksFromStartTimeOfRange()
     {
         DateTimeFixedInterval gen = new DateTimeFixedInterval(new Hour());
 
@@ -23,7 +23,7 @@ public class DateTimeFixedIntervalsTests
     }
 
     [Test]
-    public void Test_DailyTicksWithHourlyMinor_GeneratesTicksFromStartTimeOfRange()
+    public void TestDailyTicksWithHourlyMinorGeneratesTicksFromStartTimeOfRange()
     {
         DateTimeFixedInterval gen = new DateTimeFixedInterval(new Day(), 1, new Hour());
 
@@ -44,7 +44,7 @@ public class DateTimeFixedIntervalsTests
     }
 
     [Test]
-    public void Test_2DaysMajor6HoursMinor_GeneratesTicksFromStartTimeOfRange()
+    public void Test2DaysMajor6HoursMinorGeneratesTicksFromStartTimeOfRange()
     {
         DateTimeFixedInterval gen = new DateTimeFixedInterval(new Day(), 2, new Hour(), 6);
 
@@ -65,7 +65,7 @@ public class DateTimeFixedIntervalsTests
     }
 
     [Test]
-    public void Test_6HoursMajor1HourMinorStartTicksAtMidnight_GeneratesTicksAtExpectedPoints()
+    public void Test6HoursMajor1HourMinorStartTicksAtMidnightGeneratesTicksAtExpectedPoints()
     {
         DateTimeFixedInterval gen = new DateTimeFixedInterval(new Hour(), 6, new Hour(), 1, static dt => new DateTime(dt.Year, dt.Month, dt.Day));
 

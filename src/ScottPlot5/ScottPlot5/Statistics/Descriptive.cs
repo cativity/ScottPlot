@@ -13,36 +13,26 @@ public static class Descriptive
     /// <summary>
     ///     Return the sample sum.
     /// </summary>
-    public static double Sum(double[] values)
-    {
-        return values.Length > 0 ? values.Sum() : throw new ArgumentException($"{nameof(values)} cannot be empty");
-    }
+    public static double Sum(double[] values) => values.Length > 0 ? values.Sum() : throw new ArgumentException($"{nameof(values)} cannot be empty");
 
     /// <summary>
     ///     Return the sample sum.
     /// </summary>
-    public static double Sum<T>(IReadOnlyList<T> values)
-    {
-        return Sum(NumericConversion.GenericToDoubleArray(values));
-    }
+    public static double Sum<T>(IReadOnlyList<T> values) => Sum(NumericConversion.GenericToDoubleArray(values));
 
     /// <summary>
     ///     Return the sample mean.
     /// </summary>
     public static double Mean(double[] values)
-    {
-        return values.Length > 0 ? Sum(values) / values.Length : throw new ArgumentException($"{nameof(values)} cannot be empty");
-    }
+        => values.Length > 0 ? Sum(values) / values.Length : throw new ArgumentException($"{nameof(values)} cannot be empty");
 
     /// <summary>
     ///     Return the sample median.
     /// </summary>
     public static double Median(double[] values)
-    {
-        return values.Length > 0
-                   ? SortedMedian((double[]) [.. values.OrderBy(static x => x)])
-                   : throw new ArgumentException($"{nameof(values)} cannot be empty");
-    }
+        => values.Length > 0
+               ? SortedMedian(values.OrderBy(static x => x).ToArray())
+               : throw new ArgumentException($"{nameof(values)} cannot be empty");
 
     /// <summary>
     ///     Return the median of a sorted sample.
@@ -75,18 +65,12 @@ public static class Descriptive
     /// <summary>
     ///     Return the percentile of a sample.
     /// </summary>
-    public static double Percentile(IReadOnlyList<double> values, double percentile)
-    {
-        return SortedPercentile([.. values.OrderBy(static x => x)], percentile);
-    }
+    public static double Percentile(IReadOnlyList<double> values, double percentile) => SortedPercentile([.. values.OrderBy(static x => x)], percentile);
 
     /// <summary>
     ///     Return the sample mean.
     /// </summary>
-    public static double Mean<T>(IEnumerable<T> values)
-    {
-        return Mean(NumericConversion.GenericToDoubleArray(values));
-    }
+    public static double Mean<T>(IEnumerable<T> values) => Mean(NumericConversion.GenericToDoubleArray(values));
 
     /// <summary>
     ///     Return the sample variance (second moment about the mean) of data.
@@ -119,10 +103,7 @@ public static class Descriptive
     ///     Use this function to calculate the variance from the entire population.
     ///     To estimate the variance from a sample, use <see cref="VarianceP{T}(IReadOnlyList{T})()" />.
     /// </summary>
-    public static double Variance<T>(IReadOnlyList<T> values)
-    {
-        return Variance(NumericConversion.GenericToDoubleArray(values));
-    }
+    public static double Variance<T>(IReadOnlyList<T> values) => Variance(NumericConversion.GenericToDoubleArray(values));
 
     /// <summary>
     ///     Return the sample variance (second moment about the mean) of data.
@@ -155,10 +136,7 @@ public static class Descriptive
     ///     Use this function to calculate the variance from the entire population.
     ///     To estimate the variance from a sample, use <see cref="Variance{T}(IReadOnlyList{T})" />.
     /// </summary>
-    public static double VarianceP<T>(IReadOnlyList<T> values)
-    {
-        return VarianceP(NumericConversion.GenericToDoubleArray(values));
-    }
+    public static double VarianceP<T>(IReadOnlyList<T> values) => VarianceP(NumericConversion.GenericToDoubleArray(values));
 
     /// <summary>
     ///     Return the sample standard deviation (the square root of the sample variance).
@@ -169,11 +147,9 @@ public static class Descriptive
     ///     Return the sample standard deviation (the square root of the sample variance).
     /// </summary>
     public static double StandardDeviation<T>(IReadOnlyList<T> values)
-    {
-        return values.Count > 0
-                   ? StandardDeviation(NumericConversion.GenericToDoubleArray(values))
-                   : throw new ArgumentException($"{nameof(values)} cannot be empty");
-    }
+        => values.Count > 0
+               ? StandardDeviation(NumericConversion.GenericToDoubleArray(values))
+               : throw new ArgumentException($"{nameof(values)} cannot be empty");
 
     /// <summary>
     ///     Return the population standard deviation (the square root of the population variance).
@@ -186,11 +162,9 @@ public static class Descriptive
     ///     See VarianceP() for more information.
     /// </summary>
     public static double StandardDeviationP<T>(IReadOnlyList<T> values)
-    {
-        return values.Count > 0
-                   ? StandardDeviationP(NumericConversion.GenericToDoubleArray(values))
-                   : throw new ArgumentException($"{nameof(values)} cannot be empty");
-    }
+        => values.Count > 0
+               ? StandardDeviationP(NumericConversion.GenericToDoubleArray(values))
+               : throw new ArgumentException($"{nameof(values)} cannot be empty");
 
     /// <summary>
     ///     Standard error of the mean.
@@ -198,14 +172,9 @@ public static class Descriptive
     public static double StandardError<T>(IReadOnlyList<T> values) => StandardDeviation(values) / Math.Sqrt(values.Count);
 
     public static IReadOnlyList<double> RemoveNaN<T>(IReadOnlyList<T> values)
-    {
-        return NumericConversion.GenericToDoubleArray(values).Where(static value => !double.IsNaN(value)).ToList();
-    }
+        => NumericConversion.GenericToDoubleArray(values).Where(static value => !double.IsNaN(value)).ToList();
 
-    public static double[] RemoveNaN(double[] values)
-    {
-        return values.Where(static value => !double.IsNaN(value)).ToArray();
-    }
+    public static double[] RemoveNaN(double[] values) => values.Where(static value => !double.IsNaN(value)).ToArray();
 
     /// <summary>
     ///     Return the sample mean. NaN values are ignored.
@@ -322,35 +291,20 @@ public static class Descriptive
         return vector;
     }
 
-    public static double NanMean(double[,] values, uint row = 0, uint? column = null)
-    {
-        return NanMean(ArrayToVector(values, row, column));
-    }
+    public static double NanMean(double[,] values, uint row = 0, uint? column = null) => NanMean(ArrayToVector(values, row, column));
 
-    public static double NanVariance(double[,] values, uint row = 0, uint? column = null)
-    {
-        return Variance(RemoveNaN(ArrayToVector(values, row, column)));
-    }
+    public static double NanVariance(double[,] values, uint row = 0, uint? column = null) => Variance(RemoveNaN(ArrayToVector(values, row, column)));
 
-    public static double NanVarianceP(double[,] values, uint row = 0, uint? column = null)
-    {
-        return VarianceP(RemoveNaN(ArrayToVector(values, row, column)));
-    }
+    public static double NanVarianceP(double[,] values, uint row = 0, uint? column = null) => VarianceP(RemoveNaN(ArrayToVector(values, row, column)));
 
     public static double NanStandardDeviation(double[,] values, uint row = 0, uint? column = null)
-    {
-        return StandardDeviation(RemoveNaN(ArrayToVector(values, row, column)));
-    }
+        => StandardDeviation(RemoveNaN(ArrayToVector(values, row, column)));
 
     public static double NanStandardDeviationP(double[,] values, uint row = 0, uint? column = null)
-    {
-        return StandardDeviationP(RemoveNaN(ArrayToVector(values, row, column)));
-    }
+        => StandardDeviationP(RemoveNaN(ArrayToVector(values, row, column)));
 
     public static double NanStandardError(double[,] values, uint row = 0, uint? column = null)
-    {
-        return NanStandardError(RemoveNaN(ArrayToVector(values, row, column)));
-    }
+        => NanStandardError(RemoveNaN(ArrayToVector(values, row, column)));
 
     public static double[] VerticalSlice(double[,] values, int columnIndex)
     {
@@ -365,32 +319,20 @@ public static class Descriptive
     }
 
     public static double[] VerticalMean(double[,] values)
-    {
-        return Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(Mean).ToArray();
-    }
+        => Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(Mean).ToArray();
 
     public static double[] VerticalNanMean(double[,] values)
-    {
-        return Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(NanMean).ToArray();
-    }
+        => Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(NanMean).ToArray();
 
     public static double[] VerticalStandardDeviation(double[,] values)
-    {
-        return Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(StandardDeviation).ToArray();
-    }
+        => Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(StandardDeviation).ToArray();
 
     public static double[] VerticalNanStandardDeviation(double[,] values)
-    {
-        return Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(NanStandardDeviation).ToArray();
-    }
+        => Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(NanStandardDeviation).ToArray();
 
     public static double[] VerticalStandardError(double[,] values)
-    {
-        return Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(StandardError).ToArray();
-    }
+        => Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(StandardError).ToArray();
 
     public static double[] VerticalNanStandardError(double[,] values)
-    {
-        return Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(NanStandardError).ToArray();
-    }
+        => Enumerable.Range(0, values.GetLength(1)).Select(x => VerticalSlice(values, x)).Select(NanStandardError).ToArray();
 }

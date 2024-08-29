@@ -173,23 +173,12 @@ public class RenderManager(Plot plot)
 
     private bool AxisLimitsChangedSinceLastRender()
     {
-        foreach (IAxis axis in LastRender.AxisLimitsByAxis.Keys)
+        foreach (IAxis axis in LastRender.AxisLimitsByAxis.Keys.Where(static axis => !double.IsNaN(axis.Range.Span)))
         {
-            //if (axis is null)
-            //{
-            //    continue;
-            //}
-
-            if (double.IsNaN(axis.Range.Span))
-            {
-                continue;
-            }
-
             CoordinateRangeMutable rangeNow = axis.Range;
             CoordinateRange rangeBefore = LastRender.AxisLimitsByAxis[axis];
-            bool axisLimitsChanged = rangeNow.Min != rangeBefore.Min || rangeNow.Max != rangeBefore.Max;
 
-            if (axisLimitsChanged)
+            if (rangeNow.Min != rangeBefore.Min || rangeNow.Max != rangeBefore.Max)
             {
                 return true;
             }

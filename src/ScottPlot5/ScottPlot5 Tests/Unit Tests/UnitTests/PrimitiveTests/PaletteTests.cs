@@ -3,7 +3,7 @@
 internal class PaletteTests
 {
     [Test]
-    public void Test_GetPalette_ReturnsPalettes()
+    public void TestGetPaletteReturnsPalettes()
     {
         IPalette[] palettes = Palette.GetPalettes();
         palettes.Should().NotBeNullOrEmpty();
@@ -11,7 +11,7 @@ internal class PaletteTests
     }
 
     [Test]
-    public void Test_Custom_Palette()
+    public void TestCustomPalette()
     {
         string[] customColors = ["#019d9f", "#7d3091", "#57e075", "#e5b5fa", "#009118"];
         IPalette pal = Palette.FromColors(customColors);

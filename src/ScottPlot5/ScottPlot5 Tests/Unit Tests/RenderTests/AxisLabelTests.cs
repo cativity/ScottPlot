@@ -3,7 +3,7 @@
 internal class AxisLabelTests
 {
     [Test]
-    public void Test_AxisLabel_Rotation()
+    public void TestAxisLabelRotation()
     {
         Plot plt = new Plot();
         plt.Axes.Bottom.Label.Text = "Horizontal Axis";

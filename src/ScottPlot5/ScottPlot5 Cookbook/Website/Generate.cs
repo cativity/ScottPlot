@@ -3,7 +3,7 @@
 internal class Generate
 {
     [Test]
-    public void Generate_Website()
+    public void GenerateWebsite()
     {
         string json = GenerateJsonFile();
         JsonCookbookInfo cb = new JsonCookbookInfo(json);

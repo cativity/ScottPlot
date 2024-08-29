@@ -4,7 +4,7 @@ internal class CategoryPage(JsonCookbookInfo cb, JsonCookbookInfo.JsonCategoryIn
 {
     public void Generate(string outputFolder)
     {
-        Sb.AppendLine($"# {category.Name}");
+        Sb.Append("# ").AppendLine(category.Name);
         Sb.AppendLine();
 
         AddVersionInformation();
@@ -12,11 +12,11 @@ internal class CategoryPage(JsonCookbookInfo cb, JsonCookbookInfo.JsonCategoryIn
         foreach (JsonCookbookInfo.JsonRecipeInfo recipe in cb.Recipes.Where(x => x.Category == category.Name))
         {
             Sb.AppendLine();
-            Sb.AppendLine($"<h2><a href='{recipe.RecipeUrl}'>{recipe.Name}</a></h2>");
+            Sb.Append("<h2><a href='").Append(recipe.RecipeUrl).Append("'>").Append(recipe.Name).AppendLine("</a></h2>");
             Sb.AppendLine();
             Sb.AppendLine(recipe.Description);
             Sb.AppendLine();
-            Sb.AppendLine($"[![]({recipe.ImageUrl})]({recipe.ImageUrl})");
+            Sb.Append("[![](").Append(recipe.ImageUrl).Append(")](").Append(recipe.ImageUrl).AppendLine(")");
             Sb.AppendLine();
             Sb.AppendLine("{{< code-sp5 >}}");
             Sb.AppendLine();

@@ -9,7 +9,7 @@ namespace ScottPlot.WPF;
 
 public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotControl
 {
-    public abstract GRContext GRContext { get; }
+    public abstract GRContext? GRContext { get; }
 
     public abstract void Refresh();
 
@@ -23,7 +23,7 @@ public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotContro
 
     public UserInputProcessor UserInputProcessor { get; }
 
-    protected abstract FrameworkElement PlotFrameworkElement { get; }
+    protected abstract FrameworkElement? PlotFrameworkElement { get; }
 
     static WpfPlotBase()
     {

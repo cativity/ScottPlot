@@ -8,7 +8,7 @@ internal class ForbiddenCodeTests
     private readonly string[] _sourceFilePaths = SourceCodeParsing.GetSourceFilePaths();
 
     [Test]
-    public void Test_CanvasSave_IsNotCalledDirectly()
+    public void TestCanvasSaveIsNotCalledDirectly()
     {
         int offences = 0;
         StringBuilder errorMessages = new StringBuilder();
@@ -37,7 +37,7 @@ internal class ForbiddenCodeTests
                 }
 
                 offences++;
-                errorMessages.AppendLine($"{file2} line {i + 1}");
+                errorMessages.Append(file2).Append(" line ").Append(i + 1).AppendLine();
                 errorMessages.AppendLine(line.Trim());
                 errorMessages.AppendLine();
             }
@@ -52,7 +52,7 @@ internal class ForbiddenCodeTests
     }
 
     [Test]
-    public void Test_PrimitivesNamespace_IsNeverUsed()
+    public void TestPrimitivesNamespaceIsNeverUsed()
     {
         Assert.That(Assembly.GetAssembly(typeof(Plot))?.GetTypes()
                             .FirstOrDefault(static x => x.Namespace is string ns && ns.Contains("ScottPlot.Primitives")), Is.Null);
@@ -64,7 +64,7 @@ internal class ForbiddenCodeTests
     }
 
     [Test]
-    public void Test_InterfacesNamespace_IsNeverUsed()
+    public void TestInterfacesNamespaceIsNeverUsed()
     {
         Assert.That(Assembly.GetAssembly(typeof(Plot))?.GetTypes()
                             .FirstOrDefault(static x => x.Namespace is string ns && ns.Contains("ScottPlot.Interfaces")), Is.Null);
@@ -76,7 +76,7 @@ internal class ForbiddenCodeTests
     }
 
     [Test]
-    public void Test_Canvas_DoNotCallDrawText()
+    public void TestCanvasDoNotCallDrawText()
     {
         int offences = 0;
         StringBuilder errorMessages = new StringBuilder();
@@ -103,7 +103,7 @@ internal class ForbiddenCodeTests
                 if (line.Contains(".DrawText("))
                 {
                     offences++;
-                    errorMessages.AppendLine($"{file2} line {i + 1}");
+                    errorMessages.Append(file2).Append(" line ").Append(i + 1).AppendLine();
                     errorMessages.AppendLine(line.Trim());
                     errorMessages.AppendLine();
                 }
@@ -119,7 +119,7 @@ internal class ForbiddenCodeTests
     }
 
     [Test]
-    public void Test_Paint_FontSpacing()
+    public void TestPaintFontSpacing()
     {
         int offences = 0;
         StringBuilder errorMessages = new StringBuilder();
@@ -141,7 +141,7 @@ internal class ForbiddenCodeTests
                 if (line.Contains(".FontSpacing"))
                 {
                     offences++;
-                    errorMessages.AppendLine($"{file2} line {i + 1}");
+                    errorMessages.Append(file2).Append(" line ").Append(i + 1).AppendLine();
                     errorMessages.AppendLine(line.Trim());
                     errorMessages.AppendLine();
                 }

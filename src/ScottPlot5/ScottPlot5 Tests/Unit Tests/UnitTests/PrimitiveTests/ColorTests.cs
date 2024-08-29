@@ -5,7 +5,7 @@ namespace ScottPlotTests.UnitTests.PrimitiveTests;
 internal class ColorTests
 {
     [Test]
-    public void Test_Color_Constructor()
+    public void TestColorConstructor()
     {
         Color color = new Color(13, 17, 23);
         color.Red.Should().Be(13);
@@ -15,7 +15,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_ConstructorWithAlpha()
+    public void TestColorConstructorWithAlpha()
     {
         Color color = new Color(13, 17, 23, 27);
         color.Red.Should().Be(13);
@@ -25,7 +25,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_ToARGB()
+    public void TestColorToARGB()
     {
         // MediumVioletRed 0xFFC71585 is RGB (199, 21, 133)
         Color color = new Color(199, 21, 133);
@@ -33,7 +33,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_FromARGB()
+    public void TestColorFromARGB()
     {
         // MediumVioletRed 0xFFC71585 is RGB (199, 21, 133)
         Color color = Color.FromARGB(0xFFC71585);
@@ -44,7 +44,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_WithRed()
+    public void TestColorWithRed()
     {
         Color color = new Color(12, 34, 56, 78).WithRed(99);
         color.Red.Should().Be(99);
@@ -54,7 +54,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_WithGreen()
+    public void TestColorWithGreen()
     {
         Color color = new Color(12, 34, 56, 78).WithGreen(99);
         color.Red.Should().Be(12);
@@ -64,7 +64,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_WithBlue()
+    public void TestColorWithBlue()
     {
         Color color = new Color(12, 34, 56, 78).WithBlue(99);
         color.Red.Should().Be(12);
@@ -74,7 +74,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_WithAlpha()
+    public void TestColorWithAlpha()
     {
         Color color = new Color(12, 34, 56, 78).WithAlpha(99);
         color.Red.Should().Be(12);
@@ -84,7 +84,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_ToSKColor()
+    public void TestColorToSKColor()
     {
         SKColor color = new Color(12, 34, 56, 78).ToSKColor();
         color.Red.Should().Be(12);
@@ -94,14 +94,14 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Color_ToHex()
+    public void TestColorToHex()
     {
         Color color = new Color(12, 34, 56);
         color.ToStringRGB().Should().Be("#0C2238");
     }
 
     [Test]
-    public void Test_Colors_ColorValues()
+    public void TestColorsColorValues()
     {
         Colors.Orange.ToStringRGB().Should().Be("#FFA500");
         Colors.Chocolate.ToStringRGB().Should().Be("#D2691E");
@@ -113,13 +113,13 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Colors_WebColors_HasColors()
+    public void TestColorsWebColorsHasColors()
     {
         new WebColors().GetAllColors().Should().NotBeEmpty();
     }
 
     [Test]
-    public void Test_Colors_WebColors_ColorValues()
+    public void TestColorsWebColorsColorValues()
     {
         WebColors.Orange.ToStringRGB().Should().Be("#FFA500");
         WebColors.Chocolate.ToStringRGB().Should().Be("#D2691E");
@@ -127,13 +127,13 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Colors_XKCD_HasColors()
+    public void TestColorsXkcdHasColors()
     {
         new XkcdColors().GetAllColors().Should().NotBeEmpty();
     }
 
     [Test]
-    public void Test_Colors_XKCD_ColorValues()
+    public void TestColorsXkcdColorValues()
     {
         XkcdColors.Orange.ToStringRGB().Should().Be("#F97306");
         XkcdColors.Darkblue.ToStringRGB().Should().Be("#030764");
@@ -141,7 +141,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Colors_RandomHue()
+    public void TestColorsRandomHue()
     {
         Color[] colors = Colors.RandomHue(10);
 
@@ -162,7 +162,7 @@ internal class ColorTests
     }
 
     [Test]
-    public void Test_Colors_Rainbow()
+    public void TestColorsRainbow()
     {
         Color[] colors = Colors.RandomHue(10);
         colors.Select(static x => x.ToHex()).Should().OnlyHaveUniqueItems();

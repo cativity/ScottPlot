@@ -5,7 +5,7 @@ namespace ScottPlotTests.RenderTests.Plottable;
 internal class ArrowTests
 {
     [Test]
-    public void Test_Arrow_Shapes()
+    public void TestArrowShapes()
     {
         Plot myPlot = new Plot();
 
@@ -30,7 +30,7 @@ internal class ArrowTests
     }
 
     [Test]
-    public void Test_Arrow_Directions()
+    public void TestArrowDirections()
     {
         Plot myPlot = new Plot();
 

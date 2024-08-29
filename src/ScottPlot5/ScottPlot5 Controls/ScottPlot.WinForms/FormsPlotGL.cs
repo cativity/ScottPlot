@@ -15,21 +15,21 @@ public class FormsPlotGL : FormsPlotBase
     public FormsPlotGL()
     {
         SKElement = new SKGLControl { Dock = DockStyle.Fill, VSync = true };
-        SKElement.PaintSurface += SKControl_PaintSurface;
-        SKElement.MouseDown += SKElement_MouseDown;
-        SKElement.MouseUp += SKElement_MouseUp;
-        SKElement.MouseMove += SKElement_MouseMove;
-        SKElement.DoubleClick += SKElement_DoubleClick;
-        SKElement.MouseWheel += SKElement_MouseWheel;
-        SKElement.KeyDown += SKElement_KeyDown;
-        SKElement.KeyUp += SKElement_KeyUp;
+        SKElement.PaintSurface += SKControlPaintSurface;
+        SKElement.MouseDown += SKElementMouseDown;
+        SKElement.MouseUp += SKElementMouseUp;
+        SKElement.MouseMove += SKElementMouseMove;
+        SKElement.DoubleClick += SKElementDoubleClick;
+        SKElement.MouseWheel += SKElementMouseWheel;
+        SKElement.KeyDown += SKElementKeyDown;
+        SKElement.KeyUp += SKElementKeyUp;
 
         Controls.Add(SKElement);
 
         HandleDestroyed += (_, _) => SKElement.Dispose();
     }
 
-    private void SKControl_PaintSurface(object? sender, SKPaintGLSurfaceEventArgs e)
+    private void SKControlPaintSurface(object? sender, SKPaintGLSurfaceEventArgs e)
     {
         Plot.Render(e.Surface.Canvas, (int)e.Surface.Canvas.LocalClipBounds.Width, (int)e.Surface.Canvas.LocalClipBounds.Height);
     }

@@ -5,7 +5,7 @@ namespace ScottPlotTests.RenderTests;
 internal class LayoutTests
 {
     [Test]
-    public void Test_Layout_Automatic()
+    public void TestLayoutAutomatic()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin());
@@ -26,7 +26,7 @@ internal class LayoutTests
     }
 
     [Test]
-    public void Test_Layout_Automatic_MinPanelSize()
+    public void TestLayoutAutomaticMinPanelSize()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin());
@@ -48,7 +48,7 @@ internal class LayoutTests
     }
 
     [Test]
-    public void Test_Layout_Automatic_MaxPanelSize()
+    public void TestLayoutAutomaticMaxPanelSize()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin());
@@ -70,7 +70,7 @@ internal class LayoutTests
     }
 
     [Test]
-    public void Test_Layout_Automatic_FixedPanelSize()
+    public void TestLayoutAutomaticFixedPanelSize()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin());
@@ -93,7 +93,7 @@ internal class LayoutTests
     }
 
     [Test]
-    public void Test_Layout_RightLabelAndTicks()
+    public void TestLayoutRightLabelAndTicks()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3104
 

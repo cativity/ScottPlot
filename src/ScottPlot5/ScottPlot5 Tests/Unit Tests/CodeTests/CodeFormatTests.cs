@@ -3,11 +3,11 @@
 public class CodeFormatTests
 {
     [Test]
-    public void Test_AddMethods_AreAlphabetized()
+    public void TestAddMethodsAreAlphabetized()
     {
         List<string> methodNames = SourceCodeParsing.GetMethodNames("PlottableAdder.cs");
 
-        //methodNames.Remove("GetNextColor");
+        methodNames.Remove("GetNextColor");
         //methodNames.Remove("PlottablesThatDoNotGetColors =");
         //methodNames.Remove("PlottablesThatDoNotGetColors = [");
 

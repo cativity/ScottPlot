@@ -3,7 +3,7 @@
 internal class SampleData
 {
     [Test]
-    public void Test_SampleData_Primes()
+    public void TestSampleDataPrimes()
     {
         ScottPlot.SampleData.FirstHundredPrimes.Should().NotBeNull();
         ScottPlot.SampleData.FirstHundredPrimes.Should().NotBeEmpty();

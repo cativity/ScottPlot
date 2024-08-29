@@ -3,7 +3,7 @@
 public class Tests
 {
     [Test]
-    public void Test_Generate_Consecutive()
+    public void TestGenerateConsecutive()
     {
         double[] values = Generate.Consecutive(10);
         values.Should().NotBeNullOrEmpty();
@@ -11,14 +11,14 @@ public class Tests
     }
 
     [Test]
-    public void Test_RandomNormal()
+    public void TestRandomNormal()
     {
         double[] values = Generate.RandomNormal(10);
         Console.WriteLine(string.Join(Environment.NewLine, values.Select(static x => x.ToString())));
     }
 
     [Test]
-    public void Test_Range()
+    public void TestRange()
     {
         double[] values = Generate.Range(7, 9, 0.5);
         double[] expected = [7, 7.5, 8, 8.5, 9];

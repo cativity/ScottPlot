@@ -3,7 +3,7 @@
 internal class GenerateTests
 {
     [Test]
-    public void Test_Weekdays()
+    public void TestWeekdays()
     {
         foreach (DateTime dt in Generate.ConsecutiveWeekdays(100))
         {

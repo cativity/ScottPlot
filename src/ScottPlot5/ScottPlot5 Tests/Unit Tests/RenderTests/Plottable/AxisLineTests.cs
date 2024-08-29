@@ -5,7 +5,7 @@ namespace ScottPlotTests.RenderTests.Plottable;
 internal class AxisLineTests
 {
     [Test]
-    public void Test_AxisLine_Render()
+    public void TestAxisLineRender()
     {
         Plot plot = new Plot();
         plot.HideGrid();
@@ -24,7 +24,7 @@ internal class AxisLineTests
     }
 
     [Test]
-    public void Test_AxisLine_Label()
+    public void TestAxisLineLabel()
     {
         Plot plot = new Plot();
         plot.HideGrid();
@@ -39,7 +39,7 @@ internal class AxisLineTests
     }
 
     [Test]
-    public void Test_AxisLine_Style()
+    public void TestAxisLineStyle()
     {
         Plot plot = new Plot();
 
@@ -61,7 +61,7 @@ internal class AxisLineTests
     }
 
     [Test]
-    public void Test_AxisLine_ZeroWidth()
+    public void TestAxisLineZeroWidth()
     {
         Plot plot = new Plot();
 
@@ -74,7 +74,7 @@ internal class AxisLineTests
     }
 
     [Test]
-    public void Test_AxisLine_NoLabel()
+    public void TestAxisLineNoLabel()
     {
         Plot plot = new Plot();
         plot.Add.HorizontalLine(0.5);

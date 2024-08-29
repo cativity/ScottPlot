@@ -10,7 +10,7 @@ internal class NumericConversionTests
     }
 
     [Test]
-    public void Test_NoAllocationConversion_PreservesOriginalValue()
+    public void TestNoAllocationConversionPreservesOriginalValue()
     {
         AssertConversionPreservesOriginalValue<double>(42.69);
         AssertConversionPreservesOriginalValue<float>(42.69, 1e-4);
@@ -28,7 +28,7 @@ internal class NumericConversionTests
     }
 
     [Test]
-    public void Test_TypeSpecificFunction_Add()
+    public void TestTypeSpecificFunctionAdd()
     {
         Assert.Multiple(static () =>
         {
@@ -40,7 +40,7 @@ internal class NumericConversionTests
     }
 
     [Test]
-    public void Test_TypeSpecificFunction_Multiply()
+    public void TestTypeSpecificFunctionMultiply()
     {
         Assert.Multiple(static () =>
         {
@@ -52,7 +52,7 @@ internal class NumericConversionTests
     }
 
     [Test]
-    public void Test_TypeSpecificFunction_Subtract()
+    public void TestTypeSpecificFunctionSubtract()
     {
         Assert.Multiple(static () =>
         {
@@ -64,7 +64,7 @@ internal class NumericConversionTests
     }
 
     [Test]
-    public void Test_TypeSpecificFunction_LessThanOrEqual()
+    public void TestTypeSpecificFunctionLessThanOrEqual()
     {
         Assert.Multiple(static () =>
         {
@@ -87,7 +87,7 @@ internal class NumericConversionTests
     }
 
     [Test]
-    public void Test_Clamp()
+    public void TestClamp()
     {
         NumericConversion.Clamp(3, 5, 10).Should().Be(5);
         NumericConversion.Clamp(5, 5, 10).Should().Be(5);

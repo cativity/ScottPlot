@@ -6,7 +6,7 @@ namespace ScottPlotTests.RenderTests.Plottable;
 internal class SignalTests
 {
     [Test]
-    public void Test_Signal_HorizontalLine()
+    public void TestSignalHorizontalLine()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/2933
         // https://github.com/ScottPlot/ScottPlot/pull/2935
@@ -23,7 +23,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_VerticalGap()
+    public void TestSignalVerticalGap()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/2933
         // https://github.com/ScottPlot/ScottPlot/pull/2935
@@ -39,7 +39,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_Offsets()
+    public void TestSignalOffsets()
     {
         Plot plt = new Plot();
         Signal sig = plt.Add.Signal(Generate.Sin());
@@ -49,7 +49,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_Scale()
+    public void TestSignalScale()
     {
         Plot plt = new Plot();
 
@@ -65,7 +65,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_SignalXY_Scale()
+    public void TestSignalXYScale()
     {
         Plot plt = new Plot();
 
@@ -81,7 +81,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_GenericType()
+    public void TestSignalGenericType()
     {
         ushort[] values = [1, 3, 2, 4];
         const double period = 1.0;
@@ -93,7 +93,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_AddGenericArray()
+    public void TestSignalAddGenericArray()
     {
         ushort[] values = [1, 3, 2, 4];
 
@@ -103,7 +103,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_AddGenericList()
+    public void TestSignalAddGenericList()
     {
         List<ushort> values = [1, 3, 2, 4];
 
@@ -113,7 +113,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_SignalLowDensity_InvertedX()
+    public void TestSignalLowDensityInvertedX()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin());
@@ -122,7 +122,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_SignalHighDensity_InvertedX()
+    public void TestSignalHighDensityInvertedX()
     {
         Plot plt = new Plot();
         plt.Add.Signal(Generate.Sin(100_000));
@@ -131,7 +131,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_Empty_DoubleArray()
+    public void TestSignalEmptyDoubleArray()
     {
         double[] values = [];
 
@@ -141,7 +141,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_Empty_GenericArray()
+    public void TestSignalEmptyGenericArray()
     {
         int[] values = [];
 
@@ -151,7 +151,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_Empty_GenericList()
+    public void TestSignalEmptyGenericList()
     {
         // ReSharper disable once CollectionNeverUpdated.Local
         List<double> values = [];
@@ -162,7 +162,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_SignalXY_SinglePoint_OffScreen()
+    public void TestSignalXYSinglePointOffScreen()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3926
 
@@ -183,7 +183,7 @@ internal class SignalTests
     }
 
     [Test]
-    public void Test_Signal_SinglePoint_OffScreen()
+    public void TestSignalSinglePointOffScreen()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/3926
 

@@ -14,7 +14,7 @@ public class WpfPlotGL : WpfPlotBase
 
     private SKGLElement? _skElement;
 
-    protected override FrameworkElement PlotFrameworkElement => _skElement!;
+    protected override FrameworkElement? PlotFrameworkElement => _skElement;
 
     public override GRContext GRContext => _skElement?.GrContext ?? GRContext.CreateGl();
 

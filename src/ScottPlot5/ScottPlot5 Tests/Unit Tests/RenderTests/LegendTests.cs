@@ -6,7 +6,7 @@ namespace ScottPlotTests.RenderTests;
 internal class LegendTests
 {
     [Test]
-    public void Test_Legend_Toggle()
+    public void TestLegendToggle()
     {
         Plot plt = new Plot();
         Signal sig1 = plt.Add.Signal(Generate.Sin());
@@ -25,7 +25,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_FontStyle()
+    public void TestLegendFontStyle()
     {
         Plot plt = new Plot();
 
@@ -43,7 +43,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_Image()
+    public void TestLegendImage()
     {
         Plot plt = new Plot();
 
@@ -58,7 +58,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_SvgImage()
+    public void TestLegendSvgImage()
     {
         Plot plt = new Plot();
 
@@ -75,7 +75,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_EmptyWithoutEnabling()
+    public void TestLegendEmptyWithoutEnabling()
     {
         Plot plt = new Plot();
         plt.GetImage(300, 200);
@@ -84,7 +84,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_EmptyWithEnabling()
+    public void TestLegendEmptyWithEnabling()
     {
         Plot plt = new Plot();
         plt.ShowLegend();
@@ -94,7 +94,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_Basic()
+    public void TestLegendBasic()
     {
         Plot plt = new Plot();
 
@@ -131,7 +131,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_FontOverride()
+    public void TestLegendFontOverride()
     {
         Plot plt = new Plot();
 
@@ -224,7 +224,7 @@ internal class LegendTests
         ];
 
     [Test]
-    public void Test_Legend_Symbols()
+    public void TestLegendSymbols()
     {
         Plot plt = new Plot();
         GetSampleLegendItems().ToList().ForEach(plt.Legend.ManualItems.Add);
@@ -233,7 +233,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_LegendImage_Symbols()
+    public void TestLegendImageSymbols()
     {
         Plot plt = new Plot();
         GetSampleLegendItems().ToList().ForEach(plt.Legend.ManualItems.Add);
@@ -241,7 +241,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_MultiLine()
+    public void TestLegendMultiLine()
     {
         Plot plt = new Plot();
 
@@ -257,7 +257,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_WrappingHorizontal()
+    public void TestLegendWrappingHorizontal()
     {
         Plot plt = new Plot();
 
@@ -275,7 +275,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_WrappingHorizontalTightWrap()
+    public void TestLegendWrappingHorizontalTightWrap()
     {
         Plot plt = new Plot();
 
@@ -293,7 +293,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_WrappingVertical()
+    public void TestLegendWrappingVertical()
     {
         Plot plt = new Plot();
 
@@ -311,7 +311,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Plottables_AppearInLegend()
+    public void TestPlottablesAppearInLegend()
     {
         double[] xs = [1, 2, 3];
         double[] ys = [1, 2, 3];
@@ -364,7 +364,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_Legend_Panel()
+    public void TestLegendPanel()
     {
         Plot plt = new Plot();
 
@@ -384,7 +384,7 @@ internal class LegendTests
     }
 
     [Test]
-    public void Test_CustomFont_InLegend()
+    public void TestCustomFontInLegend()
     {
         string ttfFilePath = Paths.GetTtfFilePaths().First();
         Fonts.AddFontFile("Font Name", ttfFilePath, false, false);

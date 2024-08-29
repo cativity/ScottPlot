@@ -5,7 +5,7 @@ namespace ScottPlotTests.Statistics;
 internal class HistogramTests
 {
     [Test]
-    public void Test_Histogram_IgnoringOutliers()
+    public void TestHistogramIgnoringOutliers()
     {
         Histogram hist = new Histogram(100, 200, 5, false, false);
 
@@ -41,7 +41,7 @@ internal class HistogramTests
     }
 
     [Test]
-    public void Test_Histogram_IncludingOutliers()
+    public void TestHistogramIncludingOutliers()
     {
         Histogram hist = new Histogram(100, 200, 5, true, false);
 
@@ -57,7 +57,7 @@ internal class HistogramTests
     }
 
     [Test]
-    public void Test_Histogram_Normalization()
+    public void TestHistogramNormalization()
     {
         Histogram hist = new Histogram(100, 200, 5, addFinalBin: false);
 
@@ -75,7 +75,7 @@ internal class HistogramTests
     }
 
     [Test]
-    public void Test_Histogram_CPH()
+    public void TestHistogramCph()
     {
         Histogram hist = new Histogram(100, 200, 5, addFinalBin: false);
 
@@ -91,7 +91,7 @@ internal class HistogramTests
     }
 
     [Test]
-    public void Test_Histogram_FixedBinSize()
+    public void TestHistogramFixedBinSize()
     {
         // Extending conversation in #2403, this test confirms bins meet expectations
         // https://github.com/ScottPlot/ScottPlot/issues/2403
@@ -108,7 +108,7 @@ internal class HistogramTests
     }
 
     [Test]
-    public void Test_Histogram_FixedBinCount()
+    public void TestHistogramFixedBinCount()
     {
         // Extending conversation in #2403, this test confirms bins meet expectations
         // https://github.com/ScottPlot/ScottPlot/issues/2403
@@ -125,7 +125,7 @@ internal class HistogramTests
     }
 
     [Test]
-    public void Test_Histogram_FractionalBinSize()
+    public void TestHistogramFractionalBinSize()
     {
         // https://github.com/ScottPlot/ScottPlot/issues/2490
 
@@ -142,7 +142,7 @@ internal class HistogramTests
     }
 
     [Test]
-    public void Test_Histogram_MinMaxValidation()
+    public void TestHistogramMinMaxValidation()
     {
         FluentActions.Invoking(static () => Histogram.WithFixedBinCount(0, 1, 1)).Should().NotThrow();
 

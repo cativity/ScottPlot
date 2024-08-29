@@ -5,7 +5,7 @@ namespace ScottPlotTests.InteractivityTests.UserInputActionTests;
 internal class DoubleClickBenchmarkTests
 {
     [Test]
-    public void Test_DoubleClick_ShowsBenchmark()
+    public void TestDoubleClickShowsBenchmark()
     {
         MockPlotControl plotControl = new MockPlotControl();
 

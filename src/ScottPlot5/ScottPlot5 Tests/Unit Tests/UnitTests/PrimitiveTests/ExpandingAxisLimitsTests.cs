@@ -3,7 +3,7 @@
 internal class ExpandingAxisLimitsTests
 {
     [Test]
-    public void Test_Default_IsNotSet()
+    public void TestDefaultIsNotSet()
     {
         ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
@@ -16,7 +16,7 @@ internal class ExpandingAxisLimitsTests
     }
 
     [Test]
-    public void Test_Init_AxisLimits()
+    public void TestInitAxisLimits()
     {
         AxisLimits initialLimits = new AxisLimits(-13, 17, -42, 69);
         ExpandingAxisLimits limits = new ExpandingAxisLimits(initialLimits);
@@ -24,7 +24,7 @@ internal class ExpandingAxisLimitsTests
     }
 
     [Test]
-    public void Test_Expand_XY()
+    public void TestExpandXY()
     {
         ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
@@ -42,7 +42,7 @@ internal class ExpandingAxisLimitsTests
     }
 
     [Test]
-    public void Test_Expand_X()
+    public void TestExpandX()
     {
         ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
@@ -56,7 +56,7 @@ internal class ExpandingAxisLimitsTests
     }
 
     [Test]
-    public void Test_Expand_Y()
+    public void TestExpandY()
     {
         ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
@@ -70,7 +70,7 @@ internal class ExpandingAxisLimitsTests
     }
 
     [Test]
-    public void Test_Expand_Coordinates()
+    public void TestExpandCoordinates()
     {
         ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
@@ -88,7 +88,7 @@ internal class ExpandingAxisLimitsTests
     }
 
     [Test]
-    public void Test_Expand_CoordinateList()
+    public void TestExpandCoordinateList()
     {
         ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
@@ -107,7 +107,7 @@ internal class ExpandingAxisLimitsTests
     }
 
     [Test]
-    public void Test_Expand_CoordinateRect()
+    public void TestExpandCoordinateRect()
     {
         ExpandingAxisLimits limits = new ExpandingAxisLimits();
 
@@ -122,7 +122,7 @@ internal class ExpandingAxisLimitsTests
     }
 
     [Test]
-    public void Test_Expand_AxisLimits()
+    public void TestExpandAxisLimits()
     {
         ExpandingAxisLimits limits = new ExpandingAxisLimits();
 

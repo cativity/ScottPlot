@@ -3,7 +3,7 @@
 internal class ApiDocGeneration
 {
     [Test]
-    public void Test_Docs()
+    public void TestDocs()
     {
         string xmlFilePath = Paths.GetScottPlotXmlFilePath();
         ApiDocs docs = new ApiDocs(typeof(Plot), xmlFilePath);

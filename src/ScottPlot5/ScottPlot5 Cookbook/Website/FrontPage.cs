@@ -1,65 +1,57 @@
 ﻿namespace ScottPlotCookbook.Website;
 
-internal class FrontPage : PageBase
+internal class FrontPage(JsonCookbookInfo cb) : PageBase
 {
-    readonly JsonCookbookInfo CB;
-
-    public FrontPage(JsonCookbookInfo cb)
-    {
-        CB = cb;
-    }
-
     public void Generate(string outputFolder)
     {
-        SB.AppendLine($"# ScottPlot 5.0 Cookbook");
-        SB.AppendLine();
+        Sb.AppendLine("# ScottPlot 5.0 Cookbook");
+        Sb.AppendLine();
 
         AddVersionInformation();
 
         // table of contents
-        foreach (string chapter in CB.Chapters)
+        foreach (string chapter in cb.Chapters)
         {
-            SB.AppendLine($"<div class='mt-3 fs-4'><strong>{chapter}</strong></div>");
+            Sb.Append("<div class='mt-3 fs-4'><strong>").Append(chapter).AppendLine("</strong></div>");
+            Sb.AppendLine("<ul>");
 
-            SB.AppendLine("<ul>");
-            foreach (var category in CB.Categories.Where(x => x.Chapter == chapter))
+            foreach (JsonCookbookInfo.JsonCategoryInfo category in cb.Categories.Where(x => x.Chapter == chapter))
             {
-                SB.AppendLine($"<li><a href='{category.Url}'>{category.Name}</a> - {category.Description}</li>");
+                Sb.Append("<li><a href='")
+                  .Append(category.Url)
+                  .Append("'>")
+                  .Append(category.Name)
+                  .Append("</a> - ")
+                  .Append(category.Description)
+                  .AppendLine("</li>");
             }
+
             if (chapter == "Miscellaneous")
             {
-                SB.AppendLine($"<li><a href='palettes'>Color Palettes</a> - Collections of colors which can be used to represent categorical data</li>");
-                SB.AppendLine($"<li><a href='colormaps'>Colormaps</a> - Color gradients available to represent continuous data</li>");
+                Sb.AppendLine("<li><a href='palettes'>Color Palettes</a> - Collections of colors which can be used to represent categorical data</li>");
+                Sb.AppendLine("<li><a href='colormaps'>Colormaps</a> - Color gradients available to represent continuous data</li>");
             }
-            SB.AppendLine("</ul>");
+
+            Sb.AppendLine("</ul>");
         }
 
         // individual recipes
-        foreach (string chapter in CB.Chapters)
+        foreach (string chapter in cb.Chapters)
         {
-            SB.AppendLine($"<h1>{chapter}</h1>");
+            Sb.Append("<h1>").Append(chapter).AppendLine("</h1>");
 
-            foreach (var category in CB.Categories.Where(x => x.Chapter == chapter))
+            foreach (JsonCookbookInfo.JsonCategoryInfo category in cb.Categories.Where(x => x.Chapter == chapter))
             {
                 AddCategory(category);
             }
         }
 
-        string breadcrumbName1 = "ScottPlot 5.0 Cookbook";
-        string breadcrumbUrl1 = "/cookbook/5.0/";
+        const string breadcrumbName1 = "ScottPlot 5.0 Cookbook";
+        const string breadcrumbUrl1 = "/cookbook/5.0/";
 
-        string[] fm =
-        {
-            $"BreadcrumbNames: [\"{breadcrumbName1}\"]",
-            $"BreadcrumbUrls: [\"{breadcrumbUrl1}\"]",
-        };
+        string[] fm = [$"BreadcrumbNames: [\"{breadcrumbName1}\"]", $"BreadcrumbUrls: [\"{breadcrumbUrl1}\"]"];
 
-        Save(outputFolder,
-            title: "ScottPlot 5.0 Cookbook",
-            description: "Example plots shown next to the code used to create them",
-            filename: "index_.md",
-            url: "/cookbook/5.0/",
-            frontmatter: fm);
+        Save(outputFolder, "ScottPlot 5.0 Cookbook", "Example plots shown next to the code used to create them", "index_.md", "/cookbook/5.0/", fm);
     }
 
     private void AddCategory(JsonCookbookInfo.JsonCategoryInfo category)
@@ -67,10 +59,10 @@ internal class FrontPage : PageBase
         //IEnumerable<WebRecipe> recipes = RecipesByCategory[category];
         //string categoryUrl = recipes.First().CategoryUrl;
 
-        SB.AppendLine($"<h2 class=''><a href='{category.Url}' class='text-dark'>{category.Name}</a></h2>");
-        SB.AppendLine($"<div>{category.Description}</div>");
+        Sb.Append("<h2 class=''><a href='").Append(category.Url).Append("' class='text-dark'>").Append(category.Name).AppendLine("</a></h2>");
+        Sb.Append("<div>").Append(category.Description).AppendLine("</div>");
 
-        foreach (JsonCookbookInfo.JsonRecipeInfo recipe in CB.Recipes.Where(x => x.Category == category.Name))
+        foreach (JsonCookbookInfo.JsonRecipeInfo recipe in cb.Recipes.Where(x => x.Category == category.Name))
         {
             AddRecipe(recipe);
         }
@@ -78,17 +70,14 @@ internal class FrontPage : PageBase
 
     private void AddRecipe(JsonCookbookInfo.JsonRecipeInfo recipe)
     {
-        SB.AppendLine("<div class='row my-4'>");
-
-        SB.AppendLine("<div class='col'>");
-        SB.AppendLine($"<a href='{recipe.RecipeUrl}'><img class='img-fluid' src='{recipe.ImageUrl}' /></a>");
-        SB.AppendLine("</div>");
-
-        SB.AppendLine("<div class='col'>");
-        SB.AppendLine($"<div><a href='{recipe.RecipeUrl}'><b>{recipe.Name}</b></a></div>");
-        SB.AppendLine($"<div>{recipe.Description}</div>");
-        SB.AppendLine("</div>");
-
-        SB.AppendLine("</div>");
+        Sb.AppendLine("<div class='row my-4'>");
+        Sb.AppendLine("<div class='col'>");
+        Sb.Append("<a href='").Append(recipe.RecipeUrl).Append("'><img class='img-fluid' src='").Append(recipe.ImageUrl).AppendLine("' /></a>");
+        Sb.AppendLine("</div>");
+        Sb.AppendLine("<div class='col'>");
+        Sb.Append("<div><a href='").Append(recipe.RecipeUrl).Append("'><b>").Append(recipe.Name).AppendLine("</b></a></div>");
+        Sb.Append("<div>").Append(recipe.Description).AppendLine("</div>");
+        Sb.AppendLine("</div>");
+        Sb.AppendLine("</div>");
     }
 }

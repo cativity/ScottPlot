@@ -3,7 +3,7 @@
 internal class PopulationTests
 {
     [Test]
-    public void Test_Population_Mean()
+    public void TestPopulationMean()
     {
         Population pop = new Population(SampleData.FirstHundredPrimes);
         pop.Count.Should().Be(100);

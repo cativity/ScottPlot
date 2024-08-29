@@ -14,9 +14,9 @@ public class WpfPlot : WpfPlotBase
 
     private SKElement? _skElement;
 
-    protected override FrameworkElement PlotFrameworkElement => _skElement!;
+    protected override FrameworkElement? PlotFrameworkElement => _skElement;
 
-    public override GRContext GRContext => null!;
+    public override GRContext? GRContext => null;
 
     static WpfPlot()
     {

@@ -3,13 +3,13 @@
 internal class SharedPaletteTests
 {
     [Test]
-    public void Test_SharedPalette_GetPalettes()
+    public void TestSharedPaletteGetPalettes()
     {
         Palette.GetPalettes().Should().NotBeNullOrEmpty();
     }
 
     [Test]
-    public void Test_PalleteTitle_ShouldBePopulated()
+    public void TestPalleteTitleShouldBePopulated()
     {
         foreach (IPalette palette in Palette.GetPalettes().Where(static palette => string.IsNullOrEmpty(palette.Name)))
         {
@@ -18,7 +18,7 @@ internal class SharedPaletteTests
     }
 
     [Test]
-    public void Test_Palletes_ShouldHaveUniqueTitles()
+    public void TestPalletesShouldHaveUniqueTitles()
     {
         HashSet<string> titles = [];
 

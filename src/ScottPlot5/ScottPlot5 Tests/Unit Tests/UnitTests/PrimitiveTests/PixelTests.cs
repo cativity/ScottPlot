@@ -3,7 +3,7 @@
 internal class PixelTests
 {
     [Test]
-    public void Test_Pixel_DefaultValues()
+    public void TestPixelDefaultValues()
     {
         Pixel pixel = new Pixel();
         pixel.X.Should().Be(0);
@@ -15,7 +15,7 @@ internal class PixelTests
     [TestCase(5, -6)]
     [TestCase(0, float.NaN)] // permitted
     [TestCase(0, float.PositiveInfinity)] // permitted
-    public void Test_Pixel_Construct(float x, float y)
+    public void TestPixelConstruct(float x, float y)
     {
         Pixel pixel = new Pixel(x, y);
         pixel.X.Should().Be(x);
@@ -23,7 +23,7 @@ internal class PixelTests
     }
 
     [Test]
-    public void Test_Pixel_CustomToString()
+    public void TestPixelCustomToString()
     {
         new Pixel().ToString().Should().Contain("X =");
     }

@@ -11,7 +11,7 @@ internal class KeyboardAutoscaleTests
     //private Pixel FIGURE_CENTER => new Pixel(FIGURE_WIDTH / 2, FIGURE_HEIGHT / 2);
 
     [Test]
-    public void Test_KeyboardAutoscale_ResetsAxisLimits()
+    public void TestKeyboardAutoscaleResetsAxisLimits()
     {
         MockPlotControl plotControl = new MockPlotControl();
         plotControl.Plot.Add.Signal(Generate.Sin());

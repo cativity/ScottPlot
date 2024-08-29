@@ -36,7 +36,7 @@ public class PlottableAdder(Plot plot)
         typeof(Text),
     ];
 
-    private Color GetNextColor()
+    public Color GetNextColor()
     {
         int coloredPlottableCount = Plot.PlottableList.Count(x => !_plottablesThatDoNotGetColors.Contains(x.GetType()));
 
@@ -868,7 +868,7 @@ public class PlottableAdder(Plot plot)
         return SignalXY(source, color);
     }
 
-    public Text Text(string text, Coordinates location) => Text(text, location.X, location.Y);
+    public Text Text(string? text, Coordinates location) => Text(text, location.X, location.Y);
 
     public Text Text(string? text, double x, double y)
     {

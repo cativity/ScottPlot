@@ -5,7 +5,7 @@ namespace ScottPlotTests.RenderTests;
 internal class MultiAxisTests
 {
     [Test]
-    public void Test_MultiAxis_Memory()
+    public void TestMultiAxisMemory()
     {
         Plot myPlot = new Plot();
 
@@ -26,7 +26,7 @@ internal class MultiAxisTests
     }
 
     [Test]
-    public void Test_MultiAxis_Remove()
+    public void TestMultiAxisRemove()
     {
         Plot myPlot = new Plot();
 
@@ -47,7 +47,7 @@ internal class MultiAxisTests
     }
 
     [Test]
-    public void Test_RightAxis_NoLeftAxis()
+    public void TestRightAxisNoLeftAxis()
     {
         Plot myPlot = new Plot();
 

@@ -6,7 +6,7 @@ namespace ScottPlotTests.RenderTests.Plottable;
 internal class ScatterTests
 {
     [Test]
-    public void Test_Scatter_Empty_Render()
+    public void TestScatterEmptyRender()
     {
         Plot plt = new Plot();
         double[] xs = [];
@@ -16,7 +16,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_Empty_StepDisplay_Render()
+    public void TestScatterEmptyStepDisplayRender()
     {
         Plot plt = new Plot();
         double[] xs = [];
@@ -31,7 +31,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_SinglePoint_Render()
+    public void TestScatterSinglePointRender()
     {
         Plot plt = new Plot();
         double[] xs = [1];
@@ -44,7 +44,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_RepeatedYs_Render()
+    public void TestScatterRepeatedYsRender()
     {
         Plot plt = new Plot();
         double[] xs = [1, 2, 3, 4, 5];
@@ -57,7 +57,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_GetStepDisplayPixels_Right()
+    public void TestGetStepDisplayPixelsRight()
     {
         //Plot plt = new Plot();
         double[] xs = [1, 2, 3, 4, 5];
@@ -75,7 +75,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_GetStepDisplayPixels_Left()
+    public void TestGetStepDisplayPixelsLeft()
     {
         //Plot plt = new Plot();
         double[] xs = [1, 2, 3, 4, 5];
@@ -93,7 +93,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_AddGenericArray()
+    public void TestScatterAddGenericArray()
     {
         float[] xs = [1, 2, 3, 4];
         ushort[] ys = [1, 3, 2, 4];
@@ -104,7 +104,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_DateTimeXs()
+    public void TestScatterDateTimeXs()
     {
         DateTime firstDay = new DateTime(2024, 01, 01);
         DateTime[] days = Generate.ConsecutiveDays(365, firstDay);
@@ -117,7 +117,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_AddGenericList()
+    public void TestScatterAddGenericList()
     {
         List<float> xs = [1, 2, 3, 4];
         List<ushort> ys = [1, 3, 2, 4];
@@ -128,7 +128,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_InvertedX()
+    public void TestScatterInvertedX()
     {
         Plot plt = new Plot();
         double[] xs = Generate.Consecutive(51);
@@ -141,7 +141,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_InvertedY()
+    public void TestScatterInvertedY()
     {
         Plot plt = new Plot();
         double[] xs = Generate.Consecutive(51);
@@ -154,7 +154,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_MinRenderIndex()
+    public void TestScatterMinRenderIndex()
     {
         Plot plt = new Plot();
         double[] xs = Generate.Consecutive(51);
@@ -167,7 +167,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_MaxRenderIndex()
+    public void TestScatterMaxRenderIndex()
     {
         Plot plt = new Plot();
         double[] xs = Generate.Consecutive(51);
@@ -180,7 +180,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_MinAndMaxRenderIndex_CoordinatesList()
+    public void TestScatterMinAndMaxRenderIndexCoordinatesList()
     {
         Plot plt = new Plot();
         double[] xs = Generate.Consecutive(51);
@@ -196,7 +196,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_MinAndMaxRenderIndex_CoordinatesArray()
+    public void TestScatterMinAndMaxRenderIndexCoordinatesArray()
     {
         Plot plt = new Plot();
         double[] xs = Generate.Consecutive(51);
@@ -212,7 +212,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_MinAndMaxRenderIndex_GenericArray()
+    public void TestScatterMinAndMaxRenderIndexGenericArray()
     {
         Plot plt = new Plot();
         int[] xs = Generate.Consecutive(51).Select(static x => (int)x).ToArray();
@@ -226,7 +226,7 @@ internal class ScatterTests
     }
 
     [Test]
-    public void Test_Scatter_MinAndMaxRenderIndex_GenericList()
+    public void TestScatterMinAndMaxRenderIndexGenericList()
     {
         Plot plt = new Plot();
         List<int> xs = Generate.Consecutive(51).Select(static x => (int)x).ToList();

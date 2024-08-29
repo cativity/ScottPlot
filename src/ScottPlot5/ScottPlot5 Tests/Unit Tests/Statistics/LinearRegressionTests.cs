@@ -5,7 +5,7 @@ namespace ScottPlotTests.Statistics;
 internal class LinearRegressionTests
 {
     [Test]
-    public void Test_LinearRegression_MatchesExcel()
+    public void TestLinearRegressionMatchesExcel()
     {
         double[] xs = [1, 2, 3, 4, 5, 6, 7];
         double[] ys = [2, 2, 3, 3, 3.8, 4.2, 4];
@@ -16,7 +16,7 @@ internal class LinearRegressionTests
     }
 
     [Test]
-    public void Test_LinearRegression_Coordinates()
+    public void TestLinearRegressionCoordinates()
     {
         Coordinates[] coordinates =
         [

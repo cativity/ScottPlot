@@ -5,7 +5,7 @@ namespace ScottPlotTests.UnitTests;
 internal class PlotCoordinateConversion
 {
     [Test]
-    public void Test_Plot_Pixel_To_Coords_And_Back()
+    public void TestPlotPixelToCoordsAndBack()
     {
         Plot plt = new Plot();
         plt.Axes.SetLimits(-5, 25, 10, 30);
@@ -20,7 +20,7 @@ internal class PlotCoordinateConversion
     }
 
     [Test]
-    public void Test_Plot_Pixel_To_Coords_And_Back_Scaled()
+    public void TestPlotPixelToCoordsAndBackScaled()
     {
         Plot plt = new Plot();
         plt.Axes.SetLimits(1, 2, -15, -5);
@@ -38,7 +38,7 @@ internal class PlotCoordinateConversion
     [TestCase(1.0)]
     [TestCase(2.0)]
     [TestCase(0.5)]
-    public void Test_GetCoordinateRectFromPixels(double scaleFactor)
+    public void TestGetCoordinateRectFromPixels(double scaleFactor)
     {
         const double xCoordMin = -20;
         const double xCoordMax = 20;
@@ -93,7 +93,7 @@ internal class PlotCoordinateConversion
     [TestCase(1.0)]
     [TestCase(2.0)]
     [TestCase(0.5)]
-    public void Test_GetCoordinateRectVsGetCoordinates(double scaleFactor)
+    public void TestGetCoordinateRectVsGetCoordinates(double scaleFactor)
     {
         Plot plot = new Plot { ScaleFactor = (float)scaleFactor };
         plot.Axes.SetLimits(5, 10, -20, -10);
@@ -121,7 +121,7 @@ internal class PlotCoordinateConversion
     [TestCase(1.0)]
     [TestCase(2.0)]
     [TestCase(0.5)]
-    public void Test_GetCoordinateRectFromCoords(double scaleFactor)
+    public void TestGetCoordinateRectFromCoords(double scaleFactor)
     {
         const double xCoordMin = 0;
         const double xCoordMax = 10;

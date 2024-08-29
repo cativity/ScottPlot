@@ -3,7 +3,7 @@
 internal class BasicImageTests
 {
     [Test]
-    public void Test_Render_SinCos()
+    public void TestRenderSinCos()
     {
         Plot plt = new Plot();
 
@@ -14,7 +14,7 @@ internal class BasicImageTests
     }
 
     [Test]
-    public void Test_No_Data()
+    public void TestNoData()
     {
         Plot plt = new Plot();
         plt.SaveTestImage();
