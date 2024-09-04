@@ -17,11 +17,11 @@ public class WinUIPlotMenu : IPlotMenu
 
     public List<ContextMenuItem> ContextMenuItems { get; set; } = new List<ContextMenuItem>();
 
-    private readonly WinUIPlot ThisControl;
+    private readonly WinUIPlot _thisControl;
 
     public WinUIPlotMenu(WinUIPlot thisControl)
     {
-        ThisControl = thisControl;
+        _thisControl = thisControl;
         Reset();
     }
 
@@ -48,7 +48,7 @@ public class WinUIPlotMenu : IPlotMenu
             }
             else
             {
-                MenuFlyoutItem? menuItem = new MenuFlyoutItem { Text = curr.Label };
+                MenuFlyoutItem menuItem = new MenuFlyoutItem { Text = curr.Label };
                 menuItem.Click += (s, e) => curr.OnInvoke(plotControl);
                 menu.Items.Add(menuItem);
             }
@@ -88,10 +88,10 @@ public class WinUIPlotMenu : IPlotMenu
         PixelSize lastRenderSize = plotControl.Plot.RenderManager.LastRender.FigureRect.Size;
         byte[] bytes = plotControl.Plot.GetImage((int)lastRenderSize.Width, (int)lastRenderSize.Height).GetImageBytes();
 
-        InMemoryRandomAccessStream? stream = new InMemoryRandomAccessStream();
+        InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream();
         stream.AsStreamForWrite().Write(bytes);
 
-        DataPackage? content = new DataPackage();
+        DataPackage content = new DataPackage();
         content.SetBitmap(RandomAccessStreamReference.CreateFromStream(stream));
 
         Clipboard.SetContent(content);
@@ -105,9 +105,9 @@ public class WinUIPlotMenu : IPlotMenu
 
     public void ShowContextMenu(Pixel pixel)
     {
-        MenuFlyout flyout = GetContextMenu(ThisControl);
+        MenuFlyout flyout = GetContextMenu(_thisControl);
         Point pt = new Point(pixel.X, pixel.Y);
-        flyout.ShowAt(ThisControl, pt);
+        flyout.ShowAt(_thisControl, pt);
     }
 
     public void Reset()
@@ -121,9 +121,9 @@ public class WinUIPlotMenu : IPlotMenu
         ContextMenuItems.Clear();
     }
 
-    public void Add(string Label, Action<IPlotControl> action)
+    public void Add(string label, Action<IPlotControl> action)
     {
-        ContextMenuItems.Add(new ContextMenuItem() { Label = Label, OnInvoke = action });
+        ContextMenuItems.Add(new ContextMenuItem() { Label = label, OnInvoke = action });
     }
 
     public void AddSeparator()

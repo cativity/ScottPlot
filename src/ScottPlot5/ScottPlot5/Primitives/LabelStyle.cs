@@ -17,7 +17,7 @@ public class LabelStyle
     /// <summary>
     ///     Rotation in degrees clockwise from 0 (horizontal text)
     /// </summary>
-    public float Rotation { get; set; } = 0;
+    public float Rotation { get; set; }
 
     public Color ForeColor { get; set; } = Colors.Black;
 
@@ -55,7 +55,7 @@ public class LabelStyle
     /// </summary>
     public float? LineSpacing { get; set; }
 
-    public bool Italic = false;
+    public bool Italic;
 
     //[Obsolete("use AntiAliasBackground and AntiAliasText", true)]
     //public bool AntiAlias = true;
@@ -70,14 +70,14 @@ public class LabelStyle
     // TODO: should add padding and margin
     public PixelPadding PixelPadding { get; set; } = new PixelPadding(0, 0, 0, 0);
 
-    public float PointSize = 0;
+    public float PointSize;
 
     public bool PointFilled { get; set; }
 
     public Color PointColor = Colors.Magenta;
 
-    public float OffsetX = 0; // TODO: automatic padding support for arbitrary rotations
-    public float OffsetY = 0; // TODO: automatic padding support for arbitrary rotations
+    public float OffsetX; // TODO: automatic padding support for arbitrary rotations
+    public float OffsetY; // TODO: automatic padding support for arbitrary rotations
 
     public float BorderRadius
     {

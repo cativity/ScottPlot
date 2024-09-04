@@ -2,19 +2,17 @@
 
 namespace ScottPlot.DataSources;
 
-public class DataLoggerSource
+public class DataLoggerSource(IList<Coordinates> coordinates)
 {
     private static readonly CoordinatesXComparer _xComparer = new CoordinatesXComparer();
     private volatile bool _hasNewData;
     private volatile bool _wasRendered;
 
-    public DataLoggerSource(IList<Coordinates> coordinates) => Coordinates = coordinates;
+    public IList<Coordinates> Coordinates { get; } = coordinates;
 
-    public IList<Coordinates> Coordinates { get; }
+    public double XOffset { get; set; }
 
-    public double XOffset { get; set; } = 0;
-
-    public double YOffset { get; set; } = 0;
+    public double YOffset { get; set; }
 
     public double YScale { get; set; } = 1;
 

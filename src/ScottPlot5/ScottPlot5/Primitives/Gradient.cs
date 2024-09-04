@@ -35,13 +35,13 @@ public class Gradient(GradientType gradientType = GradientType.Linear) : IHatch
     /// <summary>
     ///     Colors used for the gradient, or null to use the Hatch colors.
     /// </summary>
-    public Color[]? Colors { get; set; } = null;
+    public Color[]? Colors { get; set; }
 
     /// <summary>
     ///     Get or set the positions (in the range of 0..1) of each corresponding color,
     ///     or null to evenly distribute the colors.
     /// </summary>
-    public float[]? ColorPositions { get; set; } = null;
+    public float[]? ColorPositions { get; set; }
 
     public SKShader GetShader(Color backgroundColor, Color hatchColor, PixelRect rect)
     {

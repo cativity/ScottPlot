@@ -126,6 +126,7 @@ internal class ApiDocs(Type typeInAssembly, string xmlFilePath)
 
                 foreach (MethodParameterDocs p in methodDocs.Parameters)
                 {
+                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                     if (p.TypeName.CleanNameHtml.StartsWith(_scottPlotPrefix))
                     {
                         argsHtml.Add($"<a class='scottPlotType' href='#{p.TypeName.CleanNameHtml}'>{p.TypeName.CleanNameHtml}</a> <span class='name'>{p.Name}</span>");

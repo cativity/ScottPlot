@@ -60,7 +60,7 @@ public class WpfPlotMenu : IPlotMenu
 
     public void ShowContextMenu(Pixel position)
     {
-        ContextMenu? menu = GetContextMenu();
+        ContextMenu menu = GetContextMenu();
         menu.PlacementTarget = _thisControl;
         menu.Placement = PlacementMode.MousePoint;
         menu.IsOpen = true;
@@ -107,8 +107,6 @@ public class WpfPlotMenu : IPlotMenu
             catch (Exception)
             {
                 MessageBox.Show("Image save failed", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                return;
             }
         }
     }

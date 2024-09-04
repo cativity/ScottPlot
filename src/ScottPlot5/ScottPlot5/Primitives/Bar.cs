@@ -9,9 +9,9 @@ public class Bar
 
     public double Value;
 
-    public double ValueBase { get; set; } = 0;
+    public double ValueBase { get; set; }
 
-    public double Error { get; set; } = 0;
+    public double Error { get; set; }
 
     public bool IsVisible { get; set; } = true;
 
@@ -27,7 +27,7 @@ public class Bar
 
     public float BorderLineWidth { get; set; } = 1;
 
-    public float ErrorLineWidth { get; set; } = 0;
+    public float ErrorLineWidth { get; set; }
 
     // TODO: something like ErrorInDirectionOfValue?
     // Maybe ErrorPosition should be an enum containing: None, Upward, Downward, Both, or Extend

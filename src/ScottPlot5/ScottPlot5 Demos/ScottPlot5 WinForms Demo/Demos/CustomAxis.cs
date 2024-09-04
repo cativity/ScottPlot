@@ -1,10 +1,12 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.AxisPanels;
 using ScottPlot.TickGenerators;
 using SkiaSharp;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class CustomAxis : Form, IDemoWindow
 {
     public string Title => "Custom Axis";

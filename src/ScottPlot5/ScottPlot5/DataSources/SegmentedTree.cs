@@ -227,7 +227,7 @@ public class SegmentedTree<T>
         {
             if (_sourceArray.Length == 0)
             {
-                throw new ArgumentOutOfRangeException("Array cant't be empty");
+                throw new ArgumentOutOfRangeException(nameof(_sourceArray));
             }
 
             // Size up to pow2

@@ -11,7 +11,7 @@ namespace ScottPlot.Plottables;
 /// </summary>
 public class ScatterGLCustom : ScatterGL
 {
-    private IMarkersDrawProgram? JoinsProgram;
+    private IMarkersDrawProgram? _joinsProgram;
 
     public ScatterGLCustom(IScatterSource data, IPlotControl control)
         : base(data, control)
@@ -23,7 +23,7 @@ public class ScatterGLCustom : ScatterGL
         base.InitializeGL();
 
         LinesProgram = new LinesProgramCustom();
-        JoinsProgram = new MarkerFillCircleProgram();
+        _joinsProgram = new MarkerFillCircleProgram();
     }
 
     protected override void RenderWithOpenGL(SKSurface surface, GRContext context)
@@ -60,16 +60,16 @@ public class ScatterGLCustom : ScatterGL
             || MarkerStyle.Shape == MarkerShape.OpenCircle
             || MarkerStyle.Shape == MarkerShape.None)
         {
-            if (JoinsProgram is null)
+            if (_joinsProgram is null)
             {
-                throw new NullReferenceException(nameof(JoinsProgram));
+                throw new NullReferenceException(nameof(_joinsProgram));
             }
 
-            JoinsProgram.Use();
-            JoinsProgram.SetTransform(CalcTransform());
-            JoinsProgram.SetFillColor(LineStyle.Color.ToTkColor());
-            JoinsProgram.SetViewPortSize(Axes.DataRect.Width, Axes.DataRect.Height);
-            JoinsProgram.SetMarkerSize(LineStyle.Width);
+            _joinsProgram.Use();
+            _joinsProgram.SetTransform(CalcTransform());
+            _joinsProgram.SetFillColor(LineStyle.Color.ToTkColor());
+            _joinsProgram.SetViewPortSize(Axes.DataRect.Width, Axes.DataRect.Height);
+            _joinsProgram.SetMarkerSize(LineStyle.Width);
             GL.BindVertexArray(VertexArrayObject);
             GL.DrawArrays(PrimitiveType.Points, 0, VerticesCount);
         }

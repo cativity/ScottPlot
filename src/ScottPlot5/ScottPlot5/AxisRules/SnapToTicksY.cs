@@ -57,7 +57,7 @@ public class SnapToTicksY(IYAxis yAxis) : IAxisRule
         // establish which type of axis change occurred
         bool zoomedInTop = Math.Abs(newTop - oldBottom) < Math.Abs(oldTop - oldBottom);
         bool zoomedInBottom = Math.Abs(newBottom - oldTop) < Math.Abs(oldBottom - oldTop);
-        bool isPanning = zoomedInBottom ^ zoomedInTop && newTop != oldTop && newBottom != oldBottom;
+        bool isPanning = (zoomedInBottom ^ zoomedInTop) && newTop != oldTop && newBottom != oldBottom;
 
         YAxis.RegenerateTicks(new PixelLength(rp.DataRect.Height));
         List<double> ticks = YAxis.TickGenerator?.Ticks.Where(static tick => tick.IsMajor).Select(static x => x.Position).ToList() ?? [];

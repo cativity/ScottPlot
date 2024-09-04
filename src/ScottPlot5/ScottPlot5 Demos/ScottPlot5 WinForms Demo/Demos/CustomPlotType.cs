@@ -1,9 +1,11 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Colormaps;
 using SkiaSharp;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class CustomPlotType : Form, IDemoWindow
 {
     public string Title => "Custom Plot Type";

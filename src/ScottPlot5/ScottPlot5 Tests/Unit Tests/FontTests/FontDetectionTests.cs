@@ -32,7 +32,7 @@ internal static class FontDetectionTests
     {
         //List<List<string>> expectedResults = [["𝓦"], [], ["🌹"], [], ["已"], ["a"], ["𝓦"]];
 
-        foreach (string? testcase in (List<string>)(["𝓦", "á", "🌹", "👩🏽‍🚒", "已", "a", "𝓦á"]))
+        foreach (string? testcase in (List<string>)["𝓦", "á", "🌹", "👩🏽‍🚒", "已", "a", "𝓦á"])
         {
             List<string> testcaseTextElements = Fonts.ConvertStringToTextElements(testcase);
             List<List<int>> testcaseCodePoints = testcaseTextElements.ConvertAll(Fonts.ConvertTextElementToUtf32CodePoints);
@@ -49,7 +49,7 @@ internal static class FontDetectionTests
     [Test]
     public static void ConvertTextElementToUtf32CodePointsUnitTests()
     {
-        foreach (string? testcase in (List<string>)(["𝓦", "á", "🌹", "👩🏽‍🚒", "已", "a"]))
+        foreach (string? testcase in (List<string>)["𝓦", "á", "🌹", "👩🏽‍🚒", "已", "a"])
         {
             List<int> res = Fonts.ConvertTextElementToUtf32CodePoints(testcase);
 

@@ -40,12 +40,12 @@ public class WpfPlot : WpfPlotBase
             Plot.Render(e.Surface.Canvas, rect);
         };
 
-        _skElement.MouseDown += SKElement_MouseDown;
-        _skElement.MouseUp += SKElement_MouseUp;
-        _skElement.MouseMove += SKElement_MouseMove;
-        _skElement.MouseWheel += SKElement_MouseWheel;
-        _skElement.KeyDown += SKElement_KeyDown;
-        _skElement.KeyUp += SKElement_KeyUp;
+        _skElement.MouseDown += SKElementMouseDown;
+        _skElement.MouseUp += SKElementMouseUp;
+        _skElement.MouseMove += SKElementMouseMove;
+        _skElement.MouseWheel += SKElementMouseWheel;
+        _skElement.KeyDown += SKElementKeyDown;
+        _skElement.KeyUp += SKElementKeyUp;
     }
 
     public override void Refresh()

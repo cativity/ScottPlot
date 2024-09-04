@@ -1,8 +1,10 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class DraggableAxisSpans : Form, IDemoWindow
 {
     public string Title => "Draggable Axis Spans";
@@ -30,12 +32,12 @@ public partial class DraggableAxisSpans : Form, IDemoWindow
         formsPlot1.Refresh();
 
         // use events for custom mouse interactivity
-        formsPlot1.MouseDown += FormsPlot1_MouseDown;
-        formsPlot1.MouseUp += FormsPlot1_MouseUp;
-        formsPlot1.MouseMove += FormsPlot1_MouseMove;
+        formsPlot1.MouseDown += FormsPlot1MouseDown;
+        formsPlot1.MouseUp += FormsPlot1MouseUp;
+        formsPlot1.MouseMove += FormsPlot1MouseMove;
     }
 
-    private void FormsPlot1_MouseDown(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseDown(object? sender, MouseEventArgs e)
     {
         if (GetSpanUnderMouse(e.X, e.Y) is AxisSpanUnderMouse thingUnderMouse)
         {
@@ -44,14 +46,14 @@ public partial class DraggableAxisSpans : Form, IDemoWindow
         }
     }
 
-    private void FormsPlot1_MouseUp(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseUp(object? sender, MouseEventArgs e)
     {
         _spanBeingDragged = null;
         formsPlot1.Interaction.Enable(); // enable panning
         formsPlot1.Refresh();
     }
 
-    private void FormsPlot1_MouseMove(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseMove(object? sender, MouseEventArgs e)
     {
         if (_spanBeingDragged is not null)
         {

@@ -77,7 +77,7 @@ partial class CookbookViewer
         listView1.TabIndex = 1;
         listView1.UseCompatibleStateImageBehavior = false;
         listView1.View = View.SmallIcon;
-        listView1.SelectedIndexChanged += ListView1_SelectedIndexChanged;
+        listView1.SelectedIndexChanged += ListView1SelectedIndexChanged;
         // 
         // tableLayoutPanel1
         // 
@@ -158,7 +158,7 @@ partial class CookbookViewer
         tbFilter.Name = "tbFilter";
         tbFilter.Size = new Size(180, 23);
         tbFilter.TabIndex = 0;
-        tbFilter.TextChanged += TbFilter_TextChanged;
+        tbFilter.TextChanged += TbFilterTextChanged;
         // 
         // CookbookViewer
         // 
@@ -170,7 +170,7 @@ partial class CookbookViewer
         Controls.Add(listView1);
         Name = "CookbookViewer";
         Text = "ScottPlot Cookbook - Windows Forms";
-        Load += CookbookViewer_Load;
+        Load += CookbookViewerLoad;
         tableLayoutPanel1.ResumeLayout(false);
         gbSource.ResumeLayout(false);
         groupBox2.ResumeLayout(false);

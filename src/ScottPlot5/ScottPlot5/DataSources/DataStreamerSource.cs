@@ -49,9 +49,9 @@ public class DataStreamerSource(double[] data)
     /// </summary>
     public double DataMax { get; private set; } = double.NegativeInfinity;
 
-    public double OffsetX { get; set; } = 0;
+    public double OffsetX { get; set; }
 
-    public double OffsetY { get; set; } = 0;
+    public double OffsetY { get; set; }
 
     public double SamplePeriod { get; set; } = 1;
 

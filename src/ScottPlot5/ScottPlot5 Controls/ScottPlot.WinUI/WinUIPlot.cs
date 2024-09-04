@@ -46,12 +46,12 @@ public class WinUIPlot : UserControl, IPlotControl
         _canvas.DoubleTapped += OnDoubleTapped;
         _canvas.KeyDown += OnKeyDown;
         _canvas.KeyUp += OnKeyUp;
-        Loaded += WinUIPlot_Loaded;
+        Loaded += WinUIPlotLoaded;
 
         Content = _canvas;
     }
 
-    private void WinUIPlot_Loaded(object sender, RoutedEventArgs e)
+    private void WinUIPlotLoaded(object sender, RoutedEventArgs e)
     {
         if (XamlRoot is null)
         {

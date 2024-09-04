@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using ScottPlot.AxisPanels.Experimental;
 using ScottPlot.Colormaps;
 using ScottPlot.Palettes;

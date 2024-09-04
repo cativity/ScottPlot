@@ -21,14 +21,14 @@ public class GridStyle
 
         if (MinorLineStyle.CanBeRendered)
         {
-            float[] xTicksMinor = ticks.Where(x => !x.IsMajor).Select(x => axis.GetPixel(x.Position, rp.DataRect)).Take(MaximumNumberOfGridLines).ToArray();
+            float[] xTicksMinor = ticks.Where(static x => !x.IsMajor).Select(x => axis.GetPixel(x.Position, rp.DataRect)).Take(MaximumNumberOfGridLines).ToArray();
 
             RenderGridLines(rp, xTicksMinor, axis.Edge, MinorLineStyle);
         }
 
         if (MajorLineStyle.CanBeRendered)
         {
-            float[] xTicksMajor = ticks.Where(x => x.IsMajor).Select(x => axis.GetPixel(x.Position, rp.DataRect)).Take(MaximumNumberOfGridLines).ToArray();
+            float[] xTicksMajor = ticks.Where(static x => x.IsMajor).Select(x => axis.GetPixel(x.Position, rp.DataRect)).Take(MaximumNumberOfGridLines).ToArray();
 
             RenderGridLines(rp, xTicksMajor, axis.Edge, MajorLineStyle);
         }

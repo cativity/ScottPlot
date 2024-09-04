@@ -10,7 +10,7 @@ public abstract class AxisBase : LabelStyleProperties
 
     public virtual CoordinateRangeMutable Range { get; private set; } = CoordinateRangeMutable.NotSet;
 
-    public float MinimumSize { get; set; } = 0;
+    public float MinimumSize { get; set; }
 
     public float MaximumSize { get; set; } = float.MaxValue;
 

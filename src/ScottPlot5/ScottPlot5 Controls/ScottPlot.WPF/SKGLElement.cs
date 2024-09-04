@@ -22,7 +22,6 @@ public class SKGLElement : GLWpfControl, IDisposable
 
     private bool _designMode;
 
-    private GRContext _grContext;
     private GRGlFramebufferInfo _glInfo;
     private GRBackendRenderTarget _renderTarget;
     private SKSurface _surface;
@@ -32,7 +31,6 @@ public class SKGLElement : GLWpfControl, IDisposable
     private SKGLElementWindowListener _listener;
 
     public SKGLElement()
-        : base()
     {
         Initialize();
     }
@@ -70,11 +68,11 @@ public class SKGLElement : GLWpfControl, IDisposable
             if (window is not null)
             {
                 _theWindow = new WeakReference<Window>(window);
-                window.Closing += Window_Closing;
+                window.Closing += WindowClosing;
             }
         }
 
-        private void Window_Closing(object sender, CancelEventArgs e)
+        private void WindowClosing(object sender, CancelEventArgs e)
         {
             if (_toDestroy.TryGetTarget(out SKGLElement target))
             {
@@ -93,7 +91,7 @@ public class SKGLElement : GLWpfControl, IDisposable
 
             if (_theWindow is not null && _theWindow.TryGetTarget(out Window window))
             {
-                window.Closing -= Window_Closing;
+                window.Closing -= WindowClosing;
             }
 
             _theWindow = null;
@@ -109,7 +107,7 @@ public class SKGLElement : GLWpfControl, IDisposable
 
     public SKSize CanvasSize => _lastSize;
 
-    public GRContext GrContext => _grContext;
+    public GRContext GrContext { get; private set; }
 
     [Category("Appearance")]
     public event EventHandler<SKPaintGLSurfaceEventArgs> PaintSurface;
@@ -141,7 +139,7 @@ public class SKGLElement : GLWpfControl, IDisposable
 
     protected override void OnRender(DrawingContext drawingContext)
     {
-        _grContext?.ResetContext();
+        GrContext?.ResetContext();
 
         base.OnRender(drawingContext);
     }
@@ -159,10 +157,10 @@ public class SKGLElement : GLWpfControl, IDisposable
         }
 
         // create the contexts if not done already
-        if (_grContext is null)
+        if (GrContext is null)
         {
             GRGlInterface glInterface = GRGlInterface.Create();
-            _grContext = GRContext.CreateGl(glInterface);
+            GrContext = GRContext.CreateGl(glInterface);
         }
 
         // get the new surface size
@@ -181,7 +179,7 @@ public class SKGLElement : GLWpfControl, IDisposable
             GL.GetInteger(GetPName.FramebufferBinding, out int framebuffer);
             GL.GetInteger(GetPName.StencilBits, out int stencil);
             GL.GetInteger(GetPName.Samples, out int samples);
-            int maxSamples = _grContext.GetMaxSurfaceSampleCount(_colorType);
+            int maxSamples = GrContext.GetMaxSurfaceSampleCount(_colorType);
 
             if (samples > maxSamples)
             {
@@ -203,7 +201,7 @@ public class SKGLElement : GLWpfControl, IDisposable
         // create the surface
         if (_surface is null)
         {
-            _surface = SKSurface.Create(_grContext, _renderTarget, _surfaceOrigin, _colorType);
+            _surface = SKSurface.Create(GrContext, _renderTarget, _surfaceOrigin, _colorType);
             _canvas = _surface.Canvas;
         }
 
@@ -239,8 +237,8 @@ public class SKGLElement : GLWpfControl, IDisposable
         _surface = null;
         _renderTarget?.Dispose();
         _renderTarget = null;
-        _grContext?.Dispose();
-        _grContext = null;
+        GrContext?.Dispose();
+        GrContext = null;
         _listener?.Dispose();
         _listener = null;
 

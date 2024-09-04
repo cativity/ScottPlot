@@ -175,7 +175,7 @@ internal class RadialGauge
 
     private void RenderGaugeLabels(RenderPack rp, float radius)
     {
-        if (!ShowLabels || Label?.Length == 0)
+        if (!ShowLabels || Label.Length == 0)
         {
             return;
         }

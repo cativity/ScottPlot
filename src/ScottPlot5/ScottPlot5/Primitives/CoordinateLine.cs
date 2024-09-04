@@ -18,7 +18,7 @@ public readonly struct CoordinateLine
 
     public double SlopeRadians => Math.Atan(Slope);
 
-    public double SlopeDegrees => (SlopeRadians * 180) / Math.PI;
+    public double SlopeDegrees => SlopeRadians * 180 / Math.PI;
 
     public double YIntercept => Y1 - (Slope * X1);
 

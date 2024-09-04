@@ -1,8 +1,10 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class SignalXYDrag : Form, IDemoWindow
 {
     public string Title => "Mouse Interactive SignalXY Plots";
@@ -34,12 +36,12 @@ public partial class SignalXYDrag : Form, IDemoWindow
         _highlightedPointMarker.LineWidth = 2;
         _highlightedPointMarker.Shape = MarkerShape.OpenCircle;
 
-        formsPlot1.MouseDown += FormsPlot1_MouseDown;
-        formsPlot1.MouseUp += FormsPlot1_MouseUp;
-        formsPlot1.MouseMove += FormsPlot1_MouseMove;
+        formsPlot1.MouseDown += FormsPlot1MouseDown;
+        formsPlot1.MouseUp += FormsPlot1MouseUp;
+        formsPlot1.MouseMove += FormsPlot1MouseMove;
     }
 
-    private void FormsPlot1_MouseDown(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseDown(object? sender, MouseEventArgs e)
     {
         (SignalXY? sigXY, DataPoint dataPoint) = GetSignalXYUnderMouse(formsPlot1.Plot, e.X, e.Y);
 
@@ -54,7 +56,7 @@ public partial class SignalXYDrag : Form, IDemoWindow
         formsPlot1.Interaction.Disable(); // disable panning while dragging
     }
 
-    private void FormsPlot1_MouseUp(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseUp(object? sender, MouseEventArgs e)
     {
         _plottableBeingDragged = null;
         _startingDragPosition = DataPoint.None;
@@ -62,7 +64,7 @@ public partial class SignalXYDrag : Form, IDemoWindow
         formsPlot1.Refresh();
     }
 
-    private void FormsPlot1_MouseMove(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseMove(object? sender, MouseEventArgs e)
     {
         // this rectangle is the area around the mouse in coordinate units
         CoordinateRect rect = formsPlot1.Plot.GetCoordinateRect(e.X, e.Y, 5);

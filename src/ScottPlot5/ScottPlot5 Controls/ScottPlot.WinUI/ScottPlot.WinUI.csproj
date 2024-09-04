@@ -1,7 +1,9 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
     <!-- ref ; https://github.com/unoplatform/uno/discussions/10977 -->
     <PropertyGroup>
-	    <TargetFrameworks>net8.0-windows10.0.19041.0</TargetFrameworks>
+	    <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
+	    <RuntimeIdentifiers>win-arm64;win-x64;win-x86</RuntimeIdentifiers>
+	    <!--<TargetFrameworks>net8.0-windows10.0.19041.0</TargetFrameworks>-->
         <!--<TargetFrameworks>net6.0-windows10.0.18362;net6.0;net7.0-ios;net7.0-maccatalyst;net7.0-android</TargetFrameworks>-->
         <Nullable>enable</Nullable>
         <ImplicitUsings>disable</ImplicitUsings>

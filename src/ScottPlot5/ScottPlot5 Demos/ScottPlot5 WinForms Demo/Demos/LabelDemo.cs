@@ -1,10 +1,12 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.WinForms;
 using SkiaSharp;
 using Image = System.Drawing.Image;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class LabelDemo : Form, IDemoWindow
 {
     public string Title => "Font Styling";

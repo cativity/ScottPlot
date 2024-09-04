@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using ScottPlot.Plottables;
+﻿using ScottPlot.Plottables;
 
 namespace ScottPlotTests.RenderTests.Plottable;
 

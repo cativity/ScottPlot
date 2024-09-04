@@ -2,9 +2,9 @@
 
 public class Pie : PieBase
 {
-    public double ExplodeFraction { get; set; } = 0;
+    public double ExplodeFraction { get; set; }
 
-    public double DonutFraction { get; set; } = 0;
+    public double DonutFraction { get; set; }
 
     public Pie(IList<PieSlice> slices) => Slices = slices;
 

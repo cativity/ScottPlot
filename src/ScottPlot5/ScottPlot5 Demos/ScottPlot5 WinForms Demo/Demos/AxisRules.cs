@@ -1,10 +1,12 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.AxisRules;
 using ScottPlot.Plottables;
 using Rectangle = ScottPlot.Plottables.Rectangle;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class AxisRules : Form, IDemoWindow
 {
     public string Title => "Axis Rules";
@@ -15,10 +17,10 @@ public partial class AxisRules : Form, IDemoWindow
     {
         InitializeComponent();
         UnlockButtons();
-        cbInvertX.CheckedChanged += (_, _) => btnReset_Click(this, EventArgs.Empty);
-        cbInvertY.CheckedChanged += (_, _) => btnReset_Click(this, EventArgs.Empty);
+        cbInvertX.CheckedChanged += (_, _) => BtnResetClick(this, EventArgs.Empty);
+        cbInvertY.CheckedChanged += (_, _) => BtnResetClick(this, EventArgs.Empty);
 
-        btnReset_Click(this, EventArgs.Empty);
+        BtnResetClick(this, EventArgs.Empty);
     }
 
     private void LockButtons()
@@ -39,7 +41,7 @@ public partial class AxisRules : Form, IDemoWindow
         btnReset.Enabled = false;
     }
 
-    private void btnBoundaryMin_Click(object sender, EventArgs e)
+    private void BtnBoundaryMinClick(object sender, EventArgs e)
     {
         MinimumBoundary rule = new MinimumBoundary(formsPlot1.Plot.Axes.Bottom, formsPlot1.Plot.Axes.Left, new AxisLimits(0, 1, 0, 1));
 
@@ -50,7 +52,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnBoundaryMax_Click(object sender, EventArgs e)
+    private void BtnBoundaryMaxClick(object sender, EventArgs e)
     {
         MaximumBoundary rule = new MaximumBoundary(formsPlot1.Plot.Axes.Bottom, formsPlot1.Plot.Axes.Left, new AxisLimits(0, 1, 0, 1));
 
@@ -61,7 +63,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnScalePreserveX_Click(object sender, EventArgs e)
+    private void BtnScalePreserveXClick(object sender, EventArgs e)
     {
         SquarePreserveX rule = new SquarePreserveX(formsPlot1.Plot.Axes.Bottom, formsPlot1.Plot.Axes.Left);
 
@@ -72,7 +74,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnScalePreserveY_Click(object sender, EventArgs e)
+    private void BtnScalePreserveYClick(object sender, EventArgs e)
     {
         SquarePreserveY rule = new SquarePreserveY(formsPlot1.Plot.Axes.Bottom, formsPlot1.Plot.Axes.Left);
 
@@ -83,7 +85,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnScaleZoom_Click(object sender, EventArgs e)
+    private void BtnScaleZoomClick(object sender, EventArgs e)
     {
         SquareZoomOut rule = new SquareZoomOut(formsPlot1.Plot.Axes.Bottom, formsPlot1.Plot.Axes.Left);
 
@@ -94,7 +96,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnSpanMin_Click(object sender, EventArgs e)
+    private void BtnSpanMinClick(object sender, EventArgs e)
     {
         MinimumSpan rule = new MinimumSpan(formsPlot1.Plot.Axes.Bottom, formsPlot1.Plot.Axes.Left, 1, 1);
 
@@ -105,7 +107,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnSpanMax_Click(object sender, EventArgs e)
+    private void BtnSpanMaxClick(object sender, EventArgs e)
     {
         MaximumSpan rule = new MaximumSpan(formsPlot1.Plot.Axes.Bottom, formsPlot1.Plot.Axes.Left, 1, 1);
 
@@ -116,7 +118,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnLockHorizontal_Click(object sender, EventArgs e)
+    private void BtnLockHorizontalClick(object sender, EventArgs e)
     {
         AxisLimits limits = formsPlot1.Plot.Axes.GetLimits();
         LockedHorizontal rule = new LockedHorizontal(formsPlot1.Plot.Axes.Bottom, limits.Left, limits.Right);
@@ -128,7 +130,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnLockVertical_Click(object sender, EventArgs e)
+    private void BtnLockVerticalClick(object sender, EventArgs e)
     {
         AxisLimits limits = formsPlot1.Plot.Axes.GetLimits();
         LockedVertical rule = new LockedVertical(formsPlot1.Plot.Axes.Left, limits.Bottom, limits.Top);
@@ -140,7 +142,7 @@ public partial class AxisRules : Form, IDemoWindow
         LockButtons();
     }
 
-    private void btnReset_Click(object sender, EventArgs e)
+    private void BtnResetClick(object sender, EventArgs e)
     {
         formsPlot1.Plot.Axes.Rules.Clear();
         PlotRandomData();

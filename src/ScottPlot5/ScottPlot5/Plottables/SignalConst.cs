@@ -61,7 +61,7 @@ public class SignalConst<T>(T[] ys, double period) : IPlottable, IHasLine, IHasM
     ///     Setting this will decrease performance for large datasets
     ///     and is not recommended for interactive environments.
     /// </summary>
-    public bool AlwaysUseLowDensityMode { get; set; } = false;
+    public bool AlwaysUseLowDensityMode { get; set; }
 
     public bool IsVisible { get; set; } = true;
 

@@ -74,7 +74,7 @@ public abstract class AxisLine : LabelStyleProperties, IPlottable, IRenderLast, 
         }
     }
 
-    public double Position { get; set; } = 0;
+    public double Position { get; set; }
 
     public IEnumerable<LegendItem> LegendItems
         => LegendItem.Single(new LegendItem

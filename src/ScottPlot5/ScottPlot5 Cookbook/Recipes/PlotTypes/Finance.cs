@@ -114,7 +114,7 @@ public class Finance : ICategory
             MyPlot.Axes.DateTimeTicksBottom();
 
             // calculate SMA and display it as a scatter plot
-            foreach (int windowSize in (int[])([3, 8, 20]))
+            foreach (int windowSize in (int[])[3, 8, 20])
             {
                 SimpleMovingAverage sma = new SimpleMovingAverage(prices, windowSize);
                 ScottPlot.Plottables.Scatter sp = MyPlot.Add.Scatter(sma.Dates, sma.Means);

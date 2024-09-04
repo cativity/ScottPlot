@@ -659,7 +659,7 @@ public class Plot : IDisposable
 
     #region Developer Tools
 
-    public void Developer_ShowAxisDetails(bool enable = true)
+    public void DeveloperShowAxisDetails(bool enable = true)
     {
         foreach (IAxis panel in Axes.GetAxes())
         {

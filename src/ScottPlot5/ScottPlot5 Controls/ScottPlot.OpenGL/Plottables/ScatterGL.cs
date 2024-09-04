@@ -61,7 +61,9 @@ public class ScatterGL : Scatter, IPlottableGL
 
     protected Matrix4d CalcTransform()
     {
+        Debug.Assert(Axes.XAxis is not null);
         CoordinateRangeMutable xRange = Axes.XAxis.Range;
+        Debug.Assert(Axes.YAxis is not null);
         CoordinateRangeMutable yRange = Axes.YAxis.Range;
 
         Matrix4d translate = Matrix4d.CreateTranslation(-1.0 * (xRange.Min + xRange.Max) / 2, -1.0 * (yRange.Min + yRange.Max) / 2, 0.0);

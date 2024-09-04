@@ -33,26 +33,26 @@ public class MouseDragPan(MouseButton button) : IUserActionResponse
         }
 
         // mouse move while dragging
-        if (userInput is IMouseAction mouseAction && _rememberedLimits is not null)
+        if (userInput is not IMouseAction mouseAction || _rememberedLimits is null)
         {
-            // Ignore dragging if it's only a few pixels. This leaves room for
-            // single- and double-click events that may drag by a few pixels accidentally.
-            double dX = Math.Abs(mouseAction.Pixel.X - _mouseDownPixel.X);
-            double dY = Math.Abs(mouseAction.Pixel.Y - _mouseDownPixel.Y);
-            double maxDragDistance = Math.Max(dX, dY);
-
-            if (maxDragDistance < 5)
-            {
-                return ResponseInfo.NoActionRequired;
-            }
-
-            _rememberedLimits.Recall();
-            ApplyToPlot(plot, _mouseDownPixel, mouseAction.Pixel, keys);
-
-            return new ResponseInfo { RefreshNeeded = true, IsPrimary = true };
+            return ResponseInfo.NoActionRequired;
         }
 
-        return ResponseInfo.NoActionRequired;
+        // Ignore dragging if it's only a few pixels. This leaves room for
+        // single- and double-click events that may drag by a few pixels accidentally.
+        double dX = Math.Abs(mouseAction.Pixel.X - _mouseDownPixel.X);
+        double dY = Math.Abs(mouseAction.Pixel.Y - _mouseDownPixel.Y);
+        double maxDragDistance = Math.Max(dX, dY);
+
+        if (maxDragDistance < 5)
+        {
+            return ResponseInfo.NoActionRequired;
+        }
+
+        _rememberedLimits.Recall();
+        ApplyToPlot(plot, _mouseDownPixel, mouseAction.Pixel, keys);
+
+        return new ResponseInfo { RefreshNeeded = true, IsPrimary = true };
     }
 
     private static void ApplyToPlot(Plot plot, Pixel px1, Pixel px2, KeyboardState keys)

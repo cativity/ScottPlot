@@ -5,7 +5,7 @@ namespace Sandbox.WinForms3D;
 
 public class FormsPlot3D : UserControl
 {
-    private SKControl SkControl { get; }
+    private readonly SKControl _skControl;
 
     public readonly Plot3D Plot3D = new Plot3D();
 
@@ -16,11 +16,11 @@ public class FormsPlot3D : UserControl
 
     public FormsPlot3D()
     {
-        SkControl = new SKControl { Dock = DockStyle.Fill };
-        SkControl.PaintSurface += (s, e) => Plot3D.Render(e.Surface);
-        Controls.Add(SkControl);
+        _skControl = new SKControl { Dock = DockStyle.Fill };
+        _skControl.PaintSurface += (s, e) => Plot3D.Render(e.Surface);
+        Controls.Add(_skControl);
 
-        SkControl.MouseDown += (s, e) =>
+        _skControl.MouseDown += (s, e) =>
         {
             _mouseDownRotation = Plot3D.Rotation;
             _mouseDownPoint = e.Location;
@@ -28,9 +28,9 @@ public class FormsPlot3D : UserControl
             _mouseDownCameraCenter = Plot3D.CameraCenter;
         };
 
-        SkControl.MouseUp += (s, e) => _mouseDownRotation = null;
+        _skControl.MouseUp += (s, e) => _mouseDownRotation = null;
 
-        SkControl.MouseMove += (s, e) =>
+        _skControl.MouseMove += (s, e) =>
         {
             if (_mouseDownRotation is null)
             {
@@ -66,7 +66,7 @@ public class FormsPlot3D : UserControl
 
     public override void Refresh()
     {
-        SkControl?.Invalidate();
+        _skControl.Invalidate();
         base.Refresh();
     }
 }

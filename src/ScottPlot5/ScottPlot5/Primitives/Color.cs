@@ -17,7 +17,7 @@ internal static class ColorByteExtensions
     }
 }
 
-public readonly struct Color
+public readonly struct Color : IEquatable<Color>
 {
     public readonly byte Red;
     public readonly byte Green;
@@ -71,6 +71,15 @@ public readonly struct Color
     public static bool operator !=(Color a, Color b) => a.ARGB != b.ARGB;
 
     public override int GetHashCode() => (int)ARGB;
+
+    /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+    /// <param name="other">An object to compare with this object.</param>
+    /// <returns>
+    /// <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
+    public bool Equals(Color other)
+    {
+        return other.ARGB == ARGB;
+    }
 
     public override bool Equals(object? obj)
     {

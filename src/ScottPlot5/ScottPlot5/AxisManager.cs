@@ -559,13 +559,8 @@ public class AxisManager
     {
         ExpandingAxisLimits expandingLimits = new ExpandingAxisLimits();
 
-        foreach (IPlottable plottable in _plot.PlottableList)
+        foreach (IPlottable plottable in _plot.PlottableList.Where(plottable => plottable.Axes.XAxis == xAxis && plottable.Axes.YAxis == yAxis))
         {
-            if (plottable.Axes.XAxis != xAxis || plottable.Axes.YAxis != yAxis)
-            {
-                continue;
-            }
-
             expandingLimits.Expand(plottable.GetAxisLimits());
         }
 
@@ -1082,13 +1077,8 @@ public class AxisManager
     {
         HashSet<Plot> plotsNeedingUpdates = [];
 
-        foreach (LinkedAxisRule rule in _linkedAxisRules)
+        foreach (LinkedAxisRule rule in _linkedAxisRules.Where(rule => rule.TargetAxis.Min != rule.SourceAxis.Min || rule.TargetAxis.Max != rule.SourceAxis.Max))
         {
-            if (rule.TargetAxis.Min == rule.SourceAxis.Min && rule.TargetAxis.Max == rule.SourceAxis.Max)
-            {
-                continue;
-            }
-
             rule.TargetAxis.Min = rule.SourceAxis.Min;
             rule.TargetAxis.Max = rule.SourceAxis.Max;
             rule.TargetPlot.RenderManager.DisableAxisLimitsChangedEventOnNextRender = true;

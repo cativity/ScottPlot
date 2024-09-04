@@ -1,8 +1,10 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class MultiAxis : Form, IDemoWindow
 {
     public string Title => "Multi-Axis";
@@ -51,32 +53,32 @@ public partial class MultiAxis : Form, IDemoWindow
         formsPlot1.Refresh();
     }
 
-    private void BtnRandomize_Click(object sender, EventArgs e)
+    private void BtnRandomizeClick(object sender, EventArgs e)
     {
         PlotRandomData();
     }
 
-    private void BtnManualScale_Click(object sender, EventArgs e)
+    private void BtnManualScaleClick(object sender, EventArgs e)
     {
         formsPlot1.Plot.Axes.SetLimits(0, 50, -20, 20, formsPlot1.Plot.Axes.Bottom, _yAxis1);
         formsPlot1.Plot.Axes.SetLimits(0, 50, -20_000, 20_000, formsPlot1.Plot.Axes.Bottom, _yAxis2);
         formsPlot1.Refresh();
     }
 
-    private void BtnAutoScale_Click(object sender, EventArgs e)
+    private void BtnAutoScaleClick(object sender, EventArgs e)
     {
         formsPlot1.Plot.Axes.Margins();
         formsPlot1.Plot.Axes.AutoScale();
         formsPlot1.Refresh();
     }
 
-    private void BtnAutoScaleTight_Click(object sender, EventArgs e)
+    private void BtnAutoScaleTightClick(object sender, EventArgs e)
     {
         formsPlot1.Plot.Axes.Margins(0, 0);
         formsPlot1.Refresh();
     }
 
-    private void BtnAutoScaleWithPadding_Click(object sender, EventArgs e)
+    private void BtnAutoScaleWithPaddingClick(object sender, EventArgs e)
     {
         formsPlot1.Plot.Axes.Margins(1, 1);
         formsPlot1.Refresh();

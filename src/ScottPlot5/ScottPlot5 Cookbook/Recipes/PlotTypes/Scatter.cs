@@ -336,7 +336,7 @@ public class Scatter : ICategory
             mk.MarkerShape = MarkerShape.OpenCircle;
             mk.Color = Colors.Black;
 
-            foreach (double tension in (double[])([0.3, 0.5, 1.0, 3.0]))
+            foreach (double tension in (double[])[0.3, 0.5, 1.0, 3.0])
             {
                 ScottPlot.Plottables.Scatter sp = MyPlot.Add.ScatterLine(xs, ys);
                 sp.Smooth = true;

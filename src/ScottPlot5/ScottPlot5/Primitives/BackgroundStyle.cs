@@ -41,10 +41,12 @@ public class BackgroundStyle : IDisposable
         paint.Color = Color.ToSKColor();
         Drawing.FillRectangle(canvas, target, paint);
 
-        if (Image is not null)
+        if (Image is null)
         {
-            PixelRect imgRect = ImagePosition.GetRect(Image.Size, target);
-            Image.Render(canvas, imgRect, paint, AntiAlias);
+            return;
         }
+
+        PixelRect imgRect = ImagePosition.GetRect(Image.Size, target);
+        Image.Render(canvas, imgRect, paint, AntiAlias);
     }
 }

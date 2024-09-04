@@ -8,12 +8,12 @@ public class SignalConstSource<T>
     public readonly T[] Ys;
     public readonly double Period;
 
-    public double XOffset { get; set; } = 0;
+    public double XOffset { get; set; }
 
-    public double YOffset { get; set; } = 0;
+    public double YOffset { get; set; }
 
-    public int MinRenderIndex = 0;
-    public int MaxRenderIndex = int.MaxValue;
+    public int MinRenderIndex;
+    public int MaxRenderIndex;
 
     public SignalConstSource(T[] ys, double period)
     {

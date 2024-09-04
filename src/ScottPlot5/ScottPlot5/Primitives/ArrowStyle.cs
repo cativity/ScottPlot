@@ -34,7 +34,7 @@ public class ArrowStyle : IHasLine, IHasFill
     ///     The arrow will always be rendered to be at least this long (in pixels).
     ///     If too small, its base will move away from the tip.
     /// </summary>
-    public float MinimumLength { get; set; } = 0;
+    public float MinimumLength { get; set; }
 
     /// <summary>
     ///     The arrow will always be rendered to its length never exceeds this value (in pixels).
@@ -45,7 +45,7 @@ public class ArrowStyle : IHasLine, IHasFill
     /// <summary>
     ///     Back the arrow away from its tip along its axis by this many pixels
     /// </summary>
-    public float Offset { get; set; } = 0;
+    public float Offset { get; set; }
 
     public void Render(SKCanvas canvas, PixelLine line, SKPaint paint)
     {

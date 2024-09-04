@@ -30,12 +30,12 @@ public partial class DraggableAxisLines : Form, IDemoWindow
         formsPlot1.Refresh();
 
         // use events for custom mouse interactivity
-        formsPlot1.MouseDown += FormsPlot1_MouseDown;
-        formsPlot1.MouseUp += FormsPlot1_MouseUp;
-        formsPlot1.MouseMove += FormsPlot1_MouseMove;
+        formsPlot1.MouseDown += FormsPlot1MouseDown;
+        formsPlot1.MouseUp += FormsPlot1MouseUp;
+        formsPlot1.MouseMove += FormsPlot1MouseMove;
     }
 
-    private void FormsPlot1_MouseDown(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseDown(object? sender, MouseEventArgs e)
     {
         if (GetLineUnderMouse(e.X, e.Y) is AxisLine lineUnderMouse)
         {
@@ -44,14 +44,14 @@ public partial class DraggableAxisLines : Form, IDemoWindow
         }
     }
 
-    private void FormsPlot1_MouseUp(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseUp(object? sender, MouseEventArgs e)
     {
         _plottableBeingDragged = null;
         formsPlot1.Interaction.Enable(); // enable panning again
         formsPlot1.Refresh();
     }
 
-    private void FormsPlot1_MouseMove(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseMove(object? sender, MouseEventArgs e)
     {
         // this rectangle is the area around the mouse in coordinate units
         CoordinateRect rect = formsPlot1.Plot.GetCoordinateRect(e.X, e.Y, 10);

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPF_Demo" xmlns:wpf_demo="clr-namespace:WPF_Demo"
+        xmlns:local="clr-namespace:WPF_Demo" xmlns:wpfDemo="clr-namespace:WPF_Demo"
         mc:Ignorable="d"
         Background="#9a4993"
         WindowStartupLocation="CenterScreen"
@@ -52,14 +52,14 @@
 
         <ScrollViewer Background="WhiteSmoke">
             <StackPanel x:Name="DemoItemPanel">
-                <wpf_demo:DemoMenuItem />
-                <wpf_demo:DemoMenuItem />
-                <wpf_demo:DemoMenuItem />
-                <wpf_demo:DemoMenuItem />
-                <wpf_demo:DemoMenuItem />
-                <wpf_demo:DemoMenuItem />
-                <wpf_demo:DemoMenuItem />
-                <wpf_demo:DemoMenuItem />
+                <wpfDemo:DemoMenuItem />
+                <wpfDemo:DemoMenuItem />
+                <wpfDemo:DemoMenuItem />
+                <wpfDemo:DemoMenuItem />
+                <wpfDemo:DemoMenuItem />
+                <wpfDemo:DemoMenuItem />
+                <wpfDemo:DemoMenuItem />
+                <wpfDemo:DemoMenuItem />
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

@@ -51,8 +51,8 @@ public class Wrapping : ILegendLayout
                             : new Pixel(nextPixel.X, nextPixel.Y + maxLabelHeight + legend.InterItemPadding.Bottom);
         }
 
-        float tightWidth = Math.Min(labelRects.Max(x => x.Right), maxSizeAfterPadding.Width);
-        float tightHeight = Math.Min(labelRects.Max(x => x.Bottom), maxSizeAfterPadding.Height);
+        float tightWidth = Math.Min(labelRects.Max(static x => x.Right), maxSizeAfterPadding.Width);
+        float tightHeight = Math.Min(labelRects.Max(static x => x.Bottom), maxSizeAfterPadding.Height);
         PixelRect legendRect = new PixelRect(0, tightWidth + legend.Padding.Horizontal, tightHeight + legend.Padding.Vertical, 0);
         PixelOffset paddingOffset = new PixelOffset(legend.Padding.Left, legend.Padding.Top);
 

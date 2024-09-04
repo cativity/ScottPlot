@@ -1,8 +1,10 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class DraggableCallout : Form, IDemoWindow
 {
     public string Title => "Draggable Callout";
@@ -36,12 +38,12 @@ public partial class DraggableCallout : Form, IDemoWindow
         formsPlot1.Plot.Axes.SetLimitsX(0, 2);
         formsPlot1.Plot.Axes.SetLimitsY(0, 1.2);
 
-        formsPlot1.MouseDown += FormsPlot1_MouseDown;
-        formsPlot1.MouseUp += FormsPlot1_MouseUp;
-        formsPlot1.MouseMove += FormsPlot1_MouseMove;
+        formsPlot1.MouseDown += FormsPlot1MouseDown;
+        formsPlot1.MouseUp += FormsPlot1MouseUp;
+        formsPlot1.MouseMove += FormsPlot1MouseMove;
     }
 
-    private void FormsPlot1_MouseMove(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseMove(object? sender, MouseEventArgs e)
     {
         if (_calloutBeingDragged is null)
         {
@@ -63,14 +65,14 @@ public partial class DraggableCallout : Form, IDemoWindow
         }
     }
 
-    private void FormsPlot1_MouseUp(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseUp(object? sender, MouseEventArgs e)
     {
         _calloutBeingDragged = null;
         formsPlot1.Interaction.Enable();
         formsPlot1.Refresh();
     }
 
-    private void FormsPlot1_MouseDown(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseDown(object? sender, MouseEventArgs e)
     {
         Callout? calloutUnderMouse = GetCalloutUnderMouse(e.X, e.Y);
 
@@ -86,7 +88,7 @@ public partial class DraggableCallout : Form, IDemoWindow
         _mouseDownOffset = new PixelOffset(dX, dY);
 
         formsPlot1.Interaction.Disable();
-        FormsPlot1_MouseMove(sender, e);
+        FormsPlot1MouseMove(sender, e);
     }
 
     private Callout? GetCalloutUnderMouse(float x, float y)

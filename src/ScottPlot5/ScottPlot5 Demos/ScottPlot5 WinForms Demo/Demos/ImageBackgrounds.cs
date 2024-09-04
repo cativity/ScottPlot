@@ -1,8 +1,10 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class ImageBackgrounds : Form, IDemoWindow
 {
     public string Title => "Background Images";

@@ -1,8 +1,10 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class LiveFinance : Form, IDemoWindow
 {
     public string Title => "Live Financial Plot";
@@ -40,7 +42,7 @@ public partial class LiveFinance : Form, IDemoWindow
 
         // setup a timer to update the chart every second
         _timer = new Timer { Interval = 1000, Enabled = true };
-        _timer.Tick += Timer_Tick;
+        _timer.Tick += TimerTick;
     }
 
     private static OHLC GetRandomOhlc(DateTime dt, TimeSpan ts)
@@ -53,7 +55,7 @@ public partial class LiveFinance : Form, IDemoWindow
         return new OHLC(open, high, low, close, dt, ts);
     }
 
-    private void Timer_Tick(object? sender, EventArgs e)
+    private void TimerTick(object? sender, EventArgs e)
     {
         DateTime now = DateTime.Now;
 

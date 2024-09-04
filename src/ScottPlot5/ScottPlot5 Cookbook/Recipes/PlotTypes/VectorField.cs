@@ -29,8 +29,8 @@ public class VectorField : ICategory
 
             // create a collection of vectors
             List<RootedCoordinateVector> vectors = xs.SelectMany(_ => ys,
-                                                                 (cx, cy) => new RootedCoordinateVector(new Coordinates(cx, cy),
-                                                                                                        new Vector2((float)cy, -19.62f * (float)Math.Sin(cx))))
+                                                                 static (cx, cy) => new RootedCoordinateVector(new Coordinates(cx, cy),
+                                                                     new Vector2((float)cy, -19.62f * (float)Math.Sin(cx))))
                                                      .ToList();
             //vectors.AddRange(xs.SelectMany(cx => ys,
             //                               (cx, cy) => new RootedCoordinateVector(new Coordinates(cx, cy),

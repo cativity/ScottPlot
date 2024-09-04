@@ -9,7 +9,7 @@ public class Plot3D
 {
     public double ZoomFactor = 200;
     public Rotation3D Rotation = new Rotation3D { DegreesX = 110, DegreesY = 18, DegreesZ = 5 };
-    public Point3D CameraCenter = new Point3D();
+    public Point3D CameraCenter;
     public readonly Axis3D Axis3D = new Axis3D();
     public readonly List<IPlottable3D> Plottables = [];
 

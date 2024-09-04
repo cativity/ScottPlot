@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace ScottPlotTests.UnitTests;
+﻿namespace ScottPlotTests.UnitTests;
 
 internal class PlotCoordinateConversion
 {

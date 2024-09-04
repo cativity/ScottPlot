@@ -1,7 +1,7 @@
 ﻿using ScottPlot;
 
-WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
-WebApplication? app = builder.Build();
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+WebApplication app = builder.Build();
 
 app.MapGet("/",
            static async context =>

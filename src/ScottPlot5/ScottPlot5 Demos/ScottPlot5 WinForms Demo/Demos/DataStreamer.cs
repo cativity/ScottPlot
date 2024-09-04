@@ -1,4 +1,5 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 using ScottPlot.DataGenerators;
 using ScottPlot.DataViews;
@@ -6,6 +7,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class DataStreamer : Form, IDemoWindow
 {
     public string Title => "Data Streamer";
@@ -42,10 +44,10 @@ public partial class DataStreamer : Form, IDemoWindow
             streamer2.AddRange(_walker2.Next(count));
 
             // slide marker to the left
-            formsPlot1.Plot.GetPlottables<Marker>().ToList().ForEach(m => m.X -= count);
+            formsPlot1.Plot.GetPlottables<Marker>().ToList().ForEach(static m => m.X -= count);
 
             // remove off-screen marks
-            formsPlot1.Plot.GetPlottables<Marker>().Where(m => m.X < 0).ToList().ForEach(m => formsPlot1.Plot.Remove(m));
+            formsPlot1.Plot.GetPlottables<Marker>().Where(static m => m.X < 0).ToList().ForEach(m => formsPlot1.Plot.Remove(m));
         };
 
         // setup a timer to request a render periodically
@@ -97,7 +99,7 @@ public partial class DataStreamer : Form, IDemoWindow
 
         rbManage.CheckedChanged += (s, _) =>
         {
-            if ((s as RadioButton)?.Checked == true)
+            if (s is RadioButton radioButton && radioButton.Checked)
             {
                 formsPlot1.Plot.Axes.ContinuouslyAutoscale = false;
                 streamer1.ManageAxisLimits = true;

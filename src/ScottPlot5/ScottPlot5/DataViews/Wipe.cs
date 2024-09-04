@@ -6,7 +6,7 @@ public class Wipe(DataStreamer streamer, bool wipeRight) : IDataStreamerView
 {
     public DataStreamer Streamer { get; } = streamer;
 
-    public double BlankFraction { get; set; } = 0;
+    public double BlankFraction { get; set; }
 
     public void Render(RenderPack rp)
     {

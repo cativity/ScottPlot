@@ -18,7 +18,7 @@ public partial class HelpForm : Form
                             """;
     }
 
-    private void button1_Click(object sender, EventArgs e)
+    private void Button1Click(object sender, EventArgs e)
     {
         Close();
     }

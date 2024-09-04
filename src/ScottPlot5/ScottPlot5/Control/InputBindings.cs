@@ -14,10 +14,10 @@ public class InputBindings
 
     public MouseWheelDirection? ZoomInWheelDirection;
     public MouseWheelDirection? ZoomOutWheelDirection;
-    public MouseWheelDirection? PanUpWheelDirection = null;
-    public MouseWheelDirection? PanDownWheelDirection = null;
-    public MouseWheelDirection? PanLeftWheelDirection = null;
-    public MouseWheelDirection? PanRightWheelDirection = null;
+    public MouseWheelDirection? PanUpWheelDirection;
+    public MouseWheelDirection? PanDownWheelDirection;
+    public MouseWheelDirection? PanLeftWheelDirection;
+    public MouseWheelDirection? PanRightWheelDirection;
 
     public Key? LockHorizontalAxisKey;
     public Key? LockVerticalAxisKey;

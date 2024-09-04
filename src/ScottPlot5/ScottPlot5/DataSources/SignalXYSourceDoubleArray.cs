@@ -9,9 +9,9 @@ public class SignalXYSourceDoubleArray : ISignalXYSource
 
     public bool Rotated { get; set; }
 
-    public double XOffset { get; set; } = 0;
+    public double XOffset { get; set; }
 
-    public double YOffset { get; set; } = 0;
+    public double YOffset { get; set; }
 
     public double YScale { get; set; } = 1;
 

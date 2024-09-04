@@ -1,10 +1,12 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 using Color = ScottPlot.Color;
 using Image = ScottPlot.Image;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class LegendOutsideBitmap : Form, IDemoWindow
 {
     public string Title => "Legend Outside the Plot (Bitmap)";

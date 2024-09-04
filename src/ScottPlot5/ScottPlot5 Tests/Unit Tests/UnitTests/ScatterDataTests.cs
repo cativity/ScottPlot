@@ -11,7 +11,7 @@ internal class ScatterDataTests
         double[] xs = Generate.Consecutive(51);
         double[] ys = Generate.Sin(51);
 
-        ScatterSourceDoubleArray source = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource source = new ScatterSourceDoubleArray(xs, ys);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(0);
@@ -30,7 +30,7 @@ internal class ScatterDataTests
         ys[33] = 7; // single real Y
         // but no real X,Y point
 
-        ScatterSourceDoubleArray source = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource source = new ScatterSourceDoubleArray(xs, ys);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(5);
@@ -48,7 +48,7 @@ internal class ScatterDataTests
         xs[44] = 5;
         ys[44] = 7;
 
-        ScatterSourceDoubleArray source = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource source = new ScatterSourceDoubleArray(xs, ys);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(5);
@@ -68,7 +68,7 @@ internal class ScatterDataTests
 
         Coordinates[] cs = Enumerable.Range(0, xs.Length).Select(x => new Coordinates(xs[x], ys[x])).ToArray();
 
-        ScatterSourceCoordinatesArray source = new ScatterSourceCoordinatesArray(cs);
+        IScatterSource source = new ScatterSourceCoordinatesArray(cs);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(5);
@@ -88,7 +88,7 @@ internal class ScatterDataTests
 
         List<Coordinates> cs = Enumerable.Range(0, xs.Length).Select(x => new Coordinates(xs[x], ys[x])).ToList();
 
-        ScatterSourceCoordinatesList source = new ScatterSourceCoordinatesList(cs);
+        IScatterSource source = new ScatterSourceCoordinatesList(cs);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(5);
@@ -106,7 +106,7 @@ internal class ScatterDataTests
         xs[44] = 5;
         ys[44] = 7;
 
-        ScatterSourceGenericArray<float, float> source = new ScatterSourceGenericArray<float, float>(xs, ys);
+        IScatterSource source = new ScatterSourceGenericArray<float, float>(xs, ys);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(5);
@@ -124,7 +124,7 @@ internal class ScatterDataTests
         xs[44] = 5;
         ys[44] = 7;
 
-        ScatterSourceGenericList<float, float> source = new ScatterSourceGenericList<float, float>(xs, ys);
+        IScatterSource source = new ScatterSourceGenericList<float, float>(xs, ys);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(5);
@@ -142,7 +142,7 @@ internal class ScatterDataTests
         xs[44] = double.NaN;
         ys[44] = double.NaN;
 
-        ScatterSourceDoubleArray source = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource source = new ScatterSourceDoubleArray(xs, ys);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(0);
@@ -163,7 +163,7 @@ internal class ScatterDataTests
             ys[i] = double.NaN;
         }
 
-        ScatterSourceDoubleArray source = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource source = new ScatterSourceDoubleArray(xs, ys);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(25);
@@ -184,7 +184,7 @@ internal class ScatterDataTests
             ys[i] = double.NaN;
         }
 
-        ScatterSourceDoubleArray source = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource source = new ScatterSourceDoubleArray(xs, ys);
         AxisLimits limits = source.GetLimits();
 
         limits.Left.Should().Be(0);

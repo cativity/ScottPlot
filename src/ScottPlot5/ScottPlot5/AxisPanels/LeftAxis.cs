@@ -4,7 +4,7 @@ namespace ScottPlot.AxisPanels;
 
 public class LeftAxis : YAxisBase, IYAxis
 {
-    public override Edge Edge { get; } = Edge.Left;
+    public override Edge Edge => Edge.Left;
 
     public LeftAxis()
     {

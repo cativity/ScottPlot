@@ -254,12 +254,7 @@ public static class NumericConversion
             return min;
         }
 
-        if (input.CompareTo(max) > 0)
-        {
-            return max;
-        }
-
-        return input;
+        return input.CompareTo(max) > 0 ? max : input;
     }
 
     // implemented here because older versions of .NET do not support double.IsReal()

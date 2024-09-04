@@ -29,14 +29,14 @@ public partial class Form1 : Form
     {
         Key key = keyData.GetKey();
 
-        if (StandardKeys.IsArrowKey(key))
+        if (!StandardKeys.IsArrowKey(key))
         {
-            IUserAction keyDownAction = new KeyDown(key);
-            formsPlot1.UserInputProcessor.Process(keyDownAction);
-
-            return true;
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        return base.ProcessCmdKey(ref msg, keyData);
+        IUserAction keyDownAction = new KeyDown(key);
+        formsPlot1.UserInputProcessor.Process(keyDownAction);
+
+        return true;
     }
 }

@@ -4,7 +4,7 @@ namespace ScottPlotCookbook.Website;
 
 internal abstract class PageBase
 {
-    protected StringBuilder Sb = new StringBuilder();
+    protected readonly StringBuilder Sb = new StringBuilder();
 
     public void AddVersionInformation()
     {

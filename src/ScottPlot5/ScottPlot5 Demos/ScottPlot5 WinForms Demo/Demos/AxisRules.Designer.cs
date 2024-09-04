@@ -68,7 +68,7 @@ partial class AxisRules
         btnBoundaryMin.TabIndex = 1;
         btnBoundaryMin.Text = "Minimum";
         btnBoundaryMin.UseVisualStyleBackColor = true;
-        btnBoundaryMin.Click += btnBoundaryMin_Click;
+        btnBoundaryMin.Click += BtnBoundaryMinClick;
         // 
         // btnBoundaryMax
         // 
@@ -78,7 +78,7 @@ partial class AxisRules
         btnBoundaryMax.TabIndex = 2;
         btnBoundaryMax.Text = "Maximum";
         btnBoundaryMax.UseVisualStyleBackColor = true;
-        btnBoundaryMax.Click += btnBoundaryMax_Click;
+        btnBoundaryMax.Click += BtnBoundaryMaxClick;
         // 
         // btnScalePreserveX
         // 
@@ -88,7 +88,7 @@ partial class AxisRules
         btnScalePreserveX.TabIndex = 3;
         btnScalePreserveX.Text = "Preserve X";
         btnScalePreserveX.UseVisualStyleBackColor = true;
-        btnScalePreserveX.Click += btnScalePreserveX_Click;
+        btnScalePreserveX.Click += BtnScalePreserveXClick;
         // 
         // btnScalePreserveY
         // 
@@ -98,7 +98,7 @@ partial class AxisRules
         btnScalePreserveY.TabIndex = 4;
         btnScalePreserveY.Text = "Preserve Y";
         btnScalePreserveY.UseVisualStyleBackColor = true;
-        btnScalePreserveY.Click += btnScalePreserveY_Click;
+        btnScalePreserveY.Click += BtnScalePreserveYClick;
         // 
         // btnScaleZoom
         // 
@@ -108,7 +108,7 @@ partial class AxisRules
         btnScaleZoom.TabIndex = 5;
         btnScaleZoom.Text = "Zoom Out";
         btnScaleZoom.UseVisualStyleBackColor = true;
-        btnScaleZoom.Click += btnScaleZoom_Click;
+        btnScaleZoom.Click += BtnScaleZoomClick;
         // 
         // groupBox1
         // 
@@ -142,7 +142,7 @@ partial class AxisRules
         btnReset.TabIndex = 10;
         btnReset.Text = "Reset";
         btnReset.UseVisualStyleBackColor = true;
-        btnReset.Click += btnReset_Click;
+        btnReset.Click += BtnResetClick;
         // 
         // groupBox3
         // 
@@ -163,7 +163,7 @@ partial class AxisRules
         btnSpanMin.TabIndex = 3;
         btnSpanMin.Text = "Minimum";
         btnSpanMin.UseVisualStyleBackColor = true;
-        btnSpanMin.Click += btnSpanMin_Click;
+        btnSpanMin.Click += BtnSpanMinClick;
         // 
         // btnSpanMax
         // 
@@ -173,7 +173,7 @@ partial class AxisRules
         btnSpanMax.TabIndex = 4;
         btnSpanMax.Text = "Maximum";
         btnSpanMax.UseVisualStyleBackColor = true;
-        btnSpanMax.Click += btnSpanMax_Click;
+        btnSpanMax.Click += BtnSpanMaxClick;
         // 
         // groupBox4
         // 
@@ -194,7 +194,7 @@ partial class AxisRules
         btnLockHorizontal.TabIndex = 3;
         btnLockHorizontal.Text = "Horizontal";
         btnLockHorizontal.UseVisualStyleBackColor = true;
-        btnLockHorizontal.Click += btnLockHorizontal_Click;
+        btnLockHorizontal.Click += BtnLockHorizontalClick;
         // 
         // btnLockVertical
         // 
@@ -204,7 +204,7 @@ partial class AxisRules
         btnLockVertical.TabIndex = 4;
         btnLockVertical.Text = "Vertical";
         btnLockVertical.UseVisualStyleBackColor = true;
-        btnLockVertical.Click += btnLockVertical_Click;
+        btnLockVertical.Click += BtnLockVerticalClick;
         // 
         // cbInvertX
         // 

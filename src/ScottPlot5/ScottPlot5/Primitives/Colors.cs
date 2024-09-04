@@ -9,7 +9,7 @@ using ScottPlot.Palettes;
 
 namespace ScottPlot;
 
-public struct Colors
+public readonly struct Colors
 {
     public static Color AliceBlue => new Color(240, 248, 255);
 

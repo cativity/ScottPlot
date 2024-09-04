@@ -105,7 +105,7 @@ public class PlottableAdder(Plot plot)
 
     public BarPlot Bars(double[] values)
     {
-        List<double> positions = Enumerable.Range(0, values.Length).Select(x => (double)x).ToList();
+        List<double> positions = Enumerable.Range(0, values.Length).Select(static x => (double)x).ToList();
 
         return Bars(positions, values);
     }
@@ -426,7 +426,7 @@ public class PlottableAdder(Plot plot)
 
     public Plottables.Markers Markers(double[] xs, double[] ys, MarkerShape shape = MarkerShape.FilledCircle, float size = 10, Color? color = null)
     {
-        ScatterSourceDoubleArray ss = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource ss = new ScatterSourceDoubleArray(xs, ys);
 
         Plottables.Markers mp = new Plottables.Markers(ss) { MarkerShape = shape, MarkerSize = size, Color = color ?? GetNextColor() };
 
@@ -437,7 +437,7 @@ public class PlottableAdder(Plot plot)
 
     public Plottables.Markers Markers(Coordinates[] coordinates, MarkerShape shape = MarkerShape.FilledCircle, float size = 10, Color? color = null)
     {
-        ScatterSourceCoordinatesArray ss = new ScatterSourceCoordinatesArray(coordinates);
+        IScatterSource ss = new ScatterSourceCoordinatesArray(coordinates);
 
         Plottables.Markers mp = new Plottables.Markers(ss) { MarkerShape = shape, MarkerSize = size, Color = color ?? GetNextColor() };
 
@@ -448,7 +448,7 @@ public class PlottableAdder(Plot plot)
 
     public Plottables.Markers Markers(List<Coordinates> coordinates, MarkerShape shape = MarkerShape.FilledCircle, float size = 10, Color? color = null)
     {
-        ScatterSourceCoordinatesList ss = new ScatterSourceCoordinatesList(coordinates);
+        IScatterSource ss = new ScatterSourceCoordinatesList(coordinates);
 
         Plottables.Markers mp = new Plottables.Markers(ss) { MarkerShape = shape, MarkerSize = size, Color = color ?? GetNextColor() };
 
@@ -459,7 +459,7 @@ public class PlottableAdder(Plot plot)
 
     public Plottables.Markers Markers<TX, TY>(TX[] xs, TY[] ys, MarkerShape shape = MarkerShape.FilledCircle, float size = 10, Color? color = null)
     {
-        ScatterSourceGenericArray<TX, TY> ss = new ScatterSourceGenericArray<TX, TY>(xs, ys);
+        IScatterSource ss = new ScatterSourceGenericArray<TX, TY>(xs, ys);
 
         Plottables.Markers mp = new Plottables.Markers(ss) { MarkerShape = shape, MarkerSize = size, Color = color ?? GetNextColor() };
 
@@ -470,7 +470,7 @@ public class PlottableAdder(Plot plot)
 
     public Plottables.Markers Markers<TX, TY>(List<TX> xs, List<TY> ys, MarkerShape shape = MarkerShape.FilledCircle, float size = 10, Color? color = null)
     {
-        ScatterSourceGenericList<TX, TY> ss = new ScatterSourceGenericList<TX, TY>(xs, ys);
+        IScatterSource ss = new ScatterSourceGenericList<TX, TY>(xs, ys);
 
         Plottables.Markers mp = new Plottables.Markers(ss) { MarkerShape = shape, MarkerSize = size, Color = color ?? GetNextColor() };
 
@@ -655,14 +655,14 @@ public class PlottableAdder(Plot plot)
     {
         double[] xs = [x];
         double[] ys = [y];
-        ScatterSourceDoubleArray source = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource source = new ScatterSourceDoubleArray(xs, ys);
 
         return Scatter(source, color);
     }
 
     public Scatter Scatter(double[] xs, double[] ys, Color? color = null)
     {
-        ScatterSourceDoubleArray source = new ScatterSourceDoubleArray(xs, ys);
+        IScatterSource source = new ScatterSourceDoubleArray(xs, ys);
 
         return Scatter(source, color);
     }
@@ -670,21 +670,28 @@ public class PlottableAdder(Plot plot)
     public Scatter Scatter(Coordinates point, Color? color = null)
     {
         Coordinates[] coordinates = [point];
-        ScatterSourceCoordinatesArray source = new ScatterSourceCoordinatesArray(coordinates);
+        IScatterSource source = new ScatterSourceCoordinatesArray(coordinates);
 
         return Scatter(source, color);
     }
 
     public Scatter Scatter(Coordinates[] coordinates, Color? color = null)
     {
-        ScatterSourceCoordinatesArray source = new ScatterSourceCoordinatesArray(coordinates);
+        IScatterSource source = new ScatterSourceCoordinatesArray(coordinates);
 
         return Scatter(source, color);
     }
 
     public Scatter Scatter(List<Coordinates> coordinates, Color? color = null)
     {
-        ScatterSourceCoordinatesList source = new ScatterSourceCoordinatesList(coordinates);
+        IScatterSource source = new ScatterSourceCoordinatesList(coordinates);
+
+        return Scatter(source, color);
+    }
+
+    public Scatter Scatter(IList<Coordinates> coordinates, Color? color = null)
+    {
+        IScatterSource source = new ScatterSourceCoordinatesIList(coordinates);
 
         return Scatter(source, color);
     }
@@ -692,7 +699,7 @@ public class PlottableAdder(Plot plot)
     public Scatter Scatter<T1, T2>(T1[] xs, T2[] ys, Color? color = null)
     {
         Color nextColor = color ?? GetNextColor();
-        ScatterSourceGenericArray<T1, T2> source = new ScatterSourceGenericArray<T1, T2>(xs, ys);
+        IScatterSource source = new ScatterSourceGenericArray<T1, T2>(xs, ys);
         Scatter scatter = new Scatter(source) { LineStyle = { Color = nextColor }, MarkerStyle = { FillColor = nextColor } };
         Plot.PlottableList.Add(scatter);
 
@@ -702,7 +709,7 @@ public class PlottableAdder(Plot plot)
     public Scatter Scatter<T1, T2>(List<T1> xs, List<T2> ys, Color? color = null)
     {
         Color nextColor = color ?? GetNextColor();
-        ScatterSourceGenericList<T1, T2> source = new ScatterSourceGenericList<T1, T2>(xs, ys);
+        IScatterSource source = new ScatterSourceGenericList<T1, T2>(xs, ys);
         Scatter scatter = new Scatter(source) { LineStyle = { Color = nextColor }, MarkerStyle = { FillColor = nextColor } };
         Plot.PlottableList.Add(scatter);
 

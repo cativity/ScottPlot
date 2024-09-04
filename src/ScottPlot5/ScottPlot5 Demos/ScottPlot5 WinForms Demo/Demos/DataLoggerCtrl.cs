@@ -89,25 +89,25 @@ public partial class DataLoggerCtrl : UserControl
         _crossHair1.Axes.YAxis = Logger1.Axes.YAxis;
     }
 
-    private void BtnFull_Click(object sender, EventArgs e)
+    private void BtnFullClick(object sender, EventArgs e)
     {
         Logger1.ViewFull();
         Logger2.ViewFull();
     }
 
-    private void BtnJump_Click(object sender, EventArgs e)
+    private void BtnJumpClick(object sender, EventArgs e)
     {
         Logger1.ViewJump();
         Logger2.ViewJump();
     }
 
-    private void BtnSlide_Click(object sender, EventArgs e)
+    private void BtnSlideClick(object sender, EventArgs e)
     {
         Logger1.ViewSlide();
         Logger2.ViewSlide();
     }
 
-    private void CbInverted_CheckedChanged(object sender, EventArgs e)
+    private void CbInvertedCheckedChanged(object sender, EventArgs e)
     {
         formsPlot.Plot.Axes.AutoScale(cbInvertedX.Checked, cbInvertedY.Checked);
     }
@@ -124,7 +124,7 @@ public partial class DataLoggerCtrl : UserControl
         }
     }
 
-    private void FormsPlot_MouseMove(object sender, MouseEventArgs e)
+    private void FormsPlotMouseMove(object sender, MouseEventArgs e)
     {
         if (!Tracking)
         {

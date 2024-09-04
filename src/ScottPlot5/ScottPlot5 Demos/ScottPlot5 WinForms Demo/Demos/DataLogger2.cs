@@ -1,8 +1,10 @@
-﻿using ScottPlot.DataGenerators;
+﻿using JetBrains.Annotations;
+using ScottPlot.DataGenerators;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class DataLogger2 : Form, IDemoWindow
 {
     public string Title => "Data Logger (Extended)";
@@ -42,7 +44,7 @@ public partial class DataLogger2 : Form, IDemoWindow
         };
     }
 
-    private void cbRunning_CheckedChanged(object sender, EventArgs e)
+    private void CbRunningCheckedChanged(object sender, EventArgs e)
     {
         _addNewDataTimer.Enabled = cbRunning.Checked;
         _updatePlotTimer.Enabled = cbRunning.Checked;

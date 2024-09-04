@@ -47,7 +47,7 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
 
     public bool FillYAbove { get; set; } = true;
 
-    public double FillYValue { get; set; } = 0;
+    public double FillYValue { get; set; }
 
     public Color FillYAboveColor { get; set; } = Colors.Blue.WithAlpha(.2);
 
@@ -67,9 +67,9 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
 
     public record struct ColorPosition(Color Color, double Position);
 
-    public double OffsetX { get; set; } = 0;
+    public double OffsetX { get; set; }
 
-    public double OffsetY { get; set; } = 0;
+    public double OffsetY { get; set; }
 
     public double ScaleX { get; set; } = 1;
 

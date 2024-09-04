@@ -87,7 +87,7 @@ public class Population : ICategory
                 pop.Bar.IsVisible = false;
                 pop.Box.IsVisible = true;
 
-                pop.BoxValueConfig = PopulationSymbol.BoxValueConfigurator_MeanStdErrStDev;
+                pop.BoxValueConfig = PopulationSymbol.BoxValueConfiguratorMeanStdErrStDev;
             }
 
             // refine appearance of the plot

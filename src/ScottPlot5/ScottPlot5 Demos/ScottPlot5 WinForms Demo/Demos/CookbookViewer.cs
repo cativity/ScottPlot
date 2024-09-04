@@ -30,7 +30,7 @@ public partial class CookbookViewer : Form, IDemoWindow
         }
     }
 
-    private void CookbookViewer_Load(object sender, EventArgs e)
+    private void CookbookViewerLoad(object sender, EventArgs e)
     {
         UpdateRecipeList();
         listView1.Items[0].Selected = true;
@@ -82,14 +82,14 @@ public partial class CookbookViewer : Form, IDemoWindow
         }
     }
 
-    private void ListView1_SelectedIndexChanged(object sender, EventArgs e)
+    private void ListView1SelectedIndexChanged(object sender, EventArgs e)
     {
         if (listView1.SelectedItems.Count == 0)
         {
             return;
         }
 
-        IRecipe selectedRecipe = _recipesByCategory.SelectMany(x => x.Value).Single(x => x.Name == listView1.SelectedItems[0].Text);
+        IRecipe selectedRecipe = _recipesByCategory.SelectMany(static x => x.Value).Single(x => x.Name == listView1.SelectedItems[0].Text);
 
         formsPlot1.Reset();
         selectedRecipe.Execute(formsPlot1.Plot);
@@ -121,7 +121,7 @@ public partial class CookbookViewer : Form, IDemoWindow
         rtbCode.Text = recipeInfos.Single().Source;
     }
 
-    private void TbFilter_TextChanged(object sender, EventArgs e)
+    private void TbFilterTextChanged(object sender, EventArgs e)
     {
         UpdateRecipeList(tbFilter.Text);
     }

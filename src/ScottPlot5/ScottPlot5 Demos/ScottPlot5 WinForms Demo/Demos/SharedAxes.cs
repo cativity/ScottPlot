@@ -1,7 +1,9 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class SharedAxes : Form, IDemoWindow
 {
     public string Title => "Shared Axes";

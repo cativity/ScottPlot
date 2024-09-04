@@ -30,7 +30,7 @@ public class DateTimeAutomatic : IDateTimeTickGenerator
 
     private static ITimeUnit GetAppropriateTimeUnit(TimeSpan timeSpan, int targetTickCount = 10)
     {
-        foreach (ITimeUnit? timeUnit in _theseTimeUnits)
+        foreach (ITimeUnit timeUnit in _theseTimeUnits)
         {
             long estimatedUnitTicks = timeSpan.Ticks / timeUnit.MinSize.Ticks;
 

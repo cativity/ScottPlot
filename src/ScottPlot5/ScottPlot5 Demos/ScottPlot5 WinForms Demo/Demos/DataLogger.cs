@@ -1,9 +1,11 @@
-﻿using ScottPlot.AxisPanels;
+﻿using JetBrains.Annotations;
+using ScottPlot.AxisPanels;
 using ScottPlot.DataGenerators;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class DataLogger : Form, IDemoWindow
 {
     public string Title => "Data Logger";

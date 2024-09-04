@@ -10,9 +10,9 @@ public class SignalXYSourceGenericArray<TX, TY> : ISignalXYSource
 
     public bool Rotated { get; set; }
 
-    public double XOffset { get; set; } = 0;
+    public double XOffset { get; set; }
 
-    public double YOffset { get; set; } = 0;
+    public double YOffset { get; set; }
 
     public double YScale { get; set; } = 1;
 
@@ -62,7 +62,7 @@ public class SignalXYSourceGenericArray<TX, TY> : ISignalXYSource
         // get all points in view
         IEnumerable<Pixel> visiblePoints = Enumerable.Range(0, (int)Math.Ceiling(rp.DataRect.Width))
                                                      .Select(pixelColumnIndex => GetColumnPixelsX(pixelColumnIndex, visibleRange, rp, axes))
-                                                     .SelectMany(x => x);
+                                                     .SelectMany(static x => x);
 
         Pixel[] leftOutsidePoint = pointBefore;
         Pixel[] rightOutsidePoint = pointAfter;
@@ -100,7 +100,7 @@ public class SignalXYSourceGenericArray<TX, TY> : ISignalXYSource
         // get all points in view
         IEnumerable<Pixel> visiblePoints = Enumerable.Range(0, (int)Math.Ceiling(rp.DataRect.Height))
                                                      .Select(pixelRowIndex => GetColumnPixelsY(pixelRowIndex, visibleRange, rp, axes))
-                                                     .SelectMany(x => x);
+                                                     .SelectMany(static x => x);
 
         Pixel[] bottomOutsidePoint = pointBefore,
                 topOutsidePoint = pointAfter;

@@ -2,7 +2,7 @@
 
 internal class SvgImage : IDisposable
 {
-    private bool _isDisposed = false;
+    private bool _isDisposed;
     public readonly int Width;
     public readonly int Height;
     private readonly MemoryStream _stream;

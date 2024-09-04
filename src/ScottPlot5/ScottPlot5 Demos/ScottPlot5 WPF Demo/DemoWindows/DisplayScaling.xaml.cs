@@ -21,15 +21,14 @@ public partial class DisplayScaling : Window, IDemoWindow
         WpfPlot1.Plot.Add.Signal(Generate.Cos());
         _crosshair = WpfPlot1.Plot.Add.Crosshair(0, 0);
 
-        MouseMove += DisplayScaling_MouseMove;
+        MouseMove += DisplayScalingMouseMove;
     }
 
-    private void DisplayScaling_MouseMove(object sender, MouseEventArgs e)
+    private void DisplayScalingMouseMove(object sender, MouseEventArgs e)
     {
         Point p = e.GetPosition(WpfPlot1);
         Pixel mousePixel = new Pixel(p.X * WpfPlot1.DisplayScale, p.Y * WpfPlot1.DisplayScale);
-        Coordinates coordinates = WpfPlot1.Plot.GetCoordinates(mousePixel);
-        _crosshair.Position = coordinates;
+        _crosshair.Position = WpfPlot1.Plot.GetCoordinates(mousePixel);
         WpfPlot1.Refresh();
     }
 }

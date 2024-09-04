@@ -7,11 +7,11 @@ public static class Program
 {
     public static void Main()
     {
-        Test_DoubleToGeneric();
-        Test_GenericToDouble();
+        TestDoubleToGeneric();
+        TestGenericToDouble();
     }
 
-    public static void Test_DoubleToGeneric()
+    public static void TestDoubleToGeneric()
     {
         NumericConversion.DoubleToGeneric(123.45, out double vDouble);
         Console.WriteLine(vDouble);
@@ -47,7 +47,7 @@ public static class Program
         Console.WriteLine(vDateTime);
     }
 
-    public static void Test_GenericToDouble()
+    public static void TestGenericToDouble()
     {
         double vDouble = 123.45;
         Console.WriteLine(NumericConversion.GenericToDouble(ref vDouble));

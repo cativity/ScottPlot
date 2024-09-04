@@ -1,8 +1,10 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class CustomMenu : Form, IDemoWindow
 {
     public string Title => "Custom Right-Click Context Menu";
@@ -12,10 +14,10 @@ public partial class CustomMenu : Form, IDemoWindow
     public CustomMenu()
     {
         InitializeComponent();
-        BtnCustom_Click(this, EventArgs.Empty);
+        BtnCustomClick(this, EventArgs.Empty);
     }
 
-    private void BtnDefault_Click(object sender, EventArgs e)
+    private void BtnDefaultClick(object sender, EventArgs e)
     {
         // Reset menu to default options
         formsPlot1.Menu.Reset();
@@ -24,7 +26,7 @@ public partial class CustomMenu : Form, IDemoWindow
         formsPlot1.Refresh();
     }
 
-    private void BtnCustom_Click(object sender, EventArgs e)
+    private void BtnCustomClick(object sender, EventArgs e)
     {
         // clear existing menu items
         formsPlot1.Menu.Clear();

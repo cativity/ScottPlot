@@ -1,9 +1,11 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 using Rectangle = ScottPlot.Plottables.Rectangle;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class SelectPoints : Form, IDemoWindow
 {
     private readonly Coordinates[] _dataPoints;
@@ -33,12 +35,12 @@ public partial class SelectPoints : Form, IDemoWindow
         _rectanglePlot.FillStyle.Color = Colors.Red.WithAlpha(.2);
 
         // add events to trigger in response to mouse actions
-        formsPlot1.MouseMove += FormsPlot1_MouseMove;
-        formsPlot1.MouseDown += FormsPlot1_MouseDown;
-        formsPlot1.MouseUp += FormsPlot1_MouseUp;
+        formsPlot1.MouseMove += FormsPlot1MouseMove;
+        formsPlot1.MouseDown += FormsPlot1MouseDown;
+        formsPlot1.MouseUp += FormsPlot1MouseUp;
     }
 
-    private void FormsPlot1_MouseDown(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseDown(object? sender, MouseEventArgs e)
     {
         if (!checkBox1.Checked)
         {
@@ -51,7 +53,7 @@ public partial class SelectPoints : Form, IDemoWindow
         formsPlot1.Interaction.Disable(); // disable the default click-drag-pan behavior
     }
 
-    private void FormsPlot1_MouseUp(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseUp(object? sender, MouseEventArgs e)
     {
         if (!checkBox1.Checked)
         {
@@ -86,7 +88,7 @@ public partial class SelectPoints : Form, IDemoWindow
         formsPlot1.Interaction.Enable(); // re-enable the default click-drag-pan behavior
     }
 
-    private void FormsPlot1_MouseMove(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseMove(object? sender, MouseEventArgs e)
     {
         if (!_mouseIsDown || !checkBox1.Checked)
         {

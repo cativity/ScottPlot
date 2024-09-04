@@ -44,7 +44,7 @@ public sealed class CircularBuffer<T> : IList<T>, ICollection<T>, IEnumerable<T>
 
     public bool IsReadOnly { get; }
 
-    public bool IsFixedSize { get; } = true;
+    public bool IsFixedSize => true;
 
     public object SyncRoot { get; } = new object();
 

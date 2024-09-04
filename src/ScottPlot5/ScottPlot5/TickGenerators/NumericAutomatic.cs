@@ -18,11 +18,11 @@ public class NumericAutomatic : ITickGenerator
 
     public readonly DecimalTickSpacingCalculator TickSpacingCalculator = new DecimalTickSpacingCalculator();
 
-    public float MinimumTickSpacing { get; set; } = 0;
+    public float MinimumTickSpacing { get; set; }
 
     public double TickDensity { get; set; } = 1.0; // TODO: consider adding logic to make this a fraction of the width in pixels
 
-    public int? TargetTickCount = null;
+    public int? TargetTickCount;
 
     public void Regenerate(CoordinateRange range, Edge edge, PixelLength size, SKPaint paint, LabelStyle labelStyle)
     {

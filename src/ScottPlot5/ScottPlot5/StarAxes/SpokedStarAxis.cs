@@ -6,7 +6,7 @@ public abstract class SpokedStarAxis : IStarAxis
 
     public abstract void Render(RenderPack rp, IAxes axes, double maxSpokeLength, int numSpokes, float rotationDegrees = 0);
 
-    public virtual void RenderSpokes(RenderPack rp, IAxes axes, double spokeLength, int numSpokes, float rotationDegrees = 0)
+    public void RenderSpokes(RenderPack rp, IAxes axes, double spokeLength, int numSpokes, float rotationDegrees = 0)
     {
         SKPaint paint = new SKPaint();
         AxisStyle.ApplyToPaint(paint);

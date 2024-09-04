@@ -18,11 +18,11 @@ public readonly struct PixelLine
 
     public float SlopeRadians => (float)Math.Atan(Slope);
 
-    public float SlopeDegrees => (SlopeRadians * 180) / (float)Math.PI;
+    public float SlopeDegrees => SlopeRadians * 180 / (float)Math.PI;
 
     public float AngleRadians => (float)Math.Atan2(XSpan, -YSpan);
 
-    public float AngleDegrees => (AngleRadians * 180) / (float)Math.PI;
+    public float AngleDegrees => AngleRadians * 180 / (float)Math.PI;
 
     public float YIntercept => Y1 - (Slope * X1);
 

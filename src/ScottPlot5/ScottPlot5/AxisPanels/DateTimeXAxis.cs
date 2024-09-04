@@ -4,7 +4,7 @@ namespace ScottPlot.AxisPanels;
 
 public class DateTimeXAxis : XAxisBase, IXAxis
 {
-    public override Edge Edge { get; } = Edge.Bottom;
+    public override Edge Edge => Edge.Bottom;
 
     private IDateTimeTickGenerator _tickGenerator = new DateTimeAutomatic();
 

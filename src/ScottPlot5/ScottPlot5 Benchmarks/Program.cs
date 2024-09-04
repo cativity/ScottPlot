@@ -8,7 +8,7 @@ namespace ScottPlotBench;
 
 public static class Program
 {
-    private const string BenchmarkNamespace = $"{nameof(ScottPlotBench)}.{nameof(Benchmarks)}";
+    private const string _benchmarkNamespace = $"{nameof(ScottPlotBench)}.{nameof(Benchmarks)}";
 
     public static void Main(string[] args)
     {
@@ -20,7 +20,7 @@ public static class Program
         Console.WriteLine($"\nProceeding with {configType} configuration...\n");
         IConfig config = fast ? Configurations.Fast : Configurations.Default;
 
-        Type[] benchmarks = Assembly.GetExecutingAssembly().GetTypes().Where(static t => t.Namespace == BenchmarkNamespace).ToArray();
+        Type[] benchmarks = Assembly.GetExecutingAssembly().GetTypes().Where(static t => t.Namespace == _benchmarkNamespace).ToArray();
 
         BenchmarkSwitcher switcher = new BenchmarkSwitcher(benchmarks);
         switcher.Run(args, config);

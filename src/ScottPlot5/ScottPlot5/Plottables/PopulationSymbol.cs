@@ -10,7 +10,7 @@ public class PopulationSymbol(Population population) : IPlottable
 
     public IEnumerable<LegendItem> LegendItems => LegendItem.None;
 
-    public double X { get; set; } = 0;
+    public double X { get; set; }
 
     public double Width { get; set; } = 0.8;
 
@@ -34,7 +34,7 @@ public class PopulationSymbol(Population population) : IPlottable
 
     private readonly LabelStyle _emptyLabel = new LabelStyle { IsVisible = false };
 
-    public Func<Box, Population, Population> BoxValueConfig { get; set; } = BoxValueConfigurator_MedianQuantileExtrema;
+    public Func<Box, Population, Population> BoxValueConfig { get; set; } = BoxValueConfiguratorMedianQuantileExtrema;
 
     private CoordinateRect GetRect()
     {
@@ -144,7 +144,7 @@ public class PopulationSymbol(Population population) : IPlottable
         Box.Render(rp, paint, Axes);
     }
 
-    public static Population BoxValueConfigurator_MeanStdErrStDev(Box box, Population pop)
+    public static Population BoxValueConfiguratorMeanStdErrStDev(Box box, Population pop)
     {
         box.BoxMiddle = pop.Mean;
         box.BoxMin = pop.Mean - pop.StandardError;
@@ -155,7 +155,7 @@ public class PopulationSymbol(Population population) : IPlottable
         return pop;
     }
 
-    public static Population BoxValueConfigurator_MedianQuantileExtrema(Box box, Population pop)
+    public static Population BoxValueConfiguratorMedianQuantileExtrema(Box box, Population pop)
     {
         box.BoxMiddle = pop.Median;
         box.BoxMin = pop.GetPercentile(25);

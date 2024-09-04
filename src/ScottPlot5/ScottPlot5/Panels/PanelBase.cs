@@ -8,7 +8,7 @@ public abstract class PanelBase : IPanel
 
     public bool ShowDebugInformation { get; set; }
 
-    public float MinimumSize { get; set; } = 0;
+    public float MinimumSize { get; set; }
 
     public float MaximumSize { get; set; } = float.MaxValue;
 

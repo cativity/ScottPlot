@@ -39,66 +39,66 @@ public class KeyboardPanAndZoom : IUserActionResponse
 
     public ResponseInfo Execute(Plot plot, IUserAction userInput, KeyboardState keys)
     {
-        if (userInput is KeyDown keyDown)
+        if (userInput is not KeyDown keyDown)
         {
-            if (keys.IsPressed(ZoomModifierKey))
-            {
-                if (keyDown.Key == PanLeftKey)
-                {
-                    return ApplyZoom(plot, DeltaZoomIn, 1);
-                }
+            return ResponseInfo.NoActionRequired;
+        }
 
-                if (keyDown.Key == PanRightKey)
-                {
-                    return ApplyZoom(plot, DeltaZoomOut, 1);
-                }
-
-                if (keyDown.Key == PanDownKey)
-                {
-                    return ApplyZoom(plot, 1, DeltaZoomIn);
-                }
-
-                if (keyDown.Key == PanUpKey)
-                {
-                    return ApplyZoom(plot, 1, DeltaZoomOut);
-                }
-
-                return ResponseInfo.NoActionRequired;
-            }
-
-            float delta = StepDistance;
-
-            if (keys.IsPressed(LargeStepKey))
-            {
-                delta = LargeStepDistance;
-            }
-
-            if (keys.IsPressed(FineStepKey))
-            {
-                delta = FineStepDistance;
-            }
-
+        if (keys.IsPressed(ZoomModifierKey))
+        {
             if (keyDown.Key == PanLeftKey)
             {
-                return ApplyPan(plot, -delta, 0);
+                return ApplyZoom(plot, DeltaZoomIn, 1);
             }
 
             if (keyDown.Key == PanRightKey)
             {
-                return ApplyPan(plot, delta, 0);
+                return ApplyZoom(plot, DeltaZoomOut, 1);
             }
 
             if (keyDown.Key == PanDownKey)
             {
-                return ApplyPan(plot, 0, -delta);
+                return ApplyZoom(plot, 1, DeltaZoomIn);
             }
 
             if (keyDown.Key == PanUpKey)
             {
-                return ApplyPan(plot, 0, delta);
+                return ApplyZoom(plot, 1, DeltaZoomOut);
             }
 
             return ResponseInfo.NoActionRequired;
+        }
+
+        float delta = StepDistance;
+
+        if (keys.IsPressed(LargeStepKey))
+        {
+            delta = LargeStepDistance;
+        }
+
+        if (keys.IsPressed(FineStepKey))
+        {
+            delta = FineStepDistance;
+        }
+
+        if (keyDown.Key == PanLeftKey)
+        {
+            return ApplyPan(plot, -delta, 0);
+        }
+
+        if (keyDown.Key == PanRightKey)
+        {
+            return ApplyPan(plot, delta, 0);
+        }
+
+        if (keyDown.Key == PanDownKey)
+        {
+            return ApplyPan(plot, 0, -delta);
+        }
+
+        if (keyDown.Key == PanUpKey)
+        {
+            return ApplyPan(plot, 0, delta);
         }
 
         return ResponseInfo.NoActionRequired;

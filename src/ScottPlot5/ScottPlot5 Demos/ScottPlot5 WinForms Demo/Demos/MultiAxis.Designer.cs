@@ -44,7 +44,7 @@ partial class MultiAxis
         btnRandomize.TabIndex = 0;
         btnRandomize.Text = "Randomize";
         btnRandomize.UseVisualStyleBackColor = true;
-        btnRandomize.Click += BtnRandomize_Click;
+        btnRandomize.Click += BtnRandomizeClick;
         // 
         // btnManualScale
         // 
@@ -54,7 +54,7 @@ partial class MultiAxis
         btnManualScale.TabIndex = 1;
         btnManualScale.Text = "Manual Scale";
         btnManualScale.UseVisualStyleBackColor = true;
-        btnManualScale.Click += BtnManualScale_Click;
+        btnManualScale.Click += BtnManualScaleClick;
         // 
         // btnAutoScale
         // 
@@ -64,7 +64,7 @@ partial class MultiAxis
         btnAutoScale.TabIndex = 2;
         btnAutoScale.Text = "AutoScale";
         btnAutoScale.UseVisualStyleBackColor = true;
-        btnAutoScale.Click += BtnAutoScale_Click;
+        btnAutoScale.Click += BtnAutoScaleClick;
         // 
         // formsPlot1
         // 
@@ -83,7 +83,7 @@ partial class MultiAxis
         btnAutoScaleTight.TabIndex = 4;
         btnAutoScaleTight.Text = "AutoScale Tight";
         btnAutoScaleTight.UseVisualStyleBackColor = true;
-        btnAutoScaleTight.Click += BtnAutoScaleTight_Click;
+        btnAutoScaleTight.Click += BtnAutoScaleTightClick;
         // 
         // btnAutoScaleWithPadding
         // 
@@ -93,7 +93,7 @@ partial class MultiAxis
         btnAutoScaleWithPadding.TabIndex = 5;
         btnAutoScaleWithPadding.Text = "AutoScale with Padding";
         btnAutoScaleWithPadding.UseVisualStyleBackColor = true;
-        btnAutoScaleWithPadding.Click += BtnAutoScaleWithPadding_Click;
+        btnAutoScaleWithPadding.Click += BtnAutoScaleWithPaddingClick;
         // 
         // MultiAxis
         // 

@@ -1,10 +1,12 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Colormaps;
 using ScottPlot.Plottables;
 using ScottPlot.WinForms;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class PlotViewer : Form, IDemoWindow
 {
     public string Title => "Plot Viewer";

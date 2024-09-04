@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using ScottPlot.Control;
@@ -30,7 +31,7 @@ public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotContro
         DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfPlotBase), new FrameworkPropertyMetadata(typeof(WpfPlotBase)));
     }
 
-    public WpfPlotBase()
+    protected WpfPlotBase()
     {
         Plot = new Plot() { PlotControl = this };
         DisplayScale = DetectDisplayScale();
@@ -58,9 +59,10 @@ public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotContro
         Menu.ShowContextMenu(position);
     }
 
-    internal void SKElement_MouseDown(object? sender, MouseButtonEventArgs e)
+    internal void SKElementMouseDown(object? sender, MouseButtonEventArgs e)
     {
         Keyboard.Focus(this);
+        Debug.Assert(PlotFrameworkElement is not null);
         Interaction.MouseDown(e.ToPixel(PlotFrameworkElement), e.OldToButton());
         UserInputProcessor.ProcessMouseDown(PlotFrameworkElement, e);
         (sender as UIElement)?.CaptureMouse();
@@ -71,32 +73,35 @@ public abstract class WpfPlotBase : System.Windows.Controls.Control, IPlotContro
         }
     }
 
-    internal void SKElement_MouseUp(object? sender, MouseButtonEventArgs e)
+    internal void SKElementMouseUp(object? sender, MouseButtonEventArgs e)
     {
+        Debug.Assert(PlotFrameworkElement is not null);
         Interaction.MouseUp(e.ToPixel(PlotFrameworkElement), e.OldToButton());
         UserInputProcessor.ProcessMouseUp(PlotFrameworkElement, e);
         (sender as UIElement)?.ReleaseMouseCapture();
     }
 
-    internal void SKElement_MouseMove(object? sender, MouseEventArgs e)
+    internal void SKElementMouseMove(object? sender, MouseEventArgs e)
     {
+        Debug.Assert(PlotFrameworkElement is not null);
         Interaction.OnMouseMove(e.ToPixel(PlotFrameworkElement));
         UserInputProcessor.ProcessMouseMove(PlotFrameworkElement, e);
     }
 
-    internal void SKElement_MouseWheel(object? sender, MouseWheelEventArgs e)
+    internal void SKElementMouseWheel(object? sender, MouseWheelEventArgs e)
     {
+        Debug.Assert(PlotFrameworkElement is not null);
         Interaction.MouseWheelVertical(e.ToPixel(PlotFrameworkElement), e.Delta);
         UserInputProcessor.ProcessMouseWheel(PlotFrameworkElement, e);
     }
 
-    internal void SKElement_KeyDown(object? sender, KeyEventArgs e)
+    internal void SKElementKeyDown(object? sender, KeyEventArgs e)
     {
         Interaction.KeyDown(e.OldToKey());
         UserInputProcessor.ProcessKeyDown(e);
     }
 
-    internal void SKElement_KeyUp(object? sender, KeyEventArgs e)
+    internal void SKElementKeyUp(object? sender, KeyEventArgs e)
     {
         Interaction.KeyUp(e.OldToKey());
         UserInputProcessor.ProcessKeyUp(e);

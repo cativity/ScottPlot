@@ -14,11 +14,11 @@ public abstract class GLProgramBase : IGLProgram
 
     protected virtual string? FragmentShaderSource => null;
 
-    public GLProgramBase()
+    protected GLProgramBase()
     {
-        GLShader? vertexShader = new GLShader(ShaderType.VertexShader, VertexShaderSource);
-        GLShader? geometryShader = new GLShader(ShaderType.GeometryShader, GeometryShaderSource);
-        GLShader? fragmentShader = new GLShader(ShaderType.FragmentShader, FragmentShaderSource);
+        GLShader vertexShader = new GLShader(ShaderType.VertexShader, VertexShaderSource);
+        GLShader geometryShader = new GLShader(ShaderType.GeometryShader, GeometryShaderSource);
+        GLShader fragmentShader = new GLShader(ShaderType.FragmentShader, FragmentShaderSource);
 
         _handle = GL.CreateProgram();
 
@@ -52,14 +52,16 @@ public abstract class GLProgramBase : IGLProgram
 
     private bool _disposedValue;
 
-    protected virtual void Dispose(bool disposing)
+    protected void Dispose(bool disposing)
     {
-        if (!_disposedValue)
+        if (_disposedValue)
         {
-            GL.DeleteProgram(_handle);
-
-            _disposedValue = true;
+            return;
         }
+
+        GL.DeleteProgram(_handle);
+
+        _disposedValue = true;
     }
 
     public void GLFinish() => GL.Finish();

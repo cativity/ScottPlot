@@ -125,7 +125,7 @@ public static class Descriptive
 
         // TODO: benchmark and see if this can be optimized by not using LINQ
         double mean = Mean(values);
-        double variance = values.Select(x => x - mean).Sum(x => x * x);
+        double variance = values.Select(x => x - mean).Sum(static x => x * x);
 
         return variance / values.Length;
     }

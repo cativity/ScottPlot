@@ -84,7 +84,7 @@ partial class DataLogger2
         cbRunning.TabIndex = 0;
         cbRunning.Text = "Running";
         cbRunning.UseVisualStyleBackColor = true;
-        cbRunning.CheckedChanged += cbRunning_CheckedChanged;
+        cbRunning.CheckedChanged += CbRunningCheckedChanged;
         // 
         // DataLogger2
         // 

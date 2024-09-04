@@ -26,12 +26,12 @@ public partial class DraggablePoints : Form, IDemoWindow
         _scatter.MarkerSize = 10;
         _scatter.Smooth = true;
 
-        formsPlot1.MouseMove += FormsPlot1_MouseMove;
-        formsPlot1.MouseDown += FormsPlot1_MouseDown;
-        formsPlot1.MouseUp += FormsPlot1_MouseUp;
+        formsPlot1.MouseMove += FormsPlot1MouseMove;
+        formsPlot1.MouseDown += FormsPlot1MouseDown;
+        formsPlot1.MouseUp += FormsPlot1MouseUp;
     }
 
-    private void FormsPlot1_MouseDown(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseDown(object? sender, MouseEventArgs e)
     {
         Pixel mousePixel = new Pixel(e.Location.X, e.Location.Y);
         Coordinates mouseLocation = formsPlot1.Plot.GetCoordinates(mousePixel);
@@ -44,24 +44,24 @@ public partial class DraggablePoints : Form, IDemoWindow
         }
     }
 
-    private void FormsPlot1_MouseUp(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseUp(object? sender, MouseEventArgs e)
     {
         _indexBeingDragged = null;
         formsPlot1.Interaction.Enable();
         formsPlot1.Refresh();
     }
 
-    private void FormsPlot1_MouseMove(object? sender, MouseEventArgs e)
+    private void FormsPlot1MouseMove(object? sender, MouseEventArgs e)
     {
         Pixel mousePixel = new Pixel(e.Location.X, e.Location.Y);
         Coordinates mouseLocation = formsPlot1.Plot.GetCoordinates(mousePixel);
         DataPoint nearest = _scatter.Data.GetNearest(mouseLocation, formsPlot1.Plot.LastRender);
         formsPlot1.Cursor = nearest.IsReal ? Cursors.Hand : Cursors.Arrow;
 
-        if (_indexBeingDragged.HasValue)
+        if (_indexBeingDragged is int indexBeingDragged)
         {
-            _xs[_indexBeingDragged.Value] = mouseLocation.X;
-            _ys[_indexBeingDragged.Value] = mouseLocation.Y;
+            _xs[indexBeingDragged] = mouseLocation.X;
+            _ys[indexBeingDragged] = mouseLocation.Y;
             formsPlot1.Refresh();
         }
     }

@@ -13,7 +13,7 @@ public class MauiPlot : ContentPage, IPlotControl
 
     public Plot Plot { get; internal set; } = new Plot();
 
-    private readonly ContentPage? _xamlRoot = null;
+    //private readonly ContentPage? _xamlRoot;
 
     public GRContext? GRContext => null;
 
@@ -137,11 +137,11 @@ public class MauiPlot : ContentPage, IPlotControl
 
     public float DetectDisplayScale()
     {
-        if (_xamlRoot is not null)
-        {
-            Plot.ScaleFactor = _xamlRoot.Scale;
-            DisplayScale = (float)_xamlRoot.Scale;
-        }
+        //if (_xamlRoot is not null)
+        //{
+        //    Plot.ScaleFactor = _xamlRoot.Scale;
+        //    DisplayScale = (float)_xamlRoot.Scale;
+        //}
 
         return DisplayScale;
     }

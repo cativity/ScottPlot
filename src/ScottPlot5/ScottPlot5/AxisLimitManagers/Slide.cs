@@ -15,7 +15,7 @@ public class Slide : IAxisLimitManager
     ///     0 for a view that slides every time new data is added
     ///     1 for a view that only slides forward when new data runs off the screen
     /// </summary>
-    public double PaddingFractionX { get; set; } = 0;
+    public double PaddingFractionX { get; set; }
 
     /// <summary>
     ///     Defines the amount of whitespace added to the top or bottom of the data when data runs outside the current view.

@@ -45,39 +45,39 @@ public class RenderManager(Plot plot)
     ///     that modify plottables are complete before rendering begins.
     ///     Alternatively, lock the <see cref="Plot.Sync" /> object.
     /// </summary>
-    public EventHandler PreRenderLock { get; set; } = delegate { };
+    public EventHandler PreRenderLock { get; set; } = static delegate { };
 
     /// <summary>
     ///     This event is invoked just before each render,
     ///     after axis limits are determined and axis limits are set
     /// </summary>
-    public EventHandler<RenderPack> RenderStarting { get; set; } = delegate { };
+    public EventHandler<RenderPack> RenderStarting { get; set; } = static delegate { };
 
     /// <summary>
     ///     This event is invoked after each render
     /// </summary>
-    public EventHandler<RenderDetails> RenderFinished { get; set; } = delegate { };
+    public EventHandler<RenderDetails> RenderFinished { get; set; } = static delegate { };
 
     /// <summary>
     ///     This event a render where the figure size (in pixels) changed from the previous render
     /// </summary>
-    public EventHandler<RenderDetails> SizeChanged { get; set; } = delegate { };
+    public EventHandler<RenderDetails> SizeChanged { get; set; } = static delegate { };
 
     /// <summary>
     ///     This event is invoked during a render where the axis limits (in coordinate units) changed from the previous render
     ///     This event occurs after render actions are performed.
     /// </summary>
-    public EventHandler<RenderDetails> AxisLimitsChanged { get; set; } = delegate { };
+    public EventHandler<RenderDetails> AxisLimitsChanged { get; set; } = static delegate { };
 
     /// <summary>
     ///     Prevents <see cref="AxisLimitsChanged" /> from being invoked in situations that may cause infinite loops
     /// </summary>
-    public bool DisableAxisLimitsChangedEventOnNextRender { get; set; } = false;
+    public bool DisableAxisLimitsChangedEventOnNextRender { get; set; }
 
     /// <summary>
     ///     Indicates whether this plot is in the process of executing a render
     /// </summary>
-    public bool IsRendering { get; private set; } = false;
+    public bool IsRendering { get; private set; }
 
     /// <summary>
     ///     If false, any calls to Render() return immediately
@@ -93,16 +93,14 @@ public class RenderManager(Plot plot)
     /// <summary>
     ///     Total number of renders completed
     /// </summary>
-    public int RenderCount { get; private set; } = 0;
+    public int RenderCount { get; private set; }
 
     /// <summary>
     ///     Remove all render actions of the given type
     /// </summary>
     public void Remove<T>()
         where T : IRenderAction
-    {
-        RenderActions.RemoveAll(x => x is T);
-    }
+        => RenderActions.RemoveAll(static x => x is T);
 
     public void Render(SKCanvas canvas, PixelRect rect)
     {
@@ -173,17 +171,21 @@ public class RenderManager(Plot plot)
 
     private bool AxisLimitsChangedSinceLastRender()
     {
-        foreach (IAxis axis in LastRender.AxisLimitsByAxis.Keys.Where(static axis => !double.IsNaN(axis.Range.Span)))
-        {
-            CoordinateRangeMutable rangeNow = axis.Range;
-            CoordinateRange rangeBefore = LastRender.AxisLimitsByAxis[axis];
+        return LastRender.AxisLimitsByAxis.Keys.Where(static axis => !double.IsNaN(axis.Range.Span))
+                         .Select(a => new { rangeNow = a.Range, rangeBefore = LastRender.AxisLimitsByAxis[a] })
+                         .Any(static r => r.rangeNow.Min != r.rangeBefore.Min || r.rangeNow.Max != r.rangeBefore.Max);
 
-            if (rangeNow.Min != rangeBefore.Min || rangeNow.Max != rangeBefore.Max)
-            {
-                return true;
-            }
-        }
+        //foreach (IAxis axis in LastRender.AxisLimitsByAxis.Keys.Where(static axis => !double.IsNaN(axis.Range.Span)))
+        //{
+        //    CoordinateRangeMutable rangeNow = axis.Range;
+        //    CoordinateRange rangeBefore = LastRender.AxisLimitsByAxis[axis];
 
-        return false;
+        //    if (rangeNow.Min != rangeBefore.Min || rangeNow.Max != rangeBefore.Max)
+        //    {
+        //        return true;
+        //    }
+        //}
+
+        //return false;
     }
 }

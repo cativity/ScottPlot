@@ -48,10 +48,10 @@ public class Signal(ISignalSource data) : IPlottable, IHasLine, IHasMarker, IHas
     /// <summary>
     /// Setting this flag causes lines to be drawn between every visible point
     /// (similar to scatter plots) to improve anti-aliasing in static images.
-    /// Setting this will decrease performance for large datasets 
+    /// Setting this will decrease performance for large datasets
     /// and is not recommended for interactive environments.
     /// </summary>
-    public bool AlwaysUseLowDensityMode { get; set; } = false;
+    public bool AlwaysUseLowDensityMode { get; set; }
 
     public Color Color
     {

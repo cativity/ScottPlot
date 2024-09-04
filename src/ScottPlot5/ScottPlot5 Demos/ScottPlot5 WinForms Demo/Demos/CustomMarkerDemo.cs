@@ -1,9 +1,11 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 using SkiaSharp;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class CustomMarkerDemo : Form, IDemoWindow
 {
     public string Title => "Custom Marker Shapes";

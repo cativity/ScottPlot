@@ -41,7 +41,7 @@ public partial class DemoWindowInfo : UserControl
     {
         Form? form = Activator.CreateInstance(_formType) as Form;
         Debug.Assert(form is not null);
-        form.Icon = Resources.scottplot_icon_rounded_border;
+        form.Icon = Resources.scottplot_icon_rounded_border_ico;
         form.StartPosition = FormStartPosition.CenterScreen;
         form.Text = title;
         ParentForm?.Hide();

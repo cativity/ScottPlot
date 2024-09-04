@@ -1,9 +1,11 @@
-﻿using ScottPlot;
+﻿using JetBrains.Annotations;
+using ScottPlot;
 using ScottPlot.Plottables;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WinForms_Demo.Demos;
 
+[UsedImplicitly]
 public partial class HeatmapLive : Form, IDemoWindow
 {
     private readonly Heatmap _hMap;
